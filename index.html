@@ -1,0 +1,234 @@
+<!doctype html>
+<html>
+
+  <head>
+
+    <title>OPERA demobbed-viewer</title>
+
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="css/demobbed.css">
+
+    <script src="js/lib/jquery.js"></script>
+    <script src="js/lib/d3.js"></script>
+    <script src="js/lib/three.js"></script>
+    <script src="js/lib/three3DExtras.min.js"></script>
+
+    <script src="js/DetCfg-def.js"></script>
+    <script src="js/Utils-def.js"></script>
+    <script src="js/Hits-defs.js"></script>
+    <script src="js/Vertex-def.js"></script>
+    <script src="js/TrackECC-def.js"></script>
+    <script src="js/Event-def.js"></script>
+    <script src="js/loadEvent.js"></script>
+    <script src="js/DetElems-defs.js"></script>
+    <script src="js/MgrGeomED-def.js"></script>
+    <script src="js/MgrDrawED-def.js"></script>
+    <script src="js/MgrDrawECC-def.js"></script>
+    <script src="js/Demobbed-def.js"></script>
+    <script src="js/init.js"></script>
+    <script src="js/Demobbed-fills.js"></script>
+    <script src="js/MgrGeomED-fills.js"></script>
+    <script src="js/MgrGeomED-funcAdd.js"></script>
+    <script src="js/MgrDrawED-funcAdd.js"></script>
+    <script src="js/MgrDrawECC-funcAdd.js"></script>
+
+  </head>
+
+  <body id="demobbed-viewer">
+
+    <div class="container-fluid">
+
+      <div class="row">
+
+        <table>
+          <tr>
+
+            <td id="opera-logo"> <img src="graphics/OPERA.png" alt="OPERA" height="63"> </td>
+
+            <td> 
+
+              <table>
+
+                <tr>
+                  <td id="titlebar">OPERA demobbed-viewer</td>
+                </tr>
+
+                <tr>
+                  <td colspan="2">
+
+                    <div id="toolbarED">
+              
+                      <label for="inputEvent">Event:</label>
+                      <input id="inputEvent" onkeypress="loadEvent(this, event, value);" size="12">
+                  
+                      <!-- ----------------------------------------- -->
+              
+                      <img src="graphics/event-prev.png"   onclick="demobbed.loadPrevOrNextEvent(-1);" alt="Prev. event"  height="32">
+                      <img src="graphics/event-reload.png" onclick="demobbed.loadPrevOrNextEvent(0);"  alt="Reload event" height="32">
+                      <img src="graphics/event-next.png"   onclick="demobbed.loadPrevOrNextEvent(1);"  alt="Next event"   height="32">
+
+                      <img src="graphics/zoom-in.png"  onclick="demobbed.mgrDrawED().zoomIn();"  alt="Zoom in"  height="32">
+                      <img src="graphics/zoom-out.png" onclick="demobbed.mgrDrawED().zoomOut();" alt="Zoom out" height="32">
+
+                      <img src="graphics/zoom-brick.png" onclick="demobbed.mgrDrawED().zoomToBrick();" alt="Zoom to brick" height="32">                  
+                      <img src="graphics/zoom-event.png" onclick="demobbed.mgrDrawED().zoomToEvent();" alt="Zoom to event" height="32">
+
+                      <!-- ----------------------------------------- -->
+
+                      <img src="graphics/draw-ECC.png" onclick="demobbed.mgrDrawECC().drawECC(1);" alt="Draw ECC tracks" height="32">
+              
+                    </div>
+
+                  </td>
+                </tr>
+
+              </table>
+
+            </td> 
+
+          </tr>
+        </table>
+    
+      </div> <!-- <div class="row"> -->
+
+      <div class="row">
+
+        <div id="div-ED-XZ">
+
+          <table>
+            <tr>
+
+              <td id="controls-ED-XZ">
+                <table id="tableMoveViewControlsXZ">
+                  <tr>
+                    <td colspan="2"> <img src="graphics/nu-beam.png" alt="Nu beam" width="64"> </td>
+                  </tr>
+                  <tr>
+                    <td> <img src="graphics/view-up.png"   onclick="demobbed.mgrDrawED().moveView(0, 1);"  alt="Move XZ up">   </td>
+                    <td> <img src="graphics/view-down.png" onclick="demobbed.mgrDrawED().moveView(0, -1);" alt="Move XZ down"> </td>
+                  </tr>
+                  <tr>
+                    <td> <img src="graphics/view-left.png"  onclick="demobbed.mgrDrawED().moveView(2, -1);" alt="Move left">  </td>
+                    <td> <img src="graphics/view-right.png" onclick="demobbed.mgrDrawED().moveView(2, 1);"  alt="Move right"> </td>
+                  </tr>
+                </table>
+              </td>
+
+              <td>
+                <div id="canvas-ED-XZ">
+                  <span id="canvas-ED-XZ-title" class="canvas-title"></span>
+                </div>
+              </td>
+
+            </tr>
+          </table>
+
+        </div>
+
+        <div id="div-ED-YZ">
+
+          <table>
+            <tr>
+
+              <td id="controls-ED-YZ">
+                <table id="tableMoveViewControlsYZ">
+                  <tr>
+                    <td> <img src="graphics/view-up.png"   onclick="demobbed.mgrDrawED().moveView(1, 1);"  alt="Move YZ up">   </td>
+                    <td> <img src="graphics/view-down.png" onclick="demobbed.mgrDrawED().moveView(1, -1);" alt="Move YZ down"> </td>
+                  </tr>
+                  <tr>
+                    <td colspan="2"> <img src="graphics/nu-beam.png" alt="Nu beam" width="64"> </td>
+                  </tr>
+                </table>
+              </td>
+
+              <td>
+                <div id="canvas-ED-YZ">
+                  <span id="canvas-ED-YZ-title" class="canvas-title"></span>
+                </div>
+              </td>
+
+            </tr>
+          </table>
+
+        </div>
+
+      </div> <!-- <div class="row"> -->
+
+      <div class="row">
+
+        <div id="div-ECC">
+
+          <table>
+            <tr>
+
+              <td id="controls-ECC">
+
+                <table id="tableAnimControls">
+                  <tr>
+                    <td colspan="2"> <img src="graphics/blank-image.png" alt="Nu beam" width="64"> </td>
+                  </tr>
+                </table>
+
+              </td>
+
+              <td>
+                <table>
+
+                  <tr>
+                    <td>
+                      <div id="toolbarECC">
+
+                        <img src="graphics/event-prev.png"   onclick="demobbed.loadPrevOrNextEvent(-1);" alt="Prev. event"  height="32">
+                        <img src="graphics/event-reload.png" onclick="demobbed.loadPrevOrNextEvent(0);"  alt="Reload event" height="32">
+                        <img src="graphics/event-next.png"   onclick="demobbed.loadPrevOrNextEvent(1);"  alt="Next event"   height="32">
+
+                        <img src="graphics/anim-decel.png" onclick="demobbed.mgrDrawECC().decelerateAnimation();" alt="Pause animation" height="32">
+                        <img src="graphics/anim-accel.png" onclick="demobbed.mgrDrawECC().accelerateAnimation();" alt="Start animation" height="32">
+
+                        <img src="graphics/close-ECC.png" onclick="demobbed.mgrDrawECC().drawECC(0);" alt="Erase ECC tracks" height="32">
+
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <div id="div-canvas-ECC">
+
+                        <span id="canvas-ECC-title" class="canvas-title">AAA+++++++BBB</span>
+
+                        <div id="div-axes-ECC">
+                          <canvas id="canvas-axes-ECC"></canvas>
+                        </div>
+
+                        <canvas id="canvas-ECC" class="canvas-bordered"></canvas>
+
+                      </div>
+                    </td>
+                  </tr>
+
+                </table>
+              </td>
+
+            </tr>
+          </table>
+
+        </div>
+
+      </div> <!-- <div class="row"> -->
+
+    </div> <!-- "container-fluid" -->
+
+    <!-- ----------------------------------------- -->
+
+    <div id="divScrLoadEvent">
+      <script id="scrLoadEvent" src="js/nuEventsData/loadEvent10120009376.js"> </script>
+    </div>
+      
+  </body>
+
+</html>
