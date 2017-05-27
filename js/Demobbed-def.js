@@ -15,7 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class Demobbed { // Demo version of a browser-based event display
+class Demobbed { // Demonstrative browser-based event display
 
   constructor() {
 
