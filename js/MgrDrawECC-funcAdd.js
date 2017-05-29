@@ -279,8 +279,6 @@ dmECC.drawTracks = function() {
 
   let nbOfTracks = evTracks.length;
 
-  //console.log("nbOfTracks = " + nbOfTracks);
-
   for (let it = 0; it < nbOfTracks; it++) {
 
     let trPartId = evTracks[it].partId();
@@ -291,27 +289,25 @@ dmECC.drawTracks = function() {
 
     let trPars = dmECC.trackLinePars()[trPartId];
 
-    let zPlate = evTracks[it].pos()[2] - vertPos[2];
+    //let zPlate = evTracks[it].pos()[2] - vertPos[2];
 
     let trBeg = [0, 0, 0];
     let trEnd = [0, 0, 0];
 
     let trTitlePos = [0, 0, 0];
 
-    if (zPlate >= 0) {
+    if ( (trPartId == 5) || (trPartId == 7) ) { // back track
+
+      trEnd[2] = -30;
+      trBeg[2] = trEnd[2] - trPars.length;
+
+    }
+    else {
 
       trBeg[2] = (trPartId === 3) ? 900 : 30; // an electron comes not from the vertex itself
       trEnd[2] = trBeg[2] + trPars.length;
 
       if (trackPartTitle) trTitlePos[2] = trBeg[2] + 1500;
-
-    }
-    else {
-
-      trEnd[2] = (trPartId === 3) ? -900 : -30; // an electron comes not from the vertex itself
-      trBeg[2] = trEnd[2] - trPars.length;
-
-      if (trackPartTitle) trTitlePos[2] = trEnd[2] - 1500;
 
     }
 
