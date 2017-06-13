@@ -10,7 +10,6 @@ dmECC.initGraphics = function() {
   //dmECC.camera(new THREE.PerspectiveCamera(70, canvWidth/canvHeight, 0.1, 20000));
 
   dmECC.camera(new THREE.OrthographicCamera(-1800, 4200, 1854, -1854, 0, 15000));
-  //dmECC.cameraInset(new THREE.OrthographicCamera(-900, 2100, 927, -927, 0, 10000));
   dmECC.cameraInset(new THREE.OrthographicCamera(-1200, 1800, 1554, -300, 0, 10000));
 
   dmECC.scene(new THREE.Scene());
@@ -25,6 +24,8 @@ dmECC.initGraphics = function() {
   dmECC.initTrackLineProperties();
 
   dmECC.initGroupOfAxesAndTrackTitles();
+
+  dmECC.drawTrackLegend();
 
 };
 //------------------------------------------------------------------------------
@@ -71,7 +72,6 @@ dmECC.initGroupOfAxesAndTrackTitles = function() {
 
   dmECC.groupOfAxes(new THREE.Group());
 
-  //let colorX = "hotpink";
   let colorX = "seagreen";
   let colorY = "magenta";
   let colorZ = "maroon";
@@ -130,13 +130,13 @@ dmECC.initGroupOfAxesAndTrackTitles = function() {
     // init track titles
 
     let trMu_geo = new THREE.TextGeometry('mu', tps);
-    let trMu_material = new THREE.MeshBasicMaterial({ color: Track.colors(1) });
+    let trMu_material = new THREE.MeshBasicMaterial({ color: TrackECC.colors(1) });
 
     dmECC.trackTitles()[1] = new THREE.Mesh(trMu_geo, trMu_material);
     dmECC.trackTitles()[1].rotation.y = -1.57;
 
     let trEl_geo = new THREE.TextGeometry('e', tps);
-    let trEl_material = new THREE.MeshBasicMaterial({ color: Track.colors(3) });
+    let trEl_material = new THREE.MeshBasicMaterial({ color: TrackECC.colors(3) });
 
     dmECC.trackTitles()[3] = new THREE.Mesh(trEl_geo, trEl_material);
     dmECC.trackTitles()[3].rotation.y = -1.57;
@@ -398,8 +398,6 @@ dmECC.updateCanvas = function() {
 
   dmECC.drawEvent();
 
-  //dmECC.accelerateAnimation();
-
 };
 //------------------------------------------------------------------------------
 
@@ -425,3 +423,49 @@ dmECC.drawECC = function(showECC) {
 
 };
 //------------------------------------------------------------------------------
+
+dmECC.drawTrackLegend = function() {
+
+  let canvasLegendECC = document.getElementById("canvas-legend-ECC");
+
+  dmECC.trackLegendContext(canvasLegendECC.getContext("2d"));
+
+  dmECC.trackLegendLineBeg(140);
+  dmECC.trackLegendLineEnd(canvasLegendECC.width - 10);
+
+  //console.log("1: " + canvasLegendECC.width);
+
+  dmECC.trackLegendContext().font = "16px serif";
+
+  dmECC.trackLegendContext().fillText("Track types", 50, 15);
+
+  dmECC.trackLegendContext().beginPath();
+  dmECC.trackLegendContext().moveTo(0, 20);
+  dmECC.trackLegendContext().lineTo(canvasLegendECC.width, 20);
+  dmECC.trackLegendContext().stroke();
+
+  dmECC.addLegendEntry("track of a muon:",       38, TrackECC.colors(1));
+  dmECC.addLegendEntry("track of an hadron:",    55, TrackECC.colors(2));
+  dmECC.addLegendEntry("track of an electron:",  72, TrackECC.colors(3));
+  dmECC.addLegendEntry("black track:",           89, TrackECC.colors(4));
+  dmECC.addLegendEntry("back black track:",     106, TrackECC.colors(5));
+  dmECC.addLegendEntry("gray track:",           123, TrackECC.colors(6));
+  dmECC.addLegendEntry("back gray track:",      140, TrackECC.colors(7));
+
+};
+//-----------------------------------------------------------------------------
+
+dmECC.addLegendEntry = function(trTypeName, topDist, trColor) {
+
+  dmECC.trackLegendContext().fillStyle = trColor;
+  dmECC.trackLegendContext().fillText(trTypeName, 8, topDist + 3);
+
+  dmECC.trackLegendContext().beginPath();
+  dmECC.trackLegendContext().moveTo(dmECC.trackLegendLineBeg(), topDist);
+  dmECC.trackLegendContext().lineTo(dmECC.trackLegendLineEnd(), topDist);
+  dmECC.trackLegendContext().lineWidth = 3;
+  dmECC.trackLegendContext().strokeStyle = trColor;
+  dmECC.trackLegendContext().stroke();
+
+};
+//-----------------------------------------------------------------------------

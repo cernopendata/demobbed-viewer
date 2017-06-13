@@ -27,6 +27,11 @@
 
     this._vecOrigin = new THREE.Vector3(0, 0, 0);
 
+    this._trackLegendContext = {}; // Context of a track legend canvas
+
+    this._trackLegendLineBeg = 0;
+    this._trackLegendLineEnd = 0;
+
   };
 
   camera(cam) {
@@ -171,5 +176,44 @@
   };
 
   vecOrigin() { return this._vecOrigin; };
+
+  trackLegendContext(ctx) {
+
+    if (ctx === undefined) return this._trackLegendContext;
+
+    if (typeof(ctx) !== "object") {
+      alert("MgrDrawECC-def::trackLegendContext()::Error: ctx is not an object!!!: typeof(ctx) = " + typeof(ctx) + "!!!");
+      return;
+    }
+
+    this._trackLegendContext = ctx;
+
+  };
+
+  trackLegendLineBeg(lineBeg) {
+
+    if (lineBeg === undefined) return this._trackLegendLineBeg;
+
+    if (!Utils.checkNumber(lineBeg)) {
+      alert("MgrDrawECC-def::trackLegendLineBeg()::Error: lineBeg is not a number: " + lineBeg + "!!!");
+      return;
+    }
+
+    this._trackLegendLineBeg = lineBeg;
+
+  };
+
+  trackLegendLineEnd(lineEnd) {
+
+    if (lineEnd === undefined) return this._trackLegendLineEnd;
+
+    if (!Utils.checkNumber(lineEnd)) {
+      alert("MgrDrawECC-def::trackLegendLineEnd()::Error: lineEnd is not a number: " + lineEnd + "!!!");
+      return;
+    }
+
+    this._trackLegendLineEnd = lineEnd;
+
+  };
 
 };
