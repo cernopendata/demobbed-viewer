@@ -1,6 +1,4 @@
 #titlebar {
-  height: 25px;
-  padding: 0px 0px 0px 0px;
   text-align: center;
   color: white;
   background-color: black;
@@ -21,7 +19,7 @@
 .canvas-title {
   position: absolute;
   border: 1px solid black;
-  padding: 0 10px 0 10px;
+  padding: 0px 10px 0px 10px;
   font: bold 12px arial, serif;
   background-color: white;
 }
@@ -40,13 +38,19 @@
   position: absolute;
 }
 
-#div-axes-ECC {
+#canvas-axes-ECC {
   border: none;
   position: absolute;
-  left: 0;
-  bottom: 0;
+  bottom: 0px;
   z-index: 1001;
-  background-color: transparent;
+}
+
+#canvas-legend-ECC {
+  position: absolute;
+  left: 575px;
+  bottom: 180px;
+  z-index: 1001;
+  background-color: #FAFAFA;
 }
 
 #canvas-ECC-title {
