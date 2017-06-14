@@ -59,8 +59,8 @@
     if (ip === undefined) ip = 2;
     else if (!Utils.checkIP(ip, 3)) return false;
 
-    let posMin = [-500, -500, -500];
-    let posMax = [125000, 100000, 80000];
+    const posMin = [-500, -500, -500];
+    const posMax = [125000, 100000, 80000];
 
     if ( (pos < posMin[ip]) || (pos > posMax[ip]) ) {
       alert("Utils-def::checkPos()::Error: pos[" + ip +"] is outside the OPERA brick: " + pos + "!!!");

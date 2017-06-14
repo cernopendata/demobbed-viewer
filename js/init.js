@@ -1,16 +1,16 @@
 ﻿"use strict";
 //-----------
 
-let demobbed = new Demobbed();
+const demobbed = new Demobbed();
 
 demobbed.mgrGeomED(new MgrGeomED());
 
-let gmED = demobbed.mgrGeomED();
+const gmED = demobbed.mgrGeomED();
 
 demobbed.mgrDrawED(new MgrDrawED());
 
-let dmED = demobbed.mgrDrawED();
+const dmED = demobbed.mgrDrawED();
 
 demobbed.mgrDrawECC(new MgrDrawECC());
 
-let dmECC = demobbed.mgrDrawECC();
+const dmECC = demobbed.mgrDrawECC();

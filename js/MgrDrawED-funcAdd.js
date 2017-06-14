@@ -203,13 +203,13 @@ dmED.onEventChange = function() {
 
 dmED.displayEventInfo = function() {
 
-  let evId = demobbed.event().id();
+  const evId = demobbed.event().id();
 
-  let inputInputEvent = document.getElementById("inputEvent");
+  const inputEvent = document.getElementById("inputEvent");
 
-  inputInputEvent.value = evId;
+  inputEvent.value = evId;
 
-  let dateFormatOptions = {
+  const dateFormatOptions = {
 
     timeZone: "UTC",
     hour12:    false,
@@ -222,8 +222,9 @@ dmED.displayEventInfo = function() {
 
   }
 
-  let titleBeg = "Event: " + evId + ", " +
-                         demobbed.event().date().toLocaleString("en-US", dateFormatOptions) + " (UTC),";
+  const titleBeg = "Event: " + evId + ", " +
+                           demobbed.event().date().toLocaleString("en-US", dateFormatOptions) +
+                           " (UTC),";
 
   $("#canvas-ED-XZ-title").text(titleBeg + " Electronic detectors: TOP VIEW");
   $("#canvas-ED-YZ-title").text(titleBeg + " Electronic detectors: SIDE VIEW");
@@ -243,7 +244,7 @@ dmED.checkSM = function() {
 
 dmED.zoomIn = function() {
 
-  let newZoom = Math.round(1000*dmED.zoom()*dmED.zoomFactor())/1000;
+  const newZoom = Math.round(1000*dmED.zoom()*dmED.zoomFactor())/1000;
 
   if (newZoom > dmED.zoomMax()) return;
 
@@ -252,14 +253,14 @@ dmED.zoomIn = function() {
   dmED.zoomIsChanged(1);
   dmED.viewIsChanged(1);
 
-  let xyzmin = [];
-  let xyzmax = [];
+  const xyzmin = [];
+  const xyzmax = [];
 
   for (let ip = 0; ip < 3; ip++) {
 
-    let DDxyz = dmED.currViewBounds().xyzMax[ip] - dmED.currViewBounds().xyzMin[ip];
+    const DDxyz = dmED.currViewBounds().xyzMax[ip] - dmED.currViewBounds().xyzMin[ip];
 
-    let dxyz = (DDxyz*(1 - 1/dmED.zoomFactor()))/2;
+    const dxyz = (DDxyz*(1 - 1/dmED.zoomFactor()))/2;
 
     xyzmin[ip] = dmED.currViewBounds().xyzMin[ip] + dxyz;
     xyzmax[ip] = dmED.currViewBounds().xyzMax[ip] - dxyz;
@@ -282,7 +283,7 @@ dmED.zoomIn = function() {
 
 dmED.zoomOut = function() {
 
-  let newZoom = Math.round(1000*dmED.zoom()/dmED.zoomFactor())/1000;
+  const newZoom = Math.round(1000*dmED.zoom()/dmED.zoomFactor())/1000;
 
   if (newZoom < 1) return;
 
@@ -304,14 +305,14 @@ dmED.zoomOut = function() {
   dmED.zoomIsChanged(1);
   dmED.viewIsChanged(1);
 
-  let xyzmin = [];
-  let xyzmax = [];
+  const xyzmin = [];
+  const xyzmax = [];
 
   for (let ip = 0; ip < 3; ip++) {
 
-    let DDxyz = dmED.currViewBounds().xyzMax[ip] - dmED.currViewBounds().xyzMin[ip];
+    const DDxyz = dmED.currViewBounds().xyzMax[ip] - dmED.currViewBounds().xyzMin[ip];
 
-    let dxyz = (DDxyz*(dmED.zoomFactor() - 1))/2;
+    const dxyz = (DDxyz*(dmED.zoomFactor() - 1))/2;
 
     xyzmin[ip] = dmED.currViewBounds().xyzMin[ip] - dxyz;
     xyzmax[ip] = dmED.currViewBounds().xyzMax[ip] + dxyz;
@@ -352,8 +353,8 @@ dmED.zoomOut = function() {
 
 dmED.zoomToBrick = function() {
 
-  let xyzmin = [];
-  let xyzmax = [];
+  const xyzmin = [];
+  const xyzmax = [];
 
   for (let ip = 0; ip < 2; ip++) {
 
@@ -374,12 +375,12 @@ dmED.zoomToEvent = function() {
 
   if (!dmED.findEventBounds()) return;
 
-  let DDxyz = [];
+  const DDxyz = [];
 
   for (let ip = 0; ip < 3; ip++)
     DDxyz[ip] = dmED.currEventBounds().xyzMax1[ip] - dmED.currEventBounds().xyzMin1[ip];
 
-  let dDDxy = DDxyz[1] - DDxyz[0];
+  const dDDxy = DDxyz[1] - DDxyz[0];
 
   if (dDDxy >= 0) {
 
@@ -398,21 +399,21 @@ dmED.zoomToEvent = function() {
 
   }
 
-  let xyzmin = [];
-  let xyzmax = [];
+  const xyzmin = [];
+  const xyzmax = [];
 
-  let aspectRatioEvent = DDxyz[2]/DDxyz[0];
+  const aspectRatioEvent = DDxyz[2]/DDxyz[0];
 
   if (aspectRatioEvent >= dmED.aspectRatio()) {
 
     xyzmin[2] = dmED.currEventBounds().xyzMin1[2];
     xyzmax[2] = dmED.currEventBounds().xyzMax1[2];
 
-    let DDxyNew = DDxyz[2]/dmED.aspectRatio();
+    const DDxyNew = DDxyz[2]/dmED.aspectRatio();
 
     for (let ip = 0; ip < 2; ip++) {
 
-      let dxy = (DDxyNew - DDxyz[0])/2;
+      const dxy = (DDxyNew - DDxyz[0])/2;
   
       xyzmin[ip] = dmED.currEventBounds().xyzMin1[ip] - dxy;
       xyzmax[ip] = dmED.currEventBounds().xyzMax1[ip] + dxy;
@@ -429,9 +430,9 @@ dmED.zoomToEvent = function() {
 
     }
 
-    let DDzNew = DDxyz[0]*dmED.aspectRatio();
+    const DDzNew = DDxyz[0]*dmED.aspectRatio();
 
-    let dz = (DDzNew - DDxyz[2])/2;
+    const dz = (DDzNew - DDxyz[2])/2;
 
     xyzmin[2] = dmED.currEventBounds().xyzMin1[2] - dz;
     xyzmax[2] = dmED.currEventBounds().xyzMax1[2] + dz;
@@ -476,8 +477,8 @@ dmED.setNewCurrViewBounds = function(xyzmin, xyzmax) {
 
   dmED.checkSM();
 
-  let newZoom = (DetCfg.globDetBounds().xyzMax[2] -
-                 DetCfg.globDetBounds().xyzMin[2])/(xyzmax[2] - xyzmin[2]);
+  const newZoom = (DetCfg.globDetBounds().xyzMax[2] -
+                   DetCfg.globDetBounds().xyzMin[2])/(xyzmax[2] - xyzmin[2]);
 
   if (newZoom < 1) alert("MgrDrawED-funcAdd.js::dmED.zoomToEvent()::Error: newZoom: " + newZoom + "!!!");
 
@@ -510,7 +511,7 @@ dmED.findEventBounds = function() {
        (dmED.currEventBounds().xyzMin1[2] == dmED.initEventBounds().xyzMin1[2]) )
     return false; //!!!
 
-  let totalNbOfHits = [0, 0];
+  const totalNbOfHits = [0, 0];
 
   totalNbOfHits[0] += demobbed.event().hitsDT()[0].length;
 
@@ -543,11 +544,11 @@ dmED.findEventBounds = function() {
 
 dmED.findMinMaxBoundsForHits = function(ip, hits) {
 
-  let nbOfHits = hits.length;
+  const nbOfHits = hits.length;
 
   for (let ih = 0; ih < nbOfHits; ih++) {
 
-    let hitXY = hits[ih].x();
+    const hitXY = hits[ih].x();
 
     if (dmED.currEventBounds().xyzMin1[ip] >= hitXY )
       dmED.currEventBounds().xyzMin1[ip] = hitXY;
@@ -567,7 +568,7 @@ dmED.findMinMaxBoundsForHits = function(ip, hits) {
 
     }
 
-    let hitZ  = hits[ih].z();
+    const hitZ  = hits[ih].z();
 
     if (dmED.currEventBounds().xyzMin1[2] >= hitZ )
       dmED.currEventBounds().xyzMin1[2] = hitZ;
@@ -594,7 +595,7 @@ dmED.findMinMaxBoundsForHits = function(ip, hits) {
 
 dmED.checkMin12Max12BoundsForHits = function(ip, maxDist) {
 
-  let xyzMin2 = dmED.currEventBounds().xyzMin2[ip];
+  const xyzMin2 = dmED.currEventBounds().xyzMin2[ip];
 
   if (xyzMin2 < dmED.initEventBounds().xyzMin1[ip]) {
 
@@ -603,7 +604,7 @@ dmED.checkMin12Max12BoundsForHits = function(ip, maxDist) {
 
   }
 
-  let xyzMax2 = dmED.currEventBounds().xyzMax2[ip];
+  const xyzMax2 = dmED.currEventBounds().xyzMax2[ip];
 
   if (xyzMax2 > dmED.initEventBounds().xyzMax1[ip]) {
 
@@ -635,18 +636,18 @@ dmED.moveView = function(ip, dirLRUD) {
 
   dmED.viewIsChanged(1);
 
-  let xyzmin = [0, 0, 0];
-  let xyzmax = [0, 0, 0];
+  const xyzmin = [0, 0, 0];
+  const xyzmax = [0, 0, 0];
 
-  let DDxyz = dmED.currViewBounds().xyzMax[ip] - dmED.currViewBounds().xyzMin[ip];
+  const DDxyz = dmED.currViewBounds().xyzMax[ip] - dmED.currViewBounds().xyzMin[ip];
 
-  let dxyz = DDxyz*dmED.moveFactor(ip);
+  const dxyz = DDxyz*dmED.moveFactor(ip);
 
   xyzmin[ip] = dmED.currViewBounds().xyzMin[ip] + dirLRUD*dxyz;
   xyzmax[ip] = dmED.currViewBounds().xyzMax[ip] + dirLRUD*dxyz;
 
-  let xyzShift = (dirLRUD > 0) ? (DetCfg.globDetBounds().xyzMax[ip] - xyzmax[ip])
-                               : (xyzmin[ip] - DetCfg.globDetBounds().xyzMin[ip]);
+  const xyzShift = (dirLRUD > 0) ? (DetCfg.globDetBounds().xyzMax[ip] - xyzmax[ip])
+                                 : (xyzmin[ip] - DetCfg.globDetBounds().xyzMin[ip]);
 
   if (xyzShift < -0.1) {
 
@@ -889,9 +890,9 @@ dmED.clearDet = function(ip) {
 
 dmED.drawDetElems = function(ip, groupIDs, detElems) {
 
-  let detElemBoxes = d3.select("#" + groupIDs)
-                       .selectAll('rect')
-                       .data(detElems);
+  const detElemBoxes = d3.select("#" + groupIDs)
+                         .selectAll('rect')
+                         .data(detElems);
 
   detElemBoxes
     .enter()
@@ -920,8 +921,8 @@ dmED.drawDetElems = function(ip, groupIDs, detElems) {
 
 dmED.drawBricks = function(ip) {
 
-  let brickBoxes = d3.select("#" + dmED.groupBricksIDs(ip))
-                     .selectAll('rect')
+  const brickBoxes = d3.select("#" + dmED.groupBricksIDs(ip))
+                       .selectAll('rect')
 
 };
 //-----------------------------------------------------------------------------
@@ -985,12 +986,12 @@ dmED.clearHits = function(ip) {
 
 dmED.drawTTHits = function(ip) {
 
-  let TTHitBoxes = d3.select("#" + dmED.groupTTHitsIDs(ip))
-                     .selectAll('rect')
-                     .data(demobbed.event().hitsTT()[ip]);
+  const TTHitBoxes = d3.select("#" + dmED.groupTTHitsIDs(ip))
+                       .selectAll('rect')
+                       .data(demobbed.event().hitsTT()[ip]);
 
-  let w2 = dmED.hitTTdims(2)/2;
-  let h2 = dmED.hitTTdims(ip)/2;
+  const w2 = dmED.hitTTdims(2)/2;
+  const h2 = dmED.hitTTdims(ip)/2;
 
   TTHitBoxes
     .enter()
@@ -1012,9 +1013,9 @@ dmED.drawTTHits = function(ip) {
     })
     .attr('width', function(d) {
 
-      let brd2 = DetCfg.brickDims(2)/dmED.coefPixToCM();
+      const brd2 = DetCfg.brickDims(2)/dmED.coefPixToCM();
 
-      let ampl = d.ampl();
+      const ampl = d.ampl();
 
       if (ampl > 200) return brd2 + dmED.hitTTdims(2);
       else return 0.005*brd2*ampl + dmED.hitTTdims(2);
@@ -1036,12 +1037,12 @@ dmED.drawTTHits = function(ip) {
 
 dmED.drawRPCHits = function(ip) {
 
-  let RPCHitBoxes = d3.select("#" + dmED.groupRPCHitsIDs(ip))
-                      .selectAll('rect')
-                      .data(demobbed.event().hitsRPC()[ip]);
+  const RPCHitBoxes = d3.select("#" + dmED.groupRPCHitsIDs(ip))
+                        .selectAll('rect')
+                        .data(demobbed.event().hitsRPC()[ip]);
 
-  let w2 = dmED.hitRPCdims(2)/2;
-  let h2 = dmED.hitRPCdims(ip)/2;
+  const w2 = dmED.hitRPCdims(2)/2;
+  const h2 = dmED.hitRPCdims(ip)/2;
 
   RPCHitBoxes
     .enter()
@@ -1058,7 +1059,7 @@ dmED.drawRPCHits = function(ip) {
     })
     .attr('y', function(d) {
 
-      let y = dmED.scalesOfCanvEmb()[ip](d.x());
+      const y = dmED.scalesOfCanvEmb()[ip](d.x());
 
       if (dmED.zoom() > dmED.zoomFarViewMax())
         return y - d.clLength()/(2*dmED.coefPixToCM());
@@ -1090,9 +1091,9 @@ dmED.drawRPCHits = function(ip) {
 
 dmED.drawDTHits = function() {
 
-  let DTHitCircles = d3.select("#" + dmED.groupDTHitsIDs(0))
-                       .selectAll('circle')
-                       .data(demobbed.event().hitsDT()[0]);
+  const DTHitCircles = d3.select("#" + dmED.groupDTHitsIDs(0))
+                         .selectAll('circle')
+                         .data(demobbed.event().hitsDT()[0]);
 
   DTHitCircles
     .enter()
@@ -1131,9 +1132,9 @@ dmED.drawDTHits = function() {
 
 dmED.drawNeuVertex = function(ip) {
 
-  let NeuVertexCircle = d3.select("#" + dmED.groupNeuVertexIDs(ip))
-                          .selectAll('circle')
-                          .data(demobbed.event().vertex());
+  const NeuVertexCircle = d3.select("#" + dmED.groupNeuVertexIDs(ip))
+                            .selectAll('circle')
+                            .data(demobbed.event().vertex());
 
   NeuVertexCircle
     .enter()
@@ -1153,11 +1154,11 @@ dmED.drawNeuVertex = function(ip) {
 
 dmED.drawPartTracks = function(ip) {
 
-  let PartTracksLines = d3.select("#" + dmED.groupPartTracksIDs(ip))
-                          .selectAll('line')
-                          .data(demobbed.event().tracksECC());
+  const PartTracksLines = d3.select("#" + dmED.groupPartTracksIDs(ip))
+                            .selectAll('line')
+                            .data(demobbed.event().tracksECC());
 
-  let vertPosGlob = demobbed.event().vertex()[0].posGlob();
+  const vertPosGlob = demobbed.event().vertex()[0].posGlob();
 
   PartTracksLines
     .enter()
@@ -1166,7 +1167,7 @@ dmED.drawPartTracks = function(ip) {
     .attr('y1', dmED.scalesOfCanvEmb()[ip](vertPosGlob[ip]))
     .attr('x2', function(d) {                  
 
-      let trPartId = d.partId();
+      const trPartId = d.partId();
 
       if ( (trPartId == 1) || (trPartId == 2) ) // draw only tracks of muons and hadrons!
         return dmED.scalesOfCanvEmb()[2](vertPosGlob[2] + dmED.trackLinePars()[trPartId].length);
@@ -1174,7 +1175,7 @@ dmED.drawPartTracks = function(ip) {
     })
     .attr('y2', function(d) {
 
-      let trPartId = d.partId();
+      const trPartId = d.partId();
 
       if ( (trPartId == 1) || (trPartId == 2) ) // draw only tracks of muons and hadrons!
         return dmED.scalesOfCanvEmb()[ip](vertPosGlob[ip] + d.Axy(ip)*dmED.trackLinePars()[trPartId].length);
@@ -1182,7 +1183,7 @@ dmED.drawPartTracks = function(ip) {
     })
     .attr('stroke', function(d) {
 
-      let trPartId = d.partId();
+      const trPartId = d.partId();
 
       if ( (trPartId == 1) || (trPartId == 2) ) // draw only tracks of muons and hadrons!
         return dmED.trackLinePars()[trPartId].color;

@@ -4,8 +4,8 @@
 
 dmECC.initGraphics = function() {
 
-  let canvWidth  = dmED.canvMainWidth();
-  let canvHeight = 0.618*canvWidth; //!!!
+  const canvWidth  = dmED.canvMainWidth();
+  const canvHeight = 0.618*canvWidth; //!!!
 
   //dmECC.camera(new THREE.PerspectiveCamera(70, canvWidth/canvHeight, 0.1, 20000));
 
@@ -32,8 +32,8 @@ dmECC.initGraphics = function() {
 
 dmECC.initRenderers = function(canvWidth, canvHeight) {
 
-  let canvasECC = document.getElementById("canvas-ECC");
-  let canvasAxesECC = document.getElementById("canvas-axes-ECC");
+  const canvasECC = document.getElementById("canvas-ECC");
+  const canvasAxesECC = document.getElementById("canvas-axes-ECC");
 
   dmECC.renderer(new THREE.WebGLRenderer( { canvas: canvasECC, antialias: true, alpha: true } ));
   dmECC.rendererInset(new THREE.WebGLRenderer( { canvas: canvasAxesECC, antialias: true, alpha: true } ));
@@ -58,10 +58,10 @@ dmECC.initRenderers = function(canvWidth, canvHeight) {
 
 dmECC.initVertexPoint = function() {
 
-  let vertexGeometry = new THREE.SphereGeometry(20, 32, 32);
+  const vertexGeometry = new THREE.SphereGeometry(20, 32, 32);
 
   //let vertexMaterial = new THREE.MeshBasicMaterial( {color: 0xFF3300} );
-  let vertexMaterial = new THREE.MeshBasicMaterial({ color: Vertex.color() });
+  const vertexMaterial = new THREE.MeshBasicMaterial({ color: Vertex.color() });
 
   dmECC.vertexPoint(new THREE.Mesh(vertexGeometry, vertexMaterial));
 
@@ -72,52 +72,52 @@ dmECC.initGroupOfAxesAndTrackTitles = function() {
 
   dmECC.groupOfAxes(new THREE.Group());
 
-  let colorX = "seagreen";
-  let colorY = "magenta";
-  let colorZ = "maroon";
+  const colorX = "seagreen";
+  const colorY = "magenta";
+  const colorZ = "maroon";
 
-  let rx = new three3DExtras.tubeLine([0, 0, 0], [1000, 0, 0], 8, colorX);
-  let gy = new three3DExtras.tubeLine([0, 0, 0], [0, 1000, 0], 8, colorY);
-  let bz = new three3DExtras.tubeLine([0, 0, 0], [0, 0, 1000], 8, colorZ);
+  const rx = new three3DExtras.tubeLine([0, 0, 0], [1000, 0, 0], 8, colorX);
+  const gy = new three3DExtras.tubeLine([0, 0, 0], [0, 1000, 0], 8, colorY);
+  const bz = new three3DExtras.tubeLine([0, 0, 0], [0, 0, 1000], 8, colorZ);
 
   dmECC.groupOfAxes().add(rx.getObject3D());
   dmECC.groupOfAxes().add(gy.getObject3D());
   dmECC.groupOfAxes().add(bz.getObject3D());
 
-  let font_loader = new THREE.FontLoader();
+  const font_loader = new THREE.FontLoader();
   font_loader.load('./fonts/helvetiker_regular.typeface.json', function(font) {
 
     // init axes titles
 
-    let tps = { size:110, height:10, font:font };
+    const tps = { size:110, height:10, font:font };
 
-    let x_geo = new THREE.TextGeometry('X', tps);
-    let y_geo = new THREE.TextGeometry('Y', tps);
-    let z_geo = new THREE.TextGeometry('Z', tps);
+    const x_geo = new THREE.TextGeometry('X', tps);
+    const y_geo = new THREE.TextGeometry('Y', tps);
+    const z_geo = new THREE.TextGeometry('Z', tps);
 
-    let un_geo = new THREE.TextGeometry('1mm', tps);
+    const un_geo = new THREE.TextGeometry('1mm', tps);
 
-    let x_material = new THREE.MeshBasicMaterial({ color: colorX });
-    let x_text = new THREE.Mesh(x_geo, x_material);
+    const x_material = new THREE.MeshBasicMaterial({ color: colorX });
+    const x_text = new THREE.Mesh(x_geo, x_material);
     x_text.position.x = 980;
     x_text.position.y =  50;
     x_text.position.z =  50;
     x_text.rotation.y = -1.57;
 
-    let y_material = new THREE.MeshBasicMaterial({ color: colorY });
-    let y_text = new THREE.Mesh(y_geo, y_material);
+    const y_material = new THREE.MeshBasicMaterial({ color: colorY });
+    const y_text = new THREE.Mesh(y_geo, y_material);
     y_text.position.y = 900;
     y_text.position.z =  50;
     y_text.rotation.y = -1.57;
 
-    let z_material = new THREE.MeshBasicMaterial({ color: colorZ });
-    let z_text = new THREE.Mesh(z_geo, z_material);
+    const z_material = new THREE.MeshBasicMaterial({ color: colorZ });
+    const z_text = new THREE.Mesh(z_geo, z_material);
     z_text.position.y =  50;
     z_text.position.z = 920;
     z_text.rotation.y = -1.57;
 
-    let un_material = new THREE.MeshBasicMaterial({ color: colorY });
-    let un_text = new THREE.Mesh(un_geo, un_material);
+    const un_material = new THREE.MeshBasicMaterial({ color: colorY });
+    const un_text = new THREE.Mesh(un_geo, un_material);
     un_text.position.y =  450;
     un_text.position.z =  50;
     un_text.rotation.y = -1.57;
@@ -129,14 +129,14 @@ dmECC.initGroupOfAxesAndTrackTitles = function() {
 
     // init track titles
 
-    let trMu_geo = new THREE.TextGeometry('mu', tps);
-    let trMu_material = new THREE.MeshBasicMaterial({ color: TrackECC.colors(1) });
+    const trMu_geo = new THREE.TextGeometry('mu', tps);
+    const trMu_material = new THREE.MeshBasicMaterial({ color: TrackECC.colors(1) });
 
     dmECC.trackTitles()[1] = new THREE.Mesh(trMu_geo, trMu_material);
     dmECC.trackTitles()[1].rotation.y = -1.57;
 
-    let trEl_geo = new THREE.TextGeometry('e', tps);
-    let trEl_material = new THREE.MeshBasicMaterial({ color: TrackECC.colors(3) });
+    const trEl_geo = new THREE.TextGeometry('e', tps);
+    const trEl_material = new THREE.MeshBasicMaterial({ color: TrackECC.colors(3) });
 
     dmECC.trackTitles()[3] = new THREE.Mesh(trEl_geo, trEl_material);
     dmECC.trackTitles()[3].rotation.y = -1.57;
@@ -273,28 +273,28 @@ dmECC.decelerateAnimation = function() {
 
 dmECC.drawTracks = function() {
 
-  let evTracks = demobbed.event().tracksECC();
+  const evTracks = demobbed.event().tracksECC();
 
-  let vertPos = demobbed.event().vertex()[0].pos();
+  const vertPos = demobbed.event().vertex()[0].pos();
 
-  let nbOfTracks = evTracks.length;
+  const nbOfTracks = evTracks.length;
 
   for (let it = 0; it < nbOfTracks; it++) {
 
-    let trPartId = evTracks[it].partId();
+    const trPartId = evTracks[it].partId();
 
-    let trAxy = evTracks[it].Axy();
+    const trAxy = evTracks[it].Axy();
 
-    let trackPartTitle = dmECC.trackTitles()[trPartId];
+    const trackPartTitle = dmECC.trackTitles()[trPartId];
 
-    let trPars = dmECC.trackLinePars()[trPartId];
+    const trPars = dmECC.trackLinePars()[trPartId];
 
-    //let zPlate = evTracks[it].pos()[2] - vertPos[2];
+    //const zPlate = evTracks[it].pos()[2] - vertPos[2];
 
-    let trBeg = [0, 0, 0];
-    let trEnd = [0, 0, 0];
+    const trBeg = [0, 0, 0];
+    const trEnd = [0, 0, 0];
 
-    let trTitlePos = [0, 0, 0];
+    const trTitlePos = [0, 0, 0];
 
     if ( (trPartId == 5) || (trPartId == 7) ) { // back track
 
@@ -320,13 +320,13 @@ dmECC.drawTracks = function() {
 
     }
 
-    let trackLine = new three3DExtras.tubeLine(trBeg, trEnd, trPars.width, trPars.color); 
+    const trackLine = new three3DExtras.tubeLine(trBeg, trEnd, trPars.width, trPars.color); 
 
     dmECC.groupOfTrackLines().add(trackLine.getObject3D());
 
     if (trackPartTitle) {
 
-      let trackTitle = trackPartTitle.clone(); //!!!
+      const trackTitle = trackPartTitle.clone(); //!!!
 
       trackTitle.position.x = trTitlePos[0];
       trackTitle.position.y = trTitlePos[1] + 100;
@@ -345,7 +345,7 @@ dmECC.drawTracks = function() {
 
 dmECC.onEventChange = function() {
 
-  let divECC = document.getElementById("div-ECC");
+  const divECC = document.getElementById("div-ECC");
 
   if (!demobbed.showECC()) {
 
@@ -388,7 +388,7 @@ dmECC.updateCanvas = function() {
 
   dmECC.clearCanvas();
 
-  let rotY = dmECC.groupOfTrackLines().rotation.y;
+  const rotY = dmECC.groupOfTrackLines().rotation.y;
 
   if (rotY >= 0) {
 
@@ -426,14 +426,12 @@ dmECC.drawECC = function(showECC) {
 
 dmECC.drawTrackLegend = function() {
 
-  let canvasLegendECC = document.getElementById("canvas-legend-ECC");
+  const canvasLegendECC = document.getElementById("canvas-legend-ECC");
 
   dmECC.trackLegendContext(canvasLegendECC.getContext("2d"));
 
-  dmECC.trackLegendLineBeg(140);
+  dmECC.trackLegendLineBeg(120);
   dmECC.trackLegendLineEnd(canvasLegendECC.width - 10);
-
-  //console.log("1: " + canvasLegendECC.width);
 
   dmECC.trackLegendContext().font = "16px serif";
 
@@ -444,13 +442,11 @@ dmECC.drawTrackLegend = function() {
   dmECC.trackLegendContext().lineTo(canvasLegendECC.width, 20);
   dmECC.trackLegendContext().stroke();
 
-  dmECC.addLegendEntry("track of a muon:",       38, TrackECC.colors(1));
-  dmECC.addLegendEntry("track of an hadron:",    55, TrackECC.colors(2));
-  dmECC.addLegendEntry("track of an electron:",  72, TrackECC.colors(3));
-  dmECC.addLegendEntry("black track:",           89, TrackECC.colors(4));
-  dmECC.addLegendEntry("back black track:",     106, TrackECC.colors(5));
-  dmECC.addLegendEntry("gray track:",           123, TrackECC.colors(6));
-  dmECC.addLegendEntry("back gray track:",      140, TrackECC.colors(7));
+  dmECC.addLegendEntry("muon:",             38, TrackECC.colors(1));
+  dmECC.addLegendEntry("hadron:",           56, TrackECC.colors(2));
+  dmECC.addLegendEntry("electron:",         74, TrackECC.colors(3));
+  dmECC.addLegendEntry("highly ionizing:",  92, TrackECC.colors(4));
+  dmECC.addLegendEntry("ionizing:",        110, TrackECC.colors(6));
 
 };
 //-----------------------------------------------------------------------------

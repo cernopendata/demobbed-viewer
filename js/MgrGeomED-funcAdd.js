@@ -3,15 +3,15 @@
 
 gmED.genBrickVisPars = function() {
 
-  let nbOfBrickWalls = [DetCfg.nbOfBrickWallsInSM1(), DetCfg.nbOfBrickWallsInSM2()];
+  const nbOfBrickWalls = [DetCfg.nbOfBrickWallsInSM1(), DetCfg.nbOfBrickWallsInSM2()];
 
-  let nbOfBricks = [DetCfg.nbOfBrickColumns(), DetCfg.nbOfBrickRows()];
+  const nbOfBricks = [DetCfg.nbOfBrickColumns(), DetCfg.nbOfBrickRows()];
 
-  let brDimX = DetCfg.brickDims(0);
-  let brDimY = DetCfg.brickDims(1);
-  let brDimZ = DetCfg.brickDims(2);
+  const brDimX = DetCfg.brickDims(0);
+  const brDimY = DetCfg.brickDims(1);
+  const brDimZ = DetCfg.brickDims(2);
 
-  let brVis = [
+  const brVis = [
 
     [[], []],
     [[], []]
@@ -28,11 +28,11 @@ gmED.genBrickVisPars = function() {
   
       for (let iw = 0; iw < nbOfBrickWalls[sm]; iw++) {
 
-        let wn = sm*nbOfBrickWalls[0] + iw;
+        const wn = sm*nbOfBrickWalls[0] + iw;
     
-        let brXmax = gmED.wallsBrick()[wn].xyMax(0);
-        let brYmax = gmED.wallsBrick()[wn].xyMax(1);
-        let brZmin = gmED.wallsBrick()[wn].zMin(0);
+        let   brXmax = gmED.wallsBrick()[wn].xyMax(0);
+        let   brYmax = gmED.wallsBrick()[wn].xyMax(1);
+        const brZmin = gmED.wallsBrick()[wn].zMin(0);
     
         for (let ic = 0; ic < nbOfBricks[ip]; ic++) {
     
@@ -62,9 +62,9 @@ gmED.genBrickVisPars = function() {
 
 gmED.findBrickVertexPars = function() {
 
-  let vPos_10000 = demobbed.event().vertex()[0].pos();
+  const vPos_10000 = demobbed.event().vertex()[0].pos();
 
-  let vPosGlob = demobbed.event().vertex()[0].posGlob();
+  const vPosGlob = demobbed.event().vertex()[0].posGlob();
 
   let brVis = [[], []];
 
@@ -73,9 +73,9 @@ gmED.findBrickVertexPars = function() {
 
   let brZmin = 10000;
 
-  let brXYmax = [-10000, -10000];
+  const brXYmax = [-10000, -10000];
 
-  let Dmax = [0, 0];
+  const Dmax = [0, 0];
 
   let nbOfBricks = 0;
 
@@ -89,7 +89,7 @@ gmED.findBrickVertexPars = function() {
 
     for (let ib = 0; ib < nbOfBricks; ib++) {
 
-      let Dxy = vPosGlob[ip] - brVis[ip][ib].xyMax(ip);
+      const Dxy = vPosGlob[ip] - brVis[ip][ib].xyMax(ip);
 
       if (Dxy < 0) continue; //!!!
 
@@ -138,8 +138,8 @@ gmED.findBrickVertexPars = function() {
 
   // Make the vertex brick dims a bit higher to overcome possible disalignment!
 
-  let mm3 = 0.3; // 3mm
-  let mm6 = 2*mm3; 
+  const mm3 = 0.3;   // 3mm
+  const mm6 = 2*mm3; 
 
   gmED.brickVertex([new BrickVertex(0, brXYmax[0] + mm3, brXYmax[1] + mm3, brZmin - mm3,
                    DetCfg.brickDims(0) + mm6, DetCfg.brickDims(1) + mm6, DetCfg.brickDims(2) + mm6)]);
