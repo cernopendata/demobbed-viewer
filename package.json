@@ -1,6 +1,6 @@
 {
   "name": "demobbed-viewer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This is a demonstrative browser-based event display for open data of the OPERA neutrino oscillation experiment.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
