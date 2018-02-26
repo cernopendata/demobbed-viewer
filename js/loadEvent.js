@@ -22,8 +22,8 @@
 function changeScrLoadEvent(evID) { // It is assumed here that the evID has been already checked!
 
   let scrLoadEvent = document.createElement("script");
-
-  scrLoadEvent.src = "js/nuEventsData/loadEvent" + evID + ".js";
+  var host = window.location.origin;
+  scrLoadEvent.src = host + "/static/node_modules/demobbed-viewer/js/nuEventsData/loadEvent" + evID + ".js";
   scrLoadEvent.innerHTML = null;
   scrLoadEvent.id = "scrLoadEvent";
 
