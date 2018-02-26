@@ -1,5 +1,5 @@
-﻿/*
-    Copyright (c) 2017, Sergey Dmitrievsky
+/*
+    Copyright (c) 2017-2018, Sergey Dmitrievsky
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,7 +19,14 @@ class Demobbed { // Demonstrative browser-based event display
 
   constructor() {
 
-    this._evList     = [];    // Array of OPERA event IDs available for open data access
+    this._version = "2.0";
+
+    this._evSampleId = 0;     // 0 - nu_mu sample (818 events), 1 - nu_tau sample (10 events), 2 - nu_e sample (35 events?)
+
+    this._evListNuMu  = [];   // Array of OPERA nu_mu  event IDs available for open data access
+    this._evListNuTau = [];   // Array of OPERA nu_tau event IDs available for open data access
+    this._evListNuE   = [];   // Array of OPERA nu_e   event IDs available for open data access
+
     this._evIndex    = -1;    // Index of the loaded event in the array (from 0 to evList.length - 1)
     this._evIndexMax = -1;    // Max index of the loaded event in the array (=== evList.length - 1)
     this._event      = {};    // Loaded (displayed) event
@@ -34,9 +41,32 @@ class Demobbed { // Demonstrative browser-based event display
 
   };
 
-  evList(evlist) {
+  version() { return this._version; };
 
-    if (evlist === undefined) return this._evList;
+  evList(evsample, evlist) {
+
+    if (evsample === undefined) evsample = 0;
+    else {
+
+      if (!Utils.checkNumber(evsample)) {
+        alert("Demobbed-def::evList()::Error: evsample is not a number!!!: evsample = " + evsample + "!!!");
+        return;
+      }
+
+      if ( (evsample < 0) || (evsample > 2) ) {
+        alert("Demobbed-def::evList()::Error: evsample is wrong: evsample = " + evsample + "!!!");
+        return;
+      }
+
+    }
+
+    if (evlist === undefined) {
+      switch (evsample) {
+        case 1:  return this._evListNuTau;
+        case 2:  return this._evListNuE;
+        default: return this._evListNuMu;
+      }
+    }
 
     if (!Array.isArray(evlist)) {
       alert("Demobbed-def::evList()::Error: evlist is not an Array!!!");
@@ -48,9 +78,36 @@ class Demobbed { // Demonstrative browser-based event display
       return;
     }
 
-    this._evList = evlist;
+    switch (evsample) {
+    case 1:
+      this._evListNuTau = evlist;
+      break;
+    case 2:
+      this._evListNuE = evlist;
+      break;
+    default: this._evListNuMu = evlist;
+    }
+
     this._evIndex = 0;
     this._evIndexMax = evlist.length - 1;
+
+  };
+
+  evSampleId(evsampleid) {
+
+    if (evsampleid === undefined) return this._evSampleId;
+
+    if (!Utils.checkNumber(evsampleid)) {
+      alert("Demobbed-def::evSampleId()::Error: evsampleid is not a number!!!: evsampleid = " + evsampleid + "!!!");
+      return;
+    }
+
+    if ( (evsampleid < 0) || (evsampleid > 2) ) {
+      alert("Demobbed-def::evSampleId()::Error: evsampleid is wrong: evsampleid = " + evsampleid + "!!!");
+      return;
+    }
+
+    this._evSampleId = evsampleid;
 
   };
 
@@ -61,6 +118,24 @@ class Demobbed { // Demonstrative browser-based event display
     if (!this.checkEvIndex(evindex)) return;
 
     this._evIndex = evindex;
+
+  };
+
+  evIndexMax(evindexmax) {
+
+    if (evindexmax === undefined) return this._evIndexMax;
+
+    if (!Utils.checkNumber(evindexmax)) {
+      alert("Demobbed-def::evIndexMax()::Error: evindexmax is not a number!!!: evindexmax = " + evindexmax + "!!!");
+      return;
+    }
+
+    if ( (evindexmax < 0) || (evindexmax > 817) ) {
+      alert("Demobbed-def::evIndexMax()::Error: evindexmax is wrong: evindexmax = " + evindexmax + "!!!");
+      return;
+    }
+
+    this._evIndexMax = evindexmax;
 
   };
 
@@ -93,7 +168,7 @@ class Demobbed { // Demonstrative browser-based event display
 
     this._evIndex = newIndex;
 
-    let evID = this._evList[newIndex];
+    let evID = this.evList(this.evSampleId())[newIndex];
 
     changeScrLoadEvent(evID); // External function defined in the loadEvent.js file
 

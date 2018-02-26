@@ -1,4 +1,4 @@
-﻿class MgrDrawED { // Manager intended for drawing of Electronic detector (2D) events
+class MgrDrawED { // Manager intended for drawing of Electronic detector (2D) events
 
   constructor() {
 
@@ -44,7 +44,7 @@
                           this._canvEmbOffsets.leftW -
                           this._canvEmbOffsets.rightW;
 
-    this._zoom = 1;  // Initial zoom for the canvases (full detector view)
+    this._zoom = 1;  // Initial zoom for the canvases (the whole detector view)
 
     this._zoomMax = 60;
 
@@ -57,6 +57,8 @@
     this._zoomIsChanged = 1;
 
     this._viewIsChanged = 1;
+
+    this._eventViewMode = 0;  // 0 - default (whole detector) view; 1 - event region view; 2 - vertex brick view
 
     this._sm = 0;             // Needed to draw bricks only in one OPERA super-module (SM)
 
@@ -411,6 +413,24 @@
     }
 
     this._viewIsChanged = vc;
+
+  };
+
+  eventViewMode(vm) {
+
+    if (vm === undefined) return this._eventViewMode;
+
+    if (!Utils.checkNumber(vm)) {
+      alert("MgrDrawED-def::eventViewMode()::Error: vm is not a number!!!: vm = " + vm + "!!!");
+      return;
+    }
+
+    if ( (vm != 0) && (vm != 1) && (vm != 2) ) {
+      alert("MgrDrawED-def::eventViewMode()::Error: vm is strange!!!: vm = " + vm + "!!!");
+      return;
+    }
+
+    this._eventViewMode = vm;
 
   };
 

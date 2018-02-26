@@ -1,4 +1,4 @@
-﻿class MgrGeomED { // Contains parameters of the OPERA ED geometry
+class MgrGeomED { // Contains parameters of the OPERA ED geometry
 
   constructor() {
 
@@ -14,7 +14,7 @@
     this._bricksSM2VisXY = [[], []]; // Array of two arrays of bricks of SM2
                                      // to be displayed in XZ and YZ projections
 
-    this._brickVertex = []; // The array contains only 1 (vertex) brick
+    this._brickVertex = []; // The array contains only 1 (vertex) brick!
 
   };
 

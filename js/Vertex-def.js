@@ -1,4 +1,4 @@
-﻿class Vertex {
+class Vertex {
 
   constructor(pos, posGlob) {
 

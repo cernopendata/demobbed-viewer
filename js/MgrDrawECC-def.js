@@ -1,4 +1,4 @@
-﻿class MgrDrawECC { // Manager intended for drawing of (3D) tracks found in emulsion
+class MgrDrawECC { // Manager intended for drawing of (3D) tracks found in emulsion
 
   constructor() {
 
@@ -11,23 +11,40 @@
     this._renderer      = null;
     this._rendererInset = null;
 
+    this._controls = null;
+
+    this._zoom = 1;
+
+    this._zoomFactor = 1.25;
+
+    this._zoomMin = 0.02;
+    this._zoomMax = 4;
+
     //---
 
-    this._vertexPoint = {};       // three.js sphere
+    this._vertexGeometryCloseView = {};
+    this._vertexGeometryFarView = {};
 
-    this._trackLinePars = [];     // Array of line parameters used for drawing of the ECC tracks
+    this._vertexMaterial = {};
 
-    this._trackTitles = [];       // Array of THREE.Mesh objects with titles of tracks
+    this._groupOfVertexPoints = {}; // three.js group of vertex points
 
-    this._groupOfTrackLines = {}; // three.js group of track lines
+    this._trackLinePars = [];       // Array of line parameters used for drawing of the ECC tracks
 
-    this._groupOfAxes = {};       // three.js group of 3 arrows with titles: "X", "Y", and "Z"
+    this._trackTitles = [];         // Array of THREE.Mesh objects with titles of tracks
+
+    this._groupOfTrackLines = {};   // three.js group of track lines
+
+    this._groupOfAxes = {};         // three.js group of 3 arrows with titles: "X", "Y", and "Z"
 
     this._animationFrameID = 0;
 
-    this._vecOrigin = new THREE.Vector3(0, 0, 0);
+    this._primVertDrawPos = new THREE.Vector3(0, 0, 0); // Position of the primary vertexx
 
     this._trackLegendContext = {}; // Context of a track legend canvas
+
+    this._trackLegendWidth  = 0;
+    this._trackLegendHeight = 0;
 
     this._trackLegendLineBeg = 0;
     this._trackLegendLineEnd = 0;
@@ -112,16 +129,92 @@
 
   };
 
-  vertexPoint(vp) {
+  controls(cont) {
 
-    if (vp === undefined) return this._vertexPoint;
+    if (cont === undefined) return this._controls;
 
-    if (typeof(vp) !== "object") {
-      alert("MgrDrawECC-def::vertexPoint()::Error: vp is not an object!!!: typeof(vp) = " + typeof(vp) + "!!!");
+    if (typeof(cont) !== "object") {
+      alert("MgrDrawECC-def::controls()::Error: cont is not an object!!!: typeof(cont) = " + typeof(cont) + "!!!");
       return;
     }
 
-    this._vertexPoint = vp;
+    this._controls = cont;
+
+  };
+
+  zoom(zz) {
+
+    if (zz === undefined) return this._zoom;
+
+    if (!Utils.checkNumber(zz)) {
+      alert("MgrDrawECC-def::zoom()::Error: zz is not a number!!!: zz = " + zz + "!!!");
+      return;
+    }
+
+    if ( (zz < this._zoomMin) || (zz > this._zoomMax) ) {
+      alert("MgrDrawECC-def::zoom()::Error: zz is strange!!!: zz = " + zz + "!!!");
+      return;
+    }
+
+    this._zoom = zz;
+
+  }; 
+
+  zoomFactor() { return this._zoomFactor; };
+
+  zoomMin() { return this._zoomMin; };
+
+  zoomMax() { return this._zoomMax; };
+
+  vertexGeometryCloseView(vg) {
+
+    if (vg === undefined) return this._vertexGeometryCloseView;
+
+    if (typeof(vg) !== "object") {
+      alert("MgrDrawECC-def::vertexGeometryCloseView()::Error: vg is not an object!!!: typeof(vg) = " + typeof(vg) + "!!!");
+      return;
+    }
+
+    this._vertexGeometryCloseView = vg;
+
+  }
+
+  vertexGeometryFarView(vg) {
+
+    if (vg === undefined) return this._vertexGeometryFarView;
+
+    if (typeof(vg) !== "object") {
+      alert("MgrDrawECC-def::vertexGeometryFarView()::Error: vg is not an object!!!: typeof(vg) = " + typeof(vg) + "!!!");
+      return;
+    }
+
+    this._vertexGeometryFarView = vg;
+
+  }
+
+  vertexMaterial(vm) {
+
+    if (vm === undefined) return this._vertexMaterial;
+
+    if (typeof(vm) !== "object") {
+      alert("MgrDrawECC-def::vertexMaterial()::Error: vm is not an object!!!: typeof(vm) = " + typeof(vm) + "!!!");
+      return;
+    }
+
+    this._vertexMaterial = vm;
+
+  }
+
+  groupOfVertexPoints(group) {
+
+    if (group === undefined) return this._groupOfVertexPoints;
+
+    if (typeof(group) !== "object") {
+      alert("MgrDrawECC-def::groupOfVertexPoints()::Error: group is not an object!!!: typeof(group) = " + typeof(group) + "!!!");
+      return;
+    }
+
+    this._groupOfVertexPoints = group;
 
   };
 
@@ -155,6 +248,18 @@
 
   };
 
+  clearGroupOfVertexPoints() {
+
+    if (!this._groupOfVertexPoints) return;
+
+    let children = this._groupOfVertexPoints.children;
+
+    for (let ic = children.length - 1; ic >= 0; ic--) {
+      this._groupOfVertexPoints.remove(children[ic]);
+    }
+
+  };
+
   clearGroupOfTrackLines() {
 
     if (!this._groupOfTrackLines) return;
@@ -175,7 +280,7 @@
 
   };
 
-  vecOrigin() { return this._vecOrigin; };
+  primVertDrawPos() { return this._primVertDrawPos; };
 
   trackLegendContext(ctx) {
 
@@ -187,6 +292,32 @@
     }
 
     this._trackLegendContext = ctx;
+
+  };
+
+  trackLegendWidth(legWidth) {
+
+    if (legWidth === undefined) return this._trackLegendWidth;
+
+    if (!Utils.checkNumber(legWidth)) {
+      alert("MgrDrawECC-def::trackLegendWidth()::Error: legWidth is not a number: " + legWidth + "!!!");
+      return;
+    }
+
+    this._trackLegendWidth = legWidth;
+
+  };
+
+  trackLegendHeight(legHeight) {
+
+    if (legHeight === undefined) return this._trackLegendHeight;
+
+    if (!Utils.checkNumber(legHeight)) {
+      alert("MgrDrawECC-def::trackLegendHeight()::Error: legHeight is not a number: " + legHeight + "!!!");
+      return;
+    }
+
+    this._trackLegendHeight = legHeight;
 
   };
 

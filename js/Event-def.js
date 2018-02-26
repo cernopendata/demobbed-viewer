@@ -1,4 +1,4 @@
-﻿class Event { // OPERA event object will contain experimental data to be displayed in the main window
+class Event { // OPERA event object will contain experimental data to be displayed in the main window
 
   static checkId(jd) {
 
@@ -7,7 +7,7 @@
       return false;
     }
 
-    if ( (jd < 10120000000) || (jd > 12400000000) ) {
+    if ( (jd < 218000000) || (jd > 12400000000) ) {
       alert("Event-def::checkId()::Error: Event id is wrong: " + jd + "!!!");
       return false;
     }
@@ -23,7 +23,7 @@
       return false;
     }
 
-    if ( (ts < 1267401600000) || (ts > 1356912000000) ) { // from 01 Mar 2010 till 31 Dec 2012
+    if ( (ts < 1204329600000) || (ts > 1356912000000) ) { // from 01 Mar 2008 till 31 Dec 2012
       alert("Event-def::checkTimeStamp()::Error: ts is wrong: " + ts + "!!!");
       return false;
     }
@@ -67,9 +67,7 @@
     this._engVis = 0;         // Visible energy  (in GeV)
     this._engNeu = 0;         // Neutrino energy (in GeV)
 
-    //this._trackMu = [];     // The array contains only one element (TrackMu) in order to use it with the d3.js library
-
-    this._vertex =  [];       // The array contains only one element (Vertex) in order to use it with the d3.js library
+    this._verticesECC = [];   // Array of vertices. [0] - the primary neutrino interaction vertex!
 
     this._tracksECC = [];
 
@@ -178,35 +176,16 @@
 
   };
 
-  //trackMu(mutrack) {
-    //if (mutrack === undefined) return this._trackMu;
-    //if (!Array.isArray(mutrack)) {
-    //  alert("Event-def::trackMu()::Error: mutrack is not an Array!!!");
-    //  return;
-    //}
-    //if (mutrack.length != 1) {
-    //  alert("Event-def::trackMu()::Error: Length of array of mutrack is != 1:" + mutrack.length + "!!!");
-    //  return;
-    //}
-    //
-    //this._trackMu = mutrack;
-  //};
+  verticesECC(vertices) {
 
-  vertex(vert) {
+    if (vertices === undefined) return this._verticesECC;
 
-    if (vert === undefined) return this._vertex;
-
-    if (!Array.isArray(vert)) {
-      alert("Event-def::vertex()::Error: vert is not an Array!!!");
+    if (!Array.isArray(vertices)) {
+      alert("Event-def::verticesECC()::Error: vertices is not an Array!!!");
       return;
     }
 
-    if (vert.length != 1) {
-      alert("Event-def::vertex()::Error: Length of array of vert is != 1:" + vert.length + "!!!");
-      return;
-    }
-
-    this._vertex = vert;
+    this._verticesECC = vertices;
 
   };
 

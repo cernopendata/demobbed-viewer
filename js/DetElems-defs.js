@@ -1,4 +1,4 @@
-﻿class DetGeomElement { // Base class for geometry description of the OPERA detector components
+class DetGeomElement { // Base class for geometry description of the OPERA detector components
 
   static checkID(jd) {
 
