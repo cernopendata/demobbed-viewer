@@ -1,4 +1,4 @@
-﻿class DetCfg { // Parameters of the OPERA detector configuration
+class DetCfg { // Parameters of the OPERA detector configuration
 
   static globDetBounds() {
 
@@ -13,15 +13,9 @@
 
   static brickDims(ip) { // parameters of an OPERA ECC brick
     switch(ip) {
-      case 0:
-        return 12.827; // cm
-        break;
-      case 1:
-        return 10.556; // cm
-        break;
-      case 2:
-        return  8.000; // cm
-        break;
+      case 0: return 12.827; // cm
+      case 1: return 10.556; // cm
+      case 2: return  8.000; // cm
       default:
         alert("DetCfg-def::brickDims()::Error: ip is wrong!!!: ip = " + ip + "!!!");
     }

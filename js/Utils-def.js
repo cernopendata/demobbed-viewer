@@ -1,52 +1,52 @@
-﻿class Utils { // A class with some simple function used by other class methods
+class Utils { // A class with some simple function used by other class methods
 
   static checkNumber(n) {
-  
+
     if ( (typeof(n) !== "number") || isNaN(n) ) {
       alert("Utils-def::checkNumber()::Error: n is not a number: n = " + n + "!!!");
       return false;
     }
-  
+
     return true;
   };
-  
+
   static checkIP(ip, n) {
-  
+
     if (!Utils.checkNumber(ip)) {
       alert("Utils-def::checkIP()::Error: ip is not a number: ip = " + ip + "!!!");
       return false;
     }
-  
+
     if (n === undefined) n = 2; //!!!
     else {
-  
+
       if (!Utils.checkNumber(n)) {
         alert("Utils-def::checkIP()::Error: n is not a number: n = " + n + "!!!");
         return false;
       }
-  
+
       if ( (n != 2) && (n != 3) ) {
         alert("Utils-def::checkIP()::Error: n is strange: n = " + n + "!!!");
         return false;
       }
     }
-  
+
     if ( (ip != 0) && (ip != 1) ) {
-  
+
       if (n != 3) {
         alert("Utils-def::checkIP()::Error: ip is strange: ip = " + ip + "!!!");
         return false;
       }
-  
+
       if (ip != 2) {
         alert("Utils-def::checkIP()::Error: ip is strange: ip = " + ip + "!!!");
         return false;
       }
-  
+
     }
-  
+
     return true;
-   
+
   };
 
   static checkPos(pos, ip) {
@@ -89,8 +89,6 @@
     return true;
 
   };
-
-
 
 };
 //-----------------------------------------------------------------------------

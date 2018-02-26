@@ -5,14 +5,14 @@
 
 dmED.initGraphics = function() {
 
-  dmED.canvasesMain()[0] = d3.select("#canvas-ED-XZ")
+  dmED.canvasesMain()[0] = d3.select("#div-canvas-ED-XZ")
                              .append("svg")
                                .attr("class",  "canvas-bordered")
                                .attr("id",     "canvasMain-ED-XZ")
                                .attr("width",  dmED.canvMainWidth())
                                .attr("height", dmED.canvMainHeight());
 
-  dmED.canvasesMain()[1] = d3.select("#canvas-ED-YZ")
+  dmED.canvasesMain()[1] = d3.select("#div-canvas-ED-YZ")
                              .append("svg")
                                .attr("class",  "canvas-bordered")
                                .attr("id",     "canvasMain-ED-YZ")
@@ -51,7 +51,7 @@ dmED.initGraphics = function() {
 
   gmED.genBrickVisPars();
   gmED.findBrickVertexPars();
-                            
+
   dmED.setInitViewParams();
 
   dmED.initTrackLineProperties();
@@ -90,8 +90,6 @@ dmED.onMouseDown = function() {
 
   let detX = dmED.scalesOfCanvEmb()[0].invert(svgY);
   let detZ = dmED.scalesOfCanvEmb()[2].invert(svgX);
-
-  //console.log("detX = invY = " + detX);
 
   let hit = demobbed.event().hitsTT()[0][0];
 
@@ -198,6 +196,18 @@ dmED.onEventChange = function() {
 
   dmED.updateCanvases();
 
+  switch ( dmED.eventViewMode() ) {
+
+  case 1: // event region mode
+    dmED.zoomToEvent();
+    break;
+
+  case 2: // vertex brick mode
+    dmED.zoomToBrick();
+    break;
+
+  }
+
 };
 //-----------------------------------------------------------------------------
 
@@ -205,7 +215,7 @@ dmED.displayEventInfo = function() {
 
   const evId = demobbed.event().id();
 
-  const inputEvent = document.getElementById("inputEvent");
+  const inputEvent = document.getElementById("input-Event");
 
   inputEvent.value = evId;
 
@@ -226,10 +236,10 @@ dmED.displayEventInfo = function() {
                            demobbed.event().date().toLocaleString("en-US", dateFormatOptions) +
                            " (UTC),";
 
-  $("#canvas-ED-XZ-title").text(titleBeg + " Electronic detectors: TOP VIEW");
-  $("#canvas-ED-YZ-title").text(titleBeg + " Electronic detectors: SIDE VIEW");
+  $("#span-canvas-ED-XZ-title").text(titleBeg + " ED: TOP VIEW");
+  $("#span-canvas-ED-YZ-title").text(titleBeg + " ED: SIDE VIEW");
 
-  $("#canvas-ECC-title").text(titleBeg + " Tracks reconstructed in emulsion");
+  $("#span-canvas-ECC-title").text(titleBeg + " Tracks reconstructed in emulsion");
 
 };
 //-----------------------------------------------------------------------------
@@ -244,11 +254,11 @@ dmED.checkSM = function() {
 
 dmED.zoomIn = function() {
 
-  const newZoom = Math.round(1000*dmED.zoom()*dmED.zoomFactor())/1000;
+  const zoomTest = Math.round(1000*dmED.zoom()*dmED.zoomFactor())/1000;
 
-  if (newZoom > dmED.zoomMax()) return;
+  if (zoomTest > dmED.zoomMax()) return; //!!!
 
-  dmED.zoom(newZoom);
+  dmED.zoom(zoomTest);
 
   dmED.zoomIsChanged(1);
   dmED.viewIsChanged(1);
@@ -283,11 +293,11 @@ dmED.zoomIn = function() {
 
 dmED.zoomOut = function() {
 
-  const newZoom = Math.round(1000*dmED.zoom()/dmED.zoomFactor())/1000;
+  const zoomTest = Math.round(1000*dmED.zoom()/dmED.zoomFactor())/1000;
 
-  if (newZoom < 1) return;
+  if (zoomTest < 1) return; //!!!
 
-  if (newZoom < dmED.zoomFactor()) {
+  if (zoomTest < dmED.zoomFactor()) {
 
     dmED.zoom(1);
 
@@ -300,7 +310,7 @@ dmED.zoomOut = function() {
 
   }
 
-  dmED.zoom(newZoom);
+  dmED.zoom(zoomTest);
 
   dmED.zoomIsChanged(1);
   dmED.viewIsChanged(1);
@@ -351,7 +361,17 @@ dmED.zoomOut = function() {
 };
 //-----------------------------------------------------------------------------
 
+dmED.zoomToDetector = function() {
+
+  dmED.eventViewMode(0);
+
+  demobbed.loadPrevOrNextEvent(0);
+};
+//-----------------------------------------------------------------------------
+
 dmED.zoomToBrick = function() {
+
+  dmED.eventViewMode(2);
 
   const xyzmin = [];
   const xyzmax = [];
@@ -373,7 +393,9 @@ dmED.zoomToBrick = function() {
 
 dmED.zoomToEvent = function() {
 
-  if (!dmED.findEventBounds()) return;
+  dmED.eventViewMode(1);
+
+  if ( !dmED.findEventBounds() ) return; //!!!
 
   const DDxyz = [];
 
@@ -414,10 +436,10 @@ dmED.zoomToEvent = function() {
     for (let ip = 0; ip < 2; ip++) {
 
       const dxy = (DDxyNew - DDxyz[0])/2;
-  
+
       xyzmin[ip] = dmED.currEventBounds().xyzMin1[ip] - dxy;
       xyzmax[ip] = dmED.currEventBounds().xyzMax1[ip] + dxy;
-  
+
     }
 
   }
@@ -439,11 +461,17 @@ dmED.zoomToEvent = function() {
 
   }
 
+  let nbOfBadBounds = 0;
+
   for (let ip = 0; ip < 3; ip++) {
+
+    nbOfBadBounds = 0;
 
     let xyzShift = xyzmin[ip] - DetCfg.globDetBounds().xyzMin[ip];
 
     if (xyzShift < -0.1) {
+
+      nbOfBadBounds++;
 
       xyzmin[ip] -= xyzShift;
       xyzmax[ip] -= xyzShift;
@@ -454,8 +482,36 @@ dmED.zoomToEvent = function() {
 
     if (xyzShift < -0.1) {
 
+      nbOfBadBounds++;
+
+      if (nbOfBadBounds > 1) break; //!!!
+
       xyzmin[ip] += xyzShift;
       xyzmax[ip] += xyzShift;
+
+    }
+
+    if (nbOfBadBounds) {
+
+      xyzShift = xyzmin[ip] - DetCfg.globDetBounds().xyzMin[ip];
+
+      if (xyzShift < -0.1) {
+
+        nbOfBadBounds++;
+
+        break; //!!!
+      }
+
+    }
+
+  }
+
+  if (nbOfBadBounds > 1) {
+
+    for (let ip = 0; ip < 3; ip++) {
+
+      xyzmin[ip] = DetCfg.globDetBounds().xyzMin[ip];
+      xyzmax[ip] = DetCfg.globDetBounds().xyzMax[ip];
 
     }
 
@@ -477,12 +533,12 @@ dmED.setNewCurrViewBounds = function(xyzmin, xyzmax) {
 
   dmED.checkSM();
 
-  const newZoom = (DetCfg.globDetBounds().xyzMax[2] -
-                   DetCfg.globDetBounds().xyzMin[2])/(xyzmax[2] - xyzmin[2]);
+  const zoomTest = (DetCfg.globDetBounds().xyzMax[2] -
+                    DetCfg.globDetBounds().xyzMin[2])/(xyzmax[2] - xyzmin[2]);
 
-  if (newZoom < 1) alert("MgrDrawED-funcAdd.js::dmED.zoomToEvent()::Error: newZoom: " + newZoom + "!!!");
+  if (zoomTest < 1) alert("MgrDrawED-funcAdd.js::dmED.setNewCurrViewBounds()::Error: zoomTest: " + zoomTest + "!!!");
 
-  dmED.zoom(newZoom);
+  dmED.zoom(zoomTest);
 
   dmED.zoomIsChanged(1);
   dmED.viewIsChanged(1);
@@ -624,11 +680,11 @@ dmED.moveView = function(ip, dirLRUD) {
   // dirLRUD =  1 for moving to right or up
   // dirLRUD = -1 for moving to left or down
 
-  // E.g.: Move the XZ camera up   (detector - down) if ip=0 and dirLRUD=1
-  // E.g.: Move both XZ and YZ cameras left (detector - right) if ip=2 and dirLRUD=-1
+  // E.g.: Move the XZ camera up (detector - down) if ip==0 and dirLRUD==1
+  // E.g.: Move both XZ and YZ cameras left (detector - right) if ip==2 and dirLRUD==-1
 
   if (!Utils.checkIP(ip, 3)) {
-    alert("MgrDrawED-funcAdd.js::dmED.onMoveVert()::Error: ip is strange!!!: ip = " + ip + "!!!");
+    alert("MgrDrawED-funcAdd.js::dmED.moveView()::Error: ip is strange!!!: ip = " + ip + "!!!");
     return;
   }
 
@@ -1134,7 +1190,7 @@ dmED.drawNeuVertex = function(ip) {
 
   const NeuVertexCircle = d3.select("#" + dmED.groupNeuVertexIDs(ip))
                             .selectAll('circle')
-                            .data(demobbed.event().vertex());
+                            .data(demobbed.event().verticesECC());
 
   NeuVertexCircle
     .enter()
@@ -1158,7 +1214,7 @@ dmED.drawPartTracks = function(ip) {
                             .selectAll('line')
                             .data(demobbed.event().tracksECC());
 
-  const vertPosGlob = demobbed.event().vertex()[0].posGlob();
+  const vertPosGlob = demobbed.event().verticesECC()[0].posGlob();
 
   PartTracksLines
     .enter()

@@ -1,4 +1,4 @@
-﻿//gmED == demobbed.mgrGeomED() !!!
+//gmED == demobbed.mgrGeomED() !!!
 //---------------------------------
 
 gmED.genBrickVisPars = function() {
@@ -62,9 +62,9 @@ gmED.genBrickVisPars = function() {
 
 gmED.findBrickVertexPars = function() {
 
-  const vPos_10000 = demobbed.event().vertex()[0].pos();
+  const vPos_10000 = demobbed.event().verticesECC()[0].pos().slice(); //!!!
 
-  const vPosGlob = demobbed.event().vertex()[0].posGlob();
+  const vPosGlob = demobbed.event().verticesECC()[0].posGlob();
 
   let brVis = [[], []];
 
@@ -133,8 +133,6 @@ gmED.findBrickVertexPars = function() {
   }
 
   if (brZmin > 1000) brZmin = brVis[0][nbOfBricks - 1].zMin();
-
-  //gmED.brickVertex([new BrickVertex(0, brXYmax[0], brXYmax[1], brZmin, DetCfg.brickDims(0), DetCfg.brickDims(1), DetCfg.brickDims(2))]);
 
   // Make the vertex brick dims a bit higher to overcome possible disalignment!
 

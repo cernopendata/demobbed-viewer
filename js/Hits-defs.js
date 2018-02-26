@@ -1,4 +1,4 @@
-﻿// Definitions of classes Hit, HitTT, HitRPC, and HitDT for hits of electronic detectors (ED)
+// Definitions of classes Hit, HitTT, HitRPC, and HitDT for hits of electronic detectors (ED)
 
 class Hit { // base class for ED hits
 
@@ -88,7 +88,7 @@ class HitTT extends Hit { // Hit of the Target Tracker (TT) detector
       return false;
     }
 
-    if ( (ampl < 0) || (ampl > 1500) ) {
+    if ( (ampl < 0) || (ampl > 2000) ) {
       alert("Hits-defs.js::HitTT::checkAmpl()::Error: ampl = " + ampl + "!!!");
       return false;
     }
@@ -187,4 +187,3 @@ class HitDT extends Hit { // Hit of the HPT (drift tubes) detector
 
 };
 //--------------------------------------------------------------------------
-

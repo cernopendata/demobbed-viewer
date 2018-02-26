@@ -1,4 +1,4 @@
-﻿//gmED == demobbed.mgrGeomED() !!!
+//gmED == demobbed.mgrGeomED() !!!
 //---------------------------------
 
 gmED.wallsTT([

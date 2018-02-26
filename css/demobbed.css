@@ -1,14 +1,10 @@
-#titlebar {
+.titlebar {
   text-align: center;
   color: white;
   background-color: black;
 }
 
-#controls-ED-XZ {
-  vertical-align: bottom;
-}
-
-#controls-ED-YZ {
+#td-display-panel-ECC {
   vertical-align: top;
 }
 
@@ -38,12 +34,17 @@
 #canvas-legend-ECC {
   position: absolute;
   left: 575px;
-  bottom: 195px;
+  bottom: 145px;
   z-index: 1001;
   background-color: #FAFAFA;
 }
 
-#canvas-ECC-title {
-  left: 45px;
+#span-canvas-ECC-title {
+  //left: 10px;
   top:  -2px;
+}
+
+#div-help-body {
+  //width:  50%;
+  height: 900px;
 }
