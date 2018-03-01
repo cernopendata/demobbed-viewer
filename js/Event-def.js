@@ -71,6 +71,9 @@ class Event { // OPERA event object will contain experimental data to be display
 
     this._tracksECC = [];
 
+    this._tracksECCforED = []; // several ECC tracks to be drawn schematically in the ED display (for the tau sample!)
+    // WARNING! Coordinates of pos1 and pos2 for these tracks are in CENTIMETERS, but not in MICROMETERS!!!
+
   };
 
   id(jd) {
@@ -199,6 +202,19 @@ class Event { // OPERA event object will contain experimental data to be display
     }
 
     this._tracksECC = tracks;
+
+  };
+
+  tracksECCforED(tracks) {
+
+    if (tracks === undefined) return this._tracksECCforED;
+
+    if (!Array.isArray(tracks)) {
+      alert("Event-def::tracksECCforED()::Error: tracks is not an Array!!!");
+      return;
+    }
+
+    this._tracksECCforED = tracks;
 
   };
 

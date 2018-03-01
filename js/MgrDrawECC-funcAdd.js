@@ -97,8 +97,8 @@ dmECC.initControls = function() {
 
 dmECC.initVertexProperties = function() {
 
-  dmECC.vertexGeometryCloseView( new THREE.SphereGeometry(30, 32, 32) );
-  dmECC.vertexGeometryFarView( new THREE.SphereGeometry(70, 32, 32) );
+  dmECC.vertexGeometryCloseView( new THREE.SphereGeometry(20, 32, 32) );
+  dmECC.vertexGeometryFarView( new THREE.SphereGeometry(60, 32, 32) );
 
   dmECC.vertexMaterial( new THREE.MeshBasicMaterial({ color: Vertex.color() }) );
 
@@ -115,11 +115,13 @@ dmECC.initGroupOfAxesAndTrackTitles = function() {
 
   const primVertDrawPos = dmECC.primVertDrawPos();
 
+  const zoomCoeffY = dmECC.zoomCoeffY();
+
   const rx = new three3DExtras.tubeLine([primVertDrawPos.x, primVertDrawPos.y, primVertDrawPos.z],
                                         [primVertDrawPos.x + 1000, primVertDrawPos.y, primVertDrawPos.z], 8, colorX);
 
   const gy = new three3DExtras.tubeLine([primVertDrawPos.x, primVertDrawPos.y, primVertDrawPos.z],
-                                        [primVertDrawPos.x, primVertDrawPos.y + 1000, primVertDrawPos.z], 8, colorY);
+                                        [primVertDrawPos.x, primVertDrawPos.y + 1000*zoomCoeffY, primVertDrawPos.z], 8, colorY);
 
   const bz = new three3DExtras.tubeLine([primVertDrawPos.x, primVertDrawPos.y, primVertDrawPos.z],
                                         [primVertDrawPos.x, primVertDrawPos.y, primVertDrawPos.z + 1000], 8, colorZ);
@@ -292,7 +294,7 @@ dmECC.initTrackLineProperties = function() {
 
   };
 
-  dmECC.trackLinePars()[13] = { // for e+/e- tracks in tau-candidate events
+  dmECC.trackLinePars()[13] = { // for an hadron track in tau-candidate events
 
     color:  TrackECC.colors(13),
     length: 10*DetCfg.plateToPlateDistECC(),
@@ -300,7 +302,7 @@ dmECC.initTrackLineProperties = function() {
 
   };
 
-  dmECC.trackLinePars()[14] = { // for e+/e- tracks in tau-candidate events
+  dmECC.trackLinePars()[14] = { // for an hadron track in tau-candidate events
 
     color:  TrackECC.colors(14),
     length: 10*DetCfg.plateToPlateDistECC(),
@@ -311,6 +313,22 @@ dmECC.initTrackLineProperties = function() {
   dmECC.trackLinePars()[15] = { // for an hadron track in tau-candidate events
 
     color:  TrackECC.colors(15),
+    length: 10*DetCfg.plateToPlateDistECC(),
+    width:  12
+
+  };
+
+  dmECC.trackLinePars()[16] = { // for e+/e- tracks in tau-candidate events
+
+    color:  TrackECC.colors(16),
+    length: 10*DetCfg.plateToPlateDistECC(),
+    width:  12
+
+  };
+
+  dmECC.trackLinePars()[17] = { // for e+/e- tracks in tau-candidate events
+
+    color:  TrackECC.colors(17),
     length: 10*DetCfg.plateToPlateDistECC(),
     width:  12
 
@@ -450,14 +468,16 @@ dmECC.moveView = function(ip, dirLRUD) {
 
   const primVertDrawPos = dmECC.primVertDrawPos();
 
-  if (ip == 2)
+  if (ip == 2) {
     dmECC.camera().position.set(primVertDrawPos.x - 2000,
                                 dmECC.camera().position.y,
                                 dmECC.camera().position.z + dirLRUD*z1*1000);
-  else
+  }
+  else {
     dmECC.camera().position.set(primVertDrawPos.x - 2000,
                                 dmECC.camera().position.y + dirLRUD*z1*1000,
                                 dmECC.camera().position.z);
+  }
 
   dmECC.updateCanvas(0);
 
@@ -471,6 +491,8 @@ dmECC.drawVertices = function() {
   const primVertRealPos = evVertices[0].pos();
 
   const primVertDrawPos = dmECC.primVertDrawPos();
+
+  const zoomCoeffY = dmECC.zoomCoeffY();
 
   const nbOfVertices = evVertices.length;
 
@@ -487,7 +509,7 @@ dmECC.drawVertices = function() {
       const vertRealPos = evVertices[iv].pos();
 
       vertexPoint.position.x = primVertDrawPos.x + vertRealPos[0] - primVertRealPos[0];
-      vertexPoint.position.y = primVertDrawPos.y + vertRealPos[1] - primVertRealPos[1];
+      vertexPoint.position.y = primVertDrawPos.y + zoomCoeffY*(vertRealPos[1] - primVertRealPos[1]);
       vertexPoint.position.z = primVertDrawPos.z + vertRealPos[2] - primVertRealPos[2];
 
     }
@@ -511,6 +533,7 @@ dmECC.drawVertices = function() {
 dmECC.drawTracks = function() {
 
   //if (demobbed.evSampleId()) dmECC.drawTracksWithPosAndSlopes();
+
   if (demobbed.evSampleId()) dmECC.drawTracksWithPos1AndPos2();
   else dmECC.drawTracksFromVertex();
 
@@ -522,6 +545,8 @@ dmECC.drawTracks = function() {
 dmECC.drawTracksFromVertex = function() {
 
   const primVertDrawPos = dmECC.primVertDrawPos();
+
+  const zoomCoeffY = dmECC.zoomCoeffY();
 
   const evTracks = demobbed.event().tracksECC();
 
@@ -557,29 +582,30 @@ dmECC.drawTracksFromVertex = function() {
 
     }
 
-    for (let ip = 0; ip < 2; ip++) {
+    const trAyCoeffY = trAxy[1]*zoomCoeffY;
 
-      trBeg[ip] = trBeg[2]*trAxy[ip];
-      trEnd[ip] = trEnd[2]*trAxy[ip];
+    trBeg[0] = trBeg[2]*trAxy[0];
+    trEnd[0] = trEnd[2]*trAxy[0];
 
-      if (trackPartTitle) trTitlePos[ip] = trTitlePos[2]*trAxy[ip];
+    trBeg[1] = trBeg[2]*trAyCoeffY;
+    trEnd[1] = trEnd[2]*trAyCoeffY;
 
-    }
+    if (trackPartTitle) {
 
-    for (let ip = 0; ip < 3; ip++) {
-
-      const xyz = primVertDrawPos.getComponent(ip);
-
-      trBeg[ip] += xyz;
-      trEnd[ip] += xyz;
-
-      if (trackPartTitle) trTitlePos[ip] += xyz;
+      trTitlePos[0] = trTitlePos[2]*trAxy[0];
+      trTitlePos[1] = trTitlePos[2]*trAyCoeffY;
 
     }
 
-    const trLineWidth = (dmECC.zoom() > 0.7) ?
-                        trPars.width :
-                        trPars.width/dmECC.zoom();
+    // This cycle must be uncommented in case the primary vertex draw position is not (0, 0, 0)!!!
+    //for (let ip = 0; ip < 3; ip++) {
+    //  const xyz = primVertDrawPos.getComponent(ip);
+    //  trBeg[ip] += xyz;
+    //  trEnd[ip] += xyz;
+    //  if (trackPartTitle) trTitlePos[ip] += xyz;
+    //}
+
+    const trLineWidth = trPars.width/dmECC.zoom();
 
     const trackLine = new three3DExtras.tubeLine(trBeg, trEnd,
                                                  trLineWidth,
@@ -606,9 +632,11 @@ dmECC.drawTracksFromVertex = function() {
 
 dmECC.drawTracksWithPosAndSlopes = function() {
 
-  const vertRealPos = demobbed.event().verticesECC()[0].pos();
+  const primVertRealPos = demobbed.event().verticesECC()[0].pos();
 
   const primVertDrawPos = dmECC.primVertDrawPos();
+
+  const zoomCoeffY = dmECC.zoomCoeffY();
 
   const evTracks = demobbed.event().tracksECC();
 
@@ -623,19 +651,29 @@ dmECC.drawTracksWithPosAndSlopes = function() {
 
     const trBeg = [0, 0, 0];
 
-    for (let ip = 0; ip < 3; ip++)
-      trBeg[ip] = primVertDrawPos.getComponent(ip) + iTrack.pos1()[ip] - vertRealPos[ip];
+    for (let ip = 0; ip < 3; ip++) {
+
+      if (ip == 1)
+        trBeg[ip] = primVertDrawPos.getComponent(ip) + zoomCoeffY*(iTrack.pos1()[ip] - primVertRealPos[ip]);
+      else
+        trBeg[ip] = primVertDrawPos.getComponent(ip) + iTrack.pos1()[ip] - primVertRealPos[ip];
+
+    }
 
     const trEnd = [0, 0, trBeg[2] + trZlength];
 
-    for (let ip = 0; ip < 2; ip++)
-      trEnd[ip] = trBeg[ip] + trZlength*iTrack.Axy()[ip];
+    for (let ip = 0; ip < 2; ip++) {
+
+      if (ip == 1)
+        trEnd[ip] = trBeg[ip] + zoomCoeffY*trZlength*iTrack.Axy()[ip];
+      else
+        trEnd[ip] = trBeg[ip] + trZlength*iTrack.Axy()[ip];
+
+    }
 
     const trPars = dmECC.trackLinePars()[iTrack.partId()];
 
-    const trLineWidth = (dmECC.zoom() > 0.7) ?
-                        trPars.width :
-                        trPars.width/dmECC.zoom();
+    const trLineWidth = trPars.width/dmECC.zoom();
 
     const trackLine = new three3DExtras.tubeLine(trBeg, trEnd,
                                                  trLineWidth,
@@ -650,9 +688,11 @@ dmECC.drawTracksWithPosAndSlopes = function() {
 
 dmECC.drawTracksWithPos1AndPos2 = function() {
 
-  const vertRealPos = demobbed.event().verticesECC()[0].pos();
+  const primVertRealPos = demobbed.event().verticesECC()[0].pos();
 
   const primVertDrawPos = dmECC.primVertDrawPos();
+
+  const zoomCoeffY = dmECC.zoomCoeffY();
 
   const evTracks = demobbed.event().tracksECC();
 
@@ -669,16 +709,20 @@ dmECC.drawTracksWithPos1AndPos2 = function() {
 
       const xyz = primVertDrawPos.getComponent(ip);
 
-      trPos1[ip] = xyz + iTrack.pos1()[ip] - vertRealPos[ip];
-      trPos2[ip] = xyz + iTrack.pos2()[ip] - vertRealPos[ip];
+      if (ip == 1) {
+        trPos1[ip] = xyz + zoomCoeffY*(iTrack.pos1()[ip] - primVertRealPos[ip]);
+        trPos2[ip] = xyz + zoomCoeffY*(iTrack.pos2()[ip] - primVertRealPos[ip]);
+      }
+      else {
+        trPos1[ip] = xyz + iTrack.pos1()[ip] - primVertRealPos[ip];
+        trPos2[ip] = xyz + iTrack.pos2()[ip] - primVertRealPos[ip];
+      }
 
     }
 
     const trPars = dmECC.trackLinePars()[iTrack.partId()];
 
-    const trLineWidth = (dmECC.zoom() > 0.7) ?
-                        trPars.width :
-                        trPars.width/dmECC.zoom();
+    const trLineWidth = trPars.width/dmECC.zoom();
 
     const trackLine = new three3DExtras.tubeLine(trPos1, trPos2, trLineWidth, trPars.color); 
 
@@ -771,7 +815,7 @@ dmECC.drawECC = function(showECC) {
 
   demobbed.showECC(showECC);
 
-  dmECC.onEventChange();  
+  dmECC.onEventChange();
 
 };
 //------------------------------------------------------------------------------
@@ -814,10 +858,10 @@ dmECC.drawTrackLegend = function() {
 
       dmECC.addLegendEntry("tau lepton:",       38, TrackECC.colors(8));
       dmECC.addLegendEntry("hadron:",           56, TrackECC.colors(9));
-      dmECC.addLegendEntry("hadron:",           74, TrackECC.colors(4));
-      dmECC.addLegendEntry("hadron:",           92, TrackECC.colors(6));
+      dmECC.addLegendEntry("hadron:",           74, TrackECC.colors(14));
+      dmECC.addLegendEntry("hadron:",           92, TrackECC.colors(15));
       dmECC.addLegendEntry("hadron:",          110, TrackECC.colors(10));
-      dmECC.addLegendEntry("hadron:",          128, TrackECC.colors(15));
+      dmECC.addLegendEntry("hadron:",          128, TrackECC.colors(13));
 
       break;
 
@@ -826,13 +870,13 @@ dmECC.drawTrackLegend = function() {
       dmECC.addLegendEntry("tau lepton:",       38, TrackECC.colors(8));
       dmECC.addLegendEntry("pion:",             56, TrackECC.colors(9));
       dmECC.addLegendEntry("hadron:",           74, TrackECC.colors(10));
-      dmECC.addLegendEntry("proton:",           92, TrackECC.colors(4));
+      dmECC.addLegendEntry("proton:",           92, TrackECC.colors(14));
       dmECC.addLegendEntry("hadron:",          110, TrackECC.colors(11));
       dmECC.addLegendEntry("hadron:",          128, TrackECC.colors(12));
-      dmECC.addLegendEntry("pion:",            146, TrackECC.colors(6));
-      dmECC.addLegendEntry("hadron:",          164, TrackECC.colors(15));
-      dmECC.addLegendEntry("e+/e- (gamma1):",  182, TrackECC.colors(13));
-      dmECC.addLegendEntry("e+/e- (gamma2):",  200, TrackECC.colors(14));
+      dmECC.addLegendEntry("pion:",            146, TrackECC.colors(15));
+      dmECC.addLegendEntry("hadron:",          164, TrackECC.colors(13));
+      dmECC.addLegendEntry("e+/e- (gamma1):",  182, TrackECC.colors(17));
+      dmECC.addLegendEntry("e+/e- (gamma2):",  200, TrackECC.colors(16));
 
       break;
 
@@ -840,14 +884,14 @@ dmECC.drawTrackLegend = function() {
 
       dmECC.addLegendEntry("tau lepton:",       38, TrackECC.colors(8));
       dmECC.addLegendEntry("hadron:",           56, TrackECC.colors(9));
-      dmECC.addLegendEntry("hadron:",           74, TrackECC.colors(6));
-      dmECC.addLegendEntry("hadron:",           92, TrackECC.colors(4));
-      dmECC.addLegendEntry("hadron:",          110, TrackECC.colors(13));
+      dmECC.addLegendEntry("hadron:",           74, TrackECC.colors(15));
+      dmECC.addLegendEntry("hadron:",           92, TrackECC.colors(14));
+      dmECC.addLegendEntry("hadron:",          110, TrackECC.colors(17));
       dmECC.addLegendEntry("hadron:",          128, TrackECC.colors(11));
       dmECC.addLegendEntry("hadron:",          146, TrackECC.colors(10));
       dmECC.addLegendEntry("hadron:",          164, TrackECC.colors(12));
-      dmECC.addLegendEntry("hadron:",          182, TrackECC.colors(14));
-      dmECC.addLegendEntry("proton:",          200, TrackECC.colors(15));
+      dmECC.addLegendEntry("hadron:",          182, TrackECC.colors(16));
+      dmECC.addLegendEntry("proton:",          200, TrackECC.colors(13));
 
       break;
 
@@ -856,7 +900,7 @@ dmECC.drawTrackLegend = function() {
       dmECC.addLegendEntry("tau lepton:",       38, TrackECC.colors(8));
       dmECC.addLegendEntry("hadron:",           56, TrackECC.colors(10));
       dmECC.addLegendEntry("hadron:",           74, TrackECC.colors(1));
-      dmECC.addLegendEntry("hadron:",           92, TrackECC.colors(14));
+      dmECC.addLegendEntry("hadron:",           92, TrackECC.colors(16));
       dmECC.addLegendEntry("hadron:",          110, TrackECC.colors(11));
       dmECC.addLegendEntry("hadron:",          128, TrackECC.colors(12));
       dmECC.addLegendEntry("hadron:",          146, TrackECC.colors(9));
@@ -867,11 +911,12 @@ dmECC.drawTrackLegend = function() {
 
       dmECC.addLegendEntry("tau lepton:",       38, TrackECC.colors(8));
       dmECC.addLegendEntry("hadron:",           56, TrackECC.colors(9));
-      dmECC.addLegendEntry("hadron:",           74, TrackECC.colors(4));
-      dmECC.addLegendEntry("hadron:",           92, TrackECC.colors(12));
-      dmECC.addLegendEntry("hadron:",          110, TrackECC.colors(10));
-      dmECC.addLegendEntry("hadron:",          128, TrackECC.colors(11));
-      dmECC.addLegendEntry("e+/e- (gamma):",   146, TrackECC.colors(14));
+      dmECC.addLegendEntry("hadron:",           74, TrackECC.colors(14));
+      dmECC.addLegendEntry("hadron:",           92, TrackECC.colors(15));
+      dmECC.addLegendEntry("hadron:",          110, TrackECC.colors(12));
+      dmECC.addLegendEntry("hadron:",          128, TrackECC.colors(10));
+      dmECC.addLegendEntry("hadron:",          146, TrackECC.colors(11));
+      dmECC.addLegendEntry("e+/e- (gamma):",   164, TrackECC.colors(16));
 
       break;
 
@@ -882,7 +927,19 @@ dmECC.drawTrackLegend = function() {
       dmECC.addLegendEntry("hadron:",           74, TrackECC.colors(11));
       dmECC.addLegendEntry("hadron:",           92, TrackECC.colors(12));
       dmECC.addLegendEntry("hadron:",          110, TrackECC.colors(10));
-      dmECC.addLegendEntry("hadron:",          128, TrackECC.colors(4));
+      dmECC.addLegendEntry("hadron:",          128, TrackECC.colors(14));
+
+      break;
+
+    case 11213015702:
+
+      dmECC.addLegendEntry("tau lepton:",       38, TrackECC.colors(8));
+      dmECC.addLegendEntry("hadron:",           56, TrackECC.colors(9));
+      dmECC.addLegendEntry("proton:",           74, TrackECC.colors(12));
+      dmECC.addLegendEntry("hadron:",           92, TrackECC.colors(14));
+      dmECC.addLegendEntry("hadron:",          110, TrackECC.colors(15));
+      dmECC.addLegendEntry("hadron:",          128, TrackECC.colors(11));
+      dmECC.addLegendEntry("hadron:",          146, TrackECC.colors(10));
 
       break;
 
@@ -891,7 +948,15 @@ dmECC.drawTrackLegend = function() {
       dmECC.addLegendEntry("tau lepton:",       38, TrackECC.colors(8));
       dmECC.addLegendEntry("muon:",             56, TrackECC.colors(1));
       dmECC.addLegendEntry("hadron:",           74, TrackECC.colors(10));
-      dmECC.addLegendEntry("e+/e- (gamma):",    92, TrackECC.colors(14));
+      dmECC.addLegendEntry("e+/e- (gamma):",    92, TrackECC.colors(16));
+
+      break;
+
+    case 12227007334:
+
+      dmECC.addLegendEntry("tau lepton:",       38, TrackECC.colors(8));
+      dmECC.addLegendEntry("hadron:",           56, TrackECC.colors(9));
+      dmECC.addLegendEntry("hadron:",           74, TrackECC.colors(10));
 
       break;
 
@@ -899,11 +964,11 @@ dmECC.drawTrackLegend = function() {
 
       dmECC.addLegendEntry("tau lepton:",       38, TrackECC.colors(8));
       dmECC.addLegendEntry("hadron:",           56, TrackECC.colors(9));
-      dmECC.addLegendEntry("proton:",           74, TrackECC.colors(4));
+      dmECC.addLegendEntry("proton:",           74, TrackECC.colors(14));
       dmECC.addLegendEntry("hadron:",           92, TrackECC.colors(10));
       dmECC.addLegendEntry("hadron:",          110, TrackECC.colors(11));
-      dmECC.addLegendEntry("e+/e- (gamma1):",  128, TrackECC.colors(13));
-      dmECC.addLegendEntry("e+/e- (gamma2):",  146, TrackECC.colors(14));
+      dmECC.addLegendEntry("e+/e- (gamma1):",  128, TrackECC.colors(17));
+      dmECC.addLegendEntry("e+/e- (gamma2):",  146, TrackECC.colors(16));
 
       break;
 
