@@ -15,6 +15,10 @@ class MgrDrawECC { // Manager intended for drawing of (3D) tracks found in emuls
 
     this._zoom = 1;
 
+    this._zoomCoeffY = 1; // Additional scale factor for Y axis (to make the events more beutiful, if possible).
+                          // The code of drawing functions (e.g., for axes drawing) must be properly
+                          // modified in case change of this coefficient is needed!!!
+
     this._zoomFactor = 1.25;
 
     this._zoomMin = 0.02;
@@ -39,7 +43,9 @@ class MgrDrawECC { // Manager intended for drawing of (3D) tracks found in emuls
 
     this._animationFrameID = 0;
 
-    this._primVertDrawPos = new THREE.Vector3(0, 0, 0); // Position of the primary vertexx
+    this._primVertDrawPos = new THREE.Vector3(0, 0, 0); // Position of the primary vertex.
+                                                        // The code of drawing functions should be properly
+                                                        // modified in case change of this position is needed!!!
 
     this._trackLegendContext = {}; // Context of a track legend canvas
 
@@ -158,7 +164,25 @@ class MgrDrawECC { // Manager intended for drawing of (3D) tracks found in emuls
 
     this._zoom = zz;
 
-  }; 
+  };
+
+  zoomCoeffY(zcy) {
+
+    if (zcy === undefined) return this._zoomCoeffY;
+
+    if (!Utils.checkNumber(zcy)) {
+      alert("MgrDrawECC-def::zoomCoeffY()::Error: zcy is not a number!!!: zcy = " + zcy + "!!!");
+      return;
+    }
+
+    //if ( (zcy < this._zoomCoeffYMin) || (zcy > this._zoomCoeffYMax) ) {
+      //alert("MgrDrawECC-def::zoomCoeffY()::Error: zcy is strange!!!: zcy = " + zcy + "!!!");
+      //return;
+    //}
+
+    this._zoomCoeffY = zcy;
+
+  };
 
   zoomFactor() { return this._zoomFactor; };
 
@@ -177,7 +201,7 @@ class MgrDrawECC { // Manager intended for drawing of (3D) tracks found in emuls
 
     this._vertexGeometryCloseView = vg;
 
-  }
+  };
 
   vertexGeometryFarView(vg) {
 
@@ -190,7 +214,7 @@ class MgrDrawECC { // Manager intended for drawing of (3D) tracks found in emuls
 
     this._vertexGeometryFarView = vg;
 
-  }
+  };
 
   vertexMaterial(vm) {
 
@@ -203,7 +227,7 @@ class MgrDrawECC { // Manager intended for drawing of (3D) tracks found in emuls
 
     this._vertexMaterial = vm;
 
-  }
+  };
 
   groupOfVertexPoints(group) {
 
