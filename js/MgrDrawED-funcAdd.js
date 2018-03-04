@@ -112,16 +112,16 @@ dmED.createDrawGroupsAndTitles = function() {
                          .attr("transform",
                                "translate(" + (dmED.canvMainWidth() - 50) + ", " +
                                               (dmED.canvMainHeight() - 2) + ")")
-  
+
                          .text("Z (cm)");
-  
+
     dmED.canvasesMain(ip).append("text")
                          .style("text-anchor", "middle")
                          .attr("transform", "rotate(-90)")
                          .attr("x", -50)
                          .attr("y", dmED.axesOffsets().leftW/3)
                          .text(dmED.axesTitles(ip));
-  
+
     dmED.canvasesEmb(ip).append("g")
                         .attr("id", dmED.groupTTWallsIDs(ip));
 
@@ -217,12 +217,15 @@ dmED.displayEventInfo = function() {
   const inputEventED  = document.getElementById("input-event-ED");
   const inputEventECC = document.getElementById("input-event-ECC");
 
-  inputEventED.value  = evId;
-  inputEventECC.value = evId;
+  //inputEventED.value  = evId;
+  //inputEventECC.value = evId;
 
+  inputEventED.value = inputEventECC.value = evId;
+
+  const selectSampleED  = document.getElementById("select-eventSample-ED");
   const selectSampleECC = document.getElementById("select-eventSample-ECC");
 
-  selectSampleECC.value = ( demobbed.evSampleId() ) ? "nuTau" : "nuMu";
+  selectSampleED.value = selectSampleECC.value = ( demobbed.evSampleId() ) ? "nuTau" : "nuMu";
 
   const dateFormatOptions = {
 
