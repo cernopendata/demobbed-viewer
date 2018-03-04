@@ -58,6 +58,6 @@ class Vertex {
 
   };
 
-  static color() { return "darkmagenta"; };
+  static color() { return "gold"; };
 
 };

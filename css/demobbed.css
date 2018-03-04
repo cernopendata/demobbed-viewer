@@ -8,8 +8,12 @@
   vertical-align: top;
 }
 
-.canvas-bordered {
+.canvas-bordered-black {
   border: 1px solid black;
+}
+
+.canvas-bordered-white {
+  border: 1px solid white;
 }
 
 .canvas-title {
@@ -34,9 +38,10 @@
 #canvas-legend-ECC {
   position: absolute;
   left: 575px;
-  bottom: 145px;
+  bottom: 125px;
   z-index: 1001;
-  background-color: #FAFAFA;
+  color: white;
+  background-color: black;
 }
 
 #span-canvas-ECC-title {
@@ -44,7 +49,7 @@
   top:  -2px;
 }
 
-#div-help-body {
-  //width:  50%;
-  height: 900px;
+.modal-dialog {
+  width:  1200px;
+  height:  900px;
 }

@@ -66,7 +66,7 @@
                     <table>
 
                       <tr>
-                        <td> <div id="div-opera-logo"> <img src="graphics/OPERA.png" alt="OPERA" width="85"> </div> </td>
+                        <td> <div id="div-opera-logo"> <img src="graphics/opera.png" alt="OPERA" width="85"> </div> </td>
                       </tr>
 
                       <tr>
@@ -123,15 +123,15 @@
                         <td>
                           <div>
 
-                            <!-- <label for="select-eventSample">Sample:</label> -->
-                            <select id="select-eventSample" onchange="changeEventSample(this, event, value);">
+                            <!-- <label for="select-eventSample-ED">Sample:</label> -->
+                            <select id="select-eventSample-ED" onchange="changeEventSample(this, event, value);">
                               <option value="nuMu">nuMu</option>
                               <option value="nuTau">nuTau</option>
                               <!-- <option value="nuE">nuE</option> -->
                             </select>
 
-                            <label for="input-Event">Event:</label>
-                            <input id="input-Event" onkeypress="loadEvent(this, event, value);" size="11">
+                            <label for="input-event-ED">Event:</label>
+                            <input id="input-event-ED" onkeypress="loadEvent(this, event, value);" size="11">
 
                             <!-- ----------------------------------------- -->
 
@@ -324,6 +324,16 @@
                     <td>
                       <div>
 
+                        <!-- <label for="select-eventSample-ECC">Sample:</label> -->
+                        <select id="select-eventSample-ECC" onchange="changeEventSample(this, event, value);">
+                          <option value="nuMu">nuMu</option>
+                          <option value="nuTau">nuTau</option>
+                          <!-- <option value="nuE">nuE</option> -->
+                        </select>
+
+                        <label for="input-event-ECC">Event:</label>
+                        <input id="input-event-ECC" onkeypress="loadEvent(this, event, value);" size="11">
+
                         <div class="btn-group" role="group">
                           <button type="button" class="btn btn-default btn-xs" onclick="demobbed.loadPrevOrNextEvent(-1);" title="Previous event">
                             <img src="graphics/event-prev.png" class="img-responsive"/>
@@ -342,6 +352,15 @@
                           </button>
                           <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawECC().zoomInOut(-1);" title="Zoom out">
                             <img src="graphics/zoom-out.png" class="img-responsive"/>
+                          </button>
+                        </div>
+
+                        <div class="btn-group" role="group">
+                          <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawECC().stretchY(1);" title="Stretch vertically">
+                            <img src="graphics/stretch-y.png" class="img-responsive"/>
+                          </button>
+                          <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawECC().stretchY(-1);" title="Compress vertically">
+                            <img src="graphics/compress-y.png" class="img-responsive"/>
                           </button>
                         </div>
 
@@ -372,9 +391,9 @@
 
                         <canvas id="canvas-axes-ECC"></canvas>
 
-                        <canvas id="canvas-legend-ECC" class="canvas-bordered" width="200" height="230"></canvas>
+                        <canvas id="canvas-legend-ECC" class="canvas-bordered-white" width="200" height="230"></canvas>
 
-                        <canvas id="canvas-ECC" class="canvas-bordered"></canvas>
+                        <canvas id="canvas-ECC" class="canvas-bordered-white"></canvas>
 
                       </div> <!-- "div-canvas-ECC" -->
                     </td>
@@ -395,7 +414,6 @@
 
     <div id="div-ScrLoadEvent">
       <script id="script-LoadEvent" src="js/nuEventsData/nuMu/loadEvent10120009376.js"> </script>
-      <!--  <script id="script-LoadEvent" src="js/nuEventsData/nuTau/loadEvent9190097972.js"> </script> -->
     </div>
 
   </body>
@@ -425,7 +443,7 @@
           </p>
 
           <p>
-            Brief description of the button actions:
+            <b><u>Brief description of available button actions:</u></b>
           </p>
 
           <p>
@@ -495,6 +513,17 @@
               <img src="graphics/view-right.png" class="img-responsive"/>
             </button>
              - move the camera views, correspondingly, up, down, left, and right.
+          </p>
+
+          <p>
+            <button type="button" class="btn btn-default btn-xs" onclick="" title="">
+              <img src="graphics/stretch-y.png" class="img-responsive"/>
+            </button>
+            /
+            <button type="button" class="btn btn-default btn-xs" onclick="" title="">
+              <img src="graphics/compress-y.png" class="img-responsive"/>
+            </button>
+             - stretch/compress the ECC-view in the vertical (Y) direction.
           </p>
 
           <p>
