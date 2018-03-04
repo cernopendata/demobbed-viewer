@@ -15,16 +15,28 @@ class MgrDrawECC { // Manager intended for drawing of (3D) tracks found in emuls
 
     this._zoom = 1;
 
-    this._zoomCoeffY = 1; // Additional scale factor for Y axis (to make the events more beutiful, if possible).
-                          // The code of drawing functions (e.g., for axes drawing) must be properly
-                          // modified in case change of this coefficient is needed!!!
-
     this._zoomFactor = 1.25;
 
-    this._zoomMin = 0.02;
+    this._zoomMin = 0.04;
     this._zoomMax = 4;
 
+    this._stretchYlevel = 1;     // for stretchYcoeff = 1
+
+    this._stretchYlevelMin = -1; // for stretchYcoeff = 0.333
+    this._stretchYlevelMax =  6; // for stretchYcoeff = 6
+
+    this._stretchYcoeff = 1; // Additional scale factor for Y axis (to make the events more beutiful, if possible).
+
+    this._stretchYcoeffMin = 0.333;
+    this._stretchYcoeffMax = 6;
+
+    this._animationFrameID = 0;
+
     //---
+
+    this._primVertDrawPos = new THREE.Vector3(0, 0, 0); // Position of the primary vertex.
+                                                        // The code of drawing functions should be properly
+                                                        // modified in case change of this position is needed!!!
 
     this._vertexGeometryCloseView = {};
     this._vertexGeometryFarView = {};
@@ -39,13 +51,24 @@ class MgrDrawECC { // Manager intended for drawing of (3D) tracks found in emuls
 
     this._groupOfTrackLines = {};   // three.js group of track lines
 
-    this._groupOfAxes = {};         // three.js group of 3 arrows with titles: "X", "Y", and "Z"
+    //---
 
-    this._animationFrameID = 0;
+    this._groupOfAxes = {};      // three.js group of 3 arrows with titles: "X", "Y", and "Z"
 
-    this._primVertDrawPos = new THREE.Vector3(0, 0, 0); // Position of the primary vertex.
-                                                        // The code of drawing functions should be properly
-                                                        // modified in case change of this position is needed!!!
+    this._colorAxisX = 0xFF88FF; // light magenta
+    this._colorAxisY = 0x53C685; // light seagreen
+    this._colorAxisZ = 0xFF4444; // light red
+
+    this._axisXtitleMaterial = {};
+    this._axisYtitleMaterial = {};
+    this._axisZtitleMaterial = {};
+
+    this._trMuTitleMaterial = {};
+    this._trElTitleMaterial = {};
+
+    this._titleFontLoader = {};
+
+    //---
 
     this._trackLegendContext = {}; // Context of a track legend canvas
 
@@ -166,21 +189,42 @@ class MgrDrawECC { // Manager intended for drawing of (3D) tracks found in emuls
 
   };
 
-  zoomCoeffY(zcy) {
+  stretchYlevel(sly) {
 
-    if (zcy === undefined) return this._zoomCoeffY;
+    if (sly === undefined) return this._stretchYlevel;
 
-    if (!Utils.checkNumber(zcy)) {
-      alert("MgrDrawECC-def::zoomCoeffY()::Error: zcy is not a number!!!: zcy = " + zcy + "!!!");
+    if (!Utils.checkNumber(sly)) {
+      alert("MgrDrawECC-def::stretchYlevel()::Error: sly is not a number!!!: sly = " + sly + "!!!");
       return;
     }
 
-    //if ( (zcy < this._zoomCoeffYMin) || (zcy > this._zoomCoeffYMax) ) {
-      //alert("MgrDrawECC-def::zoomCoeffY()::Error: zcy is strange!!!: zcy = " + zcy + "!!!");
-      //return;
-    //}
+    if ( (sly < this._stretchYlevelMin) || (sly > this._stretchYlevelMax) ) {
+      alert("MgrDrawECC-def::stretchYlevel()::Error: sly is strange!!!: sly = " + sly + "!!!");
+      return;
+    }
 
-    this._zoomCoeffY = zcy;
+    this._stretchYlevel = sly;
+
+  };
+
+  stretchYlevelMin() { return this._stretchYlevelMin; };
+  stretchYlevelMax() { return this._stretchYlevelMax; };
+
+  stretchYcoeff(scy) {
+
+    if (scy === undefined) return this._stretchYcoeff;
+
+    if (!Utils.checkNumber(scy)) {
+      alert("MgrDrawECC-def::stretchYcoeff()::Error: scy is not a number!!!: scy = " + scy + "!!!");
+      return;
+    }
+
+    if ( (scy < this._stretchYcoeffMin) || (scy > this._stretchYcoeffMax) ) {
+      alert("MgrDrawECC-def::stretchYcoeff()::Error: scy is strange!!!: scy = " + scy + "!!!");
+      return;
+    }
+
+    this._stretchYcoeff = scy;
 
   };
 
@@ -189,6 +233,88 @@ class MgrDrawECC { // Manager intended for drawing of (3D) tracks found in emuls
   zoomMin() { return this._zoomMin; };
 
   zoomMax() { return this._zoomMax; };
+
+  colorAxisX() { return this._colorAxisX; };
+  colorAxisY() { return this._colorAxisY; };
+  colorAxisZ() { return this._colorAxisZ; };
+
+  axisXtitleMaterial(mat) {
+
+    if (mat === undefined) return this._axisXtitleMaterial;
+
+    if (typeof(mat) !== "object") {
+      alert("MgrDrawECC-def::axisXtitleMaterial()::Error: mat is not an object!!!: typeof(mat) = " + typeof(mat) + "!!!");
+      return;
+    }
+
+    this._axisXtitleMaterial = mat;
+
+  };
+
+  axisYtitleMaterial(mat) {
+
+    if (mat === undefined) return this._axisYtitleMaterial;
+
+    if (typeof(mat) !== "object") {
+      alert("MgrDrawECC-def::axisYtitleMaterial()::Error: mat is not an object!!!: typeof(mat) = " + typeof(mat) + "!!!");
+      return;
+    }
+
+    this._axisYtitleMaterial = mat;
+
+  };
+
+  axisZtitleMaterial(mat) {
+
+    if (mat === undefined) return this._axisZtitleMaterial;
+
+    if (typeof(mat) !== "object") {
+      alert("MgrDrawECC-def::axisZtitleMaterial()::Error: mat is not an object!!!: typeof(mat) = " + typeof(mat) + "!!!");
+      return;
+    }
+
+    this._axisZtitleMaterial = mat;
+
+  };
+
+  trMuTitleMaterial(mat) {
+
+    if (mat === undefined) return this._trMuTitleMaterial;
+
+    if (typeof(mat) !== "object") {
+      alert("MgrDrawECC-def::trMuTitleMaterial()::Error: mat is not an object!!!: typeof(mat) = " + typeof(mat) + "!!!");
+      return;
+    }
+
+    this._trMuTitleMaterial = mat;
+
+  };
+
+  trElTitleMaterial(mat) {
+
+    if (mat === undefined) return this._trElTitleMaterial;
+
+    if (typeof(mat) !== "object") {
+      alert("MgrDrawECC-def::trElTitleMaterial()::Error: mat is not an object!!!: typeof(mat) = " + typeof(mat) + "!!!");
+      return;
+    }
+
+    this._trElTitleMaterial = mat;
+
+  };
+
+  titleFontLoader(tfl) {
+
+    if (tfl === undefined) return this._titleFontLoader;
+
+    if (typeof(tfl) !== "object") {
+      alert("MgrDrawECC-def::titleFontLoader()::Error: tfl is not an object!!!: typeof(tfl) = " + typeof(tfl) + "!!!");
+      return;
+    }
+
+    this._titleFontLoader = tfl;
+
+  };
 
   vertexGeometryCloseView(vg) {
 
@@ -292,6 +418,18 @@ class MgrDrawECC { // Manager intended for drawing of (3D) tracks found in emuls
 
     for (let ic = children.length - 1; ic >= 0; ic--) {
       this._groupOfTrackLines.remove(children[ic]);
+    }
+
+  };
+
+  clearGroupOfAxes() {
+
+    if (!this._groupOfAxes) return;
+
+    let children = this._groupOfAxes.children;
+
+    for (let ic = children.length - 1; ic >= 0; ic--) {
+      this._groupOfAxes.remove(children[ic]);
     }
 
   };

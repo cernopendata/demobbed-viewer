@@ -168,32 +168,32 @@ class TrackECC {
 
       // for the multiplicity sample:
 
-      case  1: return "blue";       // for a track of muon
-      case  2: return "red";        // for a track of hadron
-      case  3: return "green";      // for a track of electron
-      case  4: return "black";      // for a highly ionizing track
-      case  5: return "black";      // for a back highly ionizing track
-      case  6: return "dimgray";    // for a ionizing track
-      case  7: return "dimgray";    // for a back ionizing track
+      case  1: return "dodgerblue";  // for a track of muon
+      case  2: return "#FF1111";     // for a track of hadron
+      case  3: return "yellow";      // for a track of e+/e-
+      case  4: return "white";       // for a highly ionizing track
+      case  5: return "white";       // for a back highly ionizing track
+      case  6: return "springgreen"; // for a ionizing track
+      case  7: return "springgreen"; // for a back ionizing track
 
       // for the tau sample:
 
-      case  8: return "red";        // for a track of tau lepton
+      case  8: return "#FF1111";    // for a track of tau lepton
 
-      case  9: return "dodgerblue"; // for a track of hadron in tau-candidate events
+      case  9: return "aqua";       // for a track of hadron in tau-candidate events
       case 10: return "limegreen";  // for a track of hadron in tau-candidate events
-      case 11: return "mediumblue"; // for a track of hadron in tau-candidate events
+      case 11: return "dodgerblue"; // for a track of hadron in tau-candidate events
       case 12: return "magenta";    // for a track of hadron in tau-candidate events
-      case 13: return "sienna";     // for a track of hadron in tau-candidate events
-      case 14: return "black";      // for a track of hadron in tau-candidate events
-      case 15: return "dimgray";    // for a track of hadron in tau-candidate events
+      case 13: return "lawngreen";  // for a track of hadron in tau-candidate events
+      case 14: return "white";      // for a track of hadron in tau-candidate events
+      case 15: return "gray";       // for a track of hadron in tau-candidate events
 
-      case 16: return "orangered";  // for tracks of e+/e- in tau-candidate events
-      case 17: return "gold";       // for tracks of e+/e- in tau-candidate events
+      case 16: return "orange";     // for tracks of hadron or e+/e- in tau-candidate events
+      case 17: return "yellow";     // for tracks of e+/e- in tau-candidate events
 
       //---
 
-      default: return "white";      // for other tracks
+      default: return "black";      // for other tracks
 
     }
 

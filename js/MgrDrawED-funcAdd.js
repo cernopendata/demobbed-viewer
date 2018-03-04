@@ -7,14 +7,14 @@ dmED.initGraphics = function() {
 
   dmED.canvasesMain()[0] = d3.select("#div-canvas-ED-XZ")
                              .append("svg")
-                               .attr("class",  "canvas-bordered")
+                               .attr("class",  "canvas-bordered-black")
                                .attr("id",     "canvasMain-ED-XZ")
                                .attr("width",  dmED.canvMainWidth())
                                .attr("height", dmED.canvMainHeight());
 
   dmED.canvasesMain()[1] = d3.select("#div-canvas-ED-YZ")
                              .append("svg")
-                               .attr("class",  "canvas-bordered")
+                               .attr("class",  "canvas-bordered-black")
                                .attr("id",     "canvasMain-ED-YZ")
                                .attr("width",  dmED.canvMainWidth())
                                .attr("height", dmED.canvMainHeight());
@@ -112,16 +112,16 @@ dmED.createDrawGroupsAndTitles = function() {
                          .attr("transform",
                                "translate(" + (dmED.canvMainWidth() - 50) + ", " +
                                               (dmED.canvMainHeight() - 2) + ")")
-  
+
                          .text("Z (cm)");
-  
+
     dmED.canvasesMain(ip).append("text")
                          .style("text-anchor", "middle")
                          .attr("transform", "rotate(-90)")
                          .attr("x", -50)
                          .attr("y", dmED.axesOffsets().leftW/3)
                          .text(dmED.axesTitles(ip));
-  
+
     dmED.canvasesEmb(ip).append("g")
                         .attr("id", dmED.groupTTWallsIDs(ip));
 
@@ -214,9 +214,18 @@ dmED.displayEventInfo = function() {
 
   const evId = demobbed.event().id();
 
-  const inputEvent = document.getElementById("input-Event");
+  const inputEventED  = document.getElementById("input-event-ED");
+  const inputEventECC = document.getElementById("input-event-ECC");
 
-  inputEvent.value = evId;
+  //inputEventED.value  = evId;
+  //inputEventECC.value = evId;
+
+  inputEventED.value = inputEventECC.value = evId;
+
+  const selectSampleED  = document.getElementById("select-eventSample-ED");
+  const selectSampleECC = document.getElementById("select-eventSample-ECC");
+
+  selectSampleED.value = selectSampleECC.value = ( demobbed.evSampleId() ) ? "nuTau" : "nuMu";
 
   const dateFormatOptions = {
 
