@@ -269,11 +269,20 @@ dmECC.initTrackLineProperties = function() {
 };
 //------------------------------------------------------------------------------
 
-dmECC.drawEvent = function(resetCameraPos) {
+dmECC.prepareAndDrawEvent = function(resetCameraPos) {
 
   if (resetCameraPos === undefined) resetCameraPos = 1; //!!!
 
   dmECC.prepareTitlesOfTracksAndAxes();
+
+  setTimeout( function() {
+                           dmECC.drawEvent(resetCameraPos);
+                         }, 1000 / 10 );
+
+};
+//------------------------------------------------------------------------------
+
+dmECC.drawEvent = function(resetCameraPos) {
 
   dmECC.drawVertices();
 
@@ -315,16 +324,17 @@ dmECC.drawEvent = function(resetCameraPos) {
   //console.log("222: dmECC.camera().position.y = " + dmECC.camera().position.y);
   //console.log("222: dmECC.camera().position.z = " + dmECC.camera().position.z);
 
-  //setTimeout( function() {
-                           //requestAnimationFrame(dmECC.drawEvent);
-                         //}, 1000 / 10 );
-
   //dmECC.controls().update();
 
   dmECC.render();
 
 };
 //------------------------------------------------------------------------------
+
+
+
+
+
 
 dmECC.render = function() {
 
@@ -753,7 +763,7 @@ dmECC.updateCanvases = function(resetCameraPos) {
 
   }
 
-  dmECC.drawEvent(resetCameraPos);
+  dmECC.prepareAndDrawEvent(resetCameraPos);
 
 };
 //------------------------------------------------------------------------------
