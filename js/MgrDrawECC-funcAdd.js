@@ -13,15 +13,17 @@ dmECC.initGraphics = function() {
 
   //dmECC.initControls();
 
-  dmECC.groupOfVertexPoints(new THREE.Group());
+  dmECC.groupOfVertices(new THREE.Group());
 
-  dmECC.groupOfTrackLines(new THREE.Group());
+  dmECC.groupOfTracks(new THREE.Group());
+
+  dmECC.groupOfAxes( new THREE.Group() );
 
   dmECC.initVertexProperties();
 
   dmECC.initTrackLineProperties();
 
-  dmECC.initGroupOfAxesAndTrackTitles();
+  dmECC.initTitlesOfTracksAndAxes();
 
   dmECC.initTrackLegend();
 
@@ -106,9 +108,7 @@ dmECC.initVertexProperties = function() {
 };
 //------------------------------------------------------------------------------
 
-dmECC.initGroupOfAxesAndTrackTitles = function() {
-
-  dmECC.groupOfAxes( new THREE.Group() );
+dmECC.initTitlesOfTracksAndAxes = function() {
 
   dmECC.axisXtitleMaterial( new THREE.MeshBasicMaterial({ color: dmECC.colorAxisX() }) );
   dmECC.axisYtitleMaterial( new THREE.MeshBasicMaterial({ color: dmECC.colorAxisY() }) );
@@ -120,9 +120,11 @@ dmECC.initGroupOfAxesAndTrackTitles = function() {
   for (let itr = 0; itr < 18; itr++)
     dmECC.trackTitles()[itr] = null; //!!!
 
+  for (let iax = 0; iax < 4; iax++)
+    dmECC.axesTitles()[iax] = null; //!!!
+
   dmECC.titleFontLoader( new THREE.FontLoader() );
 
-  dmECC.drawAxes();
 };
 //------------------------------------------------------------------------------
 
@@ -271,11 +273,13 @@ dmECC.drawEvent = function(resetCameraPos) {
 
   if (resetCameraPos === undefined) resetCameraPos = 1; //!!!
 
-  dmECC.drawAxes();
+  dmECC.prepareTitlesOfTracksAndAxes();
 
   dmECC.drawVertices();
 
   dmECC.drawTracks();
+
+  dmECC.drawAxes();
 
   dmECC.drawTrackLegend();
 
@@ -334,10 +338,9 @@ dmECC.accelerateAnimation = function() {
 
   dmECC.animationFrameID(requestAnimationFrame(dmECC.accelerateAnimation));
 
-  dmECC.groupOfVertexPoints().rotation.y += 0.004;
-  dmECC.groupOfTrackLines().rotation.y   += 0.004;
-
-  dmECC.groupOfAxes().rotation.y += 0.004;
+  dmECC.groupOfVertices().rotation.y += 0.004;
+  dmECC.groupOfTracks().rotation.y   += 0.004;
+  dmECC.groupOfAxes().rotation.y     += 0.004;
 
   dmECC.render();
 
@@ -479,11 +482,11 @@ dmECC.drawVertices = function() {
 
     }
 
-    dmECC.groupOfVertexPoints().add(vertexPoint);
+    dmECC.groupOfVertices().add(vertexPoint);
 
   }
 
-  dmECC.scene().add(dmECC.groupOfVertexPoints());
+  dmECC.scene().add(dmECC.groupOfVertices());
 
 };
 //------------------------------------------------------------------------------
@@ -495,7 +498,7 @@ dmECC.drawTracks = function() {
   if ( demobbed.evSampleId() ) dmECC.drawTracksWithPos1AndPos2();
   else dmECC.drawTracksFromVertex();
 
-  dmECC.scene().add(dmECC.groupOfTrackLines());
+  dmECC.scene().add(dmECC.groupOfTracks());
 
 };
 //------------------------------------------------------------------------------
@@ -569,7 +572,7 @@ dmECC.drawTracksFromVertex = function() {
                                                  trLineWidth,
                                                  trPars.color);
 
-    dmECC.groupOfTrackLines().add(trackLine.getObject3D());
+    dmECC.groupOfTracks().add(trackLine.getObject3D());
 
     if (trackPartTitle) {
 
@@ -579,7 +582,7 @@ dmECC.drawTracksFromVertex = function() {
       trackTitle.position.y = trTitlePos[1] + 100;
       trackTitle.position.z = trTitlePos[2];
 
-      dmECC.groupOfTrackLines().add(trackTitle);
+      dmECC.groupOfTracks().add(trackTitle);
 
     }
 
@@ -636,7 +639,7 @@ dmECC.drawTracksWithPosAndSlopes = function() {
                                                  trLineWidth,
                                                  trPars.color); 
 
-    dmECC.groupOfTrackLines().add(trackLine.getObject3D());
+    dmECC.groupOfTracks().add(trackLine.getObject3D());
 
   }
 
@@ -683,7 +686,7 @@ dmECC.drawTracksWithPos1AndPos2 = function() {
 
     const trackLine = new three3DExtras.tubeLine(trPos1, trPos2, trLineWidth, trPars.color); 
 
-    dmECC.groupOfTrackLines().add(trackLine.getObject3D());
+    dmECC.groupOfTracks().add(trackLine.getObject3D());
 
   }
 
@@ -739,13 +742,13 @@ dmECC.updateCanvases = function(resetCameraPos) {
 
     resetCameraPos = 1; //!!!
 
-    const rotY = dmECC.groupOfTrackLines().rotation.y;
+    const rotY = dmECC.groupOfTracks().rotation.y;
 
     if (rotY >= 0) {
 
-      dmECC.groupOfVertexPoints().rotation.y = 0;
-      dmECC.groupOfTrackLines().rotation.y   = 0;
-      dmECC.groupOfAxes().rotation.y = 0;
+      dmECC.groupOfVertices().rotation.y = 0;
+      dmECC.groupOfTracks().rotation.y   = 0;
+      dmECC.groupOfAxes().rotation.y     = 0;
     }
 
   }
@@ -757,13 +760,11 @@ dmECC.updateCanvases = function(resetCameraPos) {
 
 dmECC.clearCanvases = function() {
 
-  dmECC.clearGroupOfVertexPoints();
+  dmECC.clearGroupOfVertices();
 
-  dmECC.clearGroupOfTrackLines();
+  dmECC.clearGroupOfTracks();
 
-  //dmECC.clearGroupOfAxes();
-
-  //dmECC.render();
+  dmECC.clearGroupOfAxes();
 
 };
 //------------------------------------------------------------------------------
@@ -943,7 +944,7 @@ dmECC.drawTrackLegend = function() {
 
     dmECC.addLegendEntry("muon:",             38, TrackECC.colors(1));
     dmECC.addLegendEntry("hadron:",           56, TrackECC.colors(2));
-    dmECC.addLegendEntry("electron:",         74, TrackECC.colors(3));
+    dmECC.addLegendEntry("e+/e-:",            74, TrackECC.colors(3));
     dmECC.addLegendEntry("highly ionizing:",  92, TrackECC.colors(4));
     dmECC.addLegendEntry("ionizing:",        110, TrackECC.colors(6));
 
@@ -967,60 +968,24 @@ dmECC.addLegendEntry = function(trTypeName, topDist, trColor) {
 };
 //-----------------------------------------------------------------------------
 
-dmECC.drawAxes = function() {
+dmECC.prepareTitlesOfTracksAndAxes = function() {
 
-  dmECC.clearGroupOfAxes();
+  dmECC.calcAxesLengthesAndNbOfUnits();
 
   const primVertDrawPos = dmECC.primVertDrawPos();
 
-  const zoom = dmECC.zoom();
-
   const stretchYcoeff = dmECC.stretchYcoeff();
 
-  let lengthOfAxisX = 1000;
-  let lengthOfAxisZ = 1000;
-  let lengthOfAxisY = 1000;
+  const axesNbOfUnits = dmECC.axesNbOfUnits();
 
-  let nbOfUnits = 1;
+  const axesLengthes = dmECC.axesLengthes();
 
-  dmECC.calcAxesLengthesAndNbOfUnits(lengthOfAxisX, lengthOfAxisY, lengthOfAxisZ, nbOfUnits);
-
-  const axisWidth = 8/zoom;
-
-  const rx = new three3DExtras.tubeLine([primVertDrawPos.x,
-                                         primVertDrawPos.y,
-                                         primVertDrawPos.z],
-                                        [primVertDrawPos.x + lengthOfAxisX,
-                                         primVertDrawPos.y,
-                                         primVertDrawPos.z],
-                                         axisWidth, dmECC.colorAxisX());
-
-  const gy = new three3DExtras.tubeLine([primVertDrawPos.x,
-                                         primVertDrawPos.y,
-                                         primVertDrawPos.z],
-                                        [primVertDrawPos.x,
-                                         primVertDrawPos.y + lengthOfAxisY,
-                                         primVertDrawPos.z],
-                                         axisWidth, dmECC.colorAxisY());
-
-  const bz = new three3DExtras.tubeLine([primVertDrawPos.x,
-                                         primVertDrawPos.y,
-                                         primVertDrawPos.z],
-                                        [primVertDrawPos.x,
-                                         primVertDrawPos.y,
-                                         primVertDrawPos.z + lengthOfAxisZ],
-                                         axisWidth, dmECC.colorAxisZ());
-
-  dmECC.groupOfAxes().add(rx.getObject3D());
-  dmECC.groupOfAxes().add(gy.getObject3D());
-  dmECC.groupOfAxes().add(bz.getObject3D());
-
-  let fontSize = lengthOfAxisY/8;
+  let fontSize = axesLengthes[1]/8;
   if (stretchYcoeff < 1) fontSize /= stretchYcoeff;
 
   dmECC.titleFontLoader().load('./fonts/helvetiker_regular.typeface.json', function(font) {
 
-    // draw axes titles
+    // prepare axes titles
 
     const tps = { size:fontSize, height:10, font:font };
 
@@ -1028,54 +993,57 @@ dmECC.drawAxes = function() {
     const y_geo = new THREE.TextGeometry('Y', tps);
     const z_geo = new THREE.TextGeometry('Z', tps);
 
-    const un_geo = new THREE.TextGeometry(nbOfUnits + 'mm', tps);
+    const un_geo = new THREE.TextGeometry(axesNbOfUnits + 'mm', tps);
 
     const x_text = new THREE.Mesh( x_geo, dmECC.axisXtitleMaterial() );
 
     x_text.position.x = primVertDrawPos.x;
-    if (lengthOfAxisX > 100) x_text.position.x += 980*lengthOfAxisX/1000;
+    if (axesLengthes[0] > 100) x_text.position.x += 980*axesLengthes[0]/1000;
     else x_text.position.x += 100;
 
     x_text.position.y = primVertDrawPos.y + 50;
     x_text.position.z = primVertDrawPos.z + 50;
     x_text.rotation.y = -1.57;
 
+    dmECC.axesTitles()[0] = x_text;
+
     const y_text = new THREE.Mesh( y_geo, dmECC.axisYtitleMaterial() );
 
     y_text.position.y = primVertDrawPos.y;
-    if (lengthOfAxisY > 200) y_text.position.y += 900*lengthOfAxisY/1000;
+    if (axesLengthes[1] > 200) y_text.position.y += 900*axesLengthes[1]/1000;
     else y_text.position.y += 200;
 
     y_text.position.x = primVertDrawPos.x;
     y_text.position.z = primVertDrawPos.z + 50;
     y_text.rotation.y = -1.57;
 
+    dmECC.axesTitles()[1] = y_text;
+
     const z_text = new THREE.Mesh( z_geo, dmECC.axisZtitleMaterial() );
 
     z_text.position.z = primVertDrawPos.z;
-    if (lengthOfAxisZ > 100) z_text.position.z += 920*lengthOfAxisZ/1000;
+    if (axesLengthes[2] > 100) z_text.position.z += 920*axesLengthes[2]/1000;
     else z_text.position.z += 100;
 
     z_text.position.x = primVertDrawPos.x;
     z_text.position.y = primVertDrawPos.y + 50;
     z_text.rotation.y = -1.57;
 
+    dmECC.axesTitles()[2] = z_text;
+
     const un_text = new THREE.Mesh( un_geo, dmECC.axisYtitleMaterial() );
 
     un_text.position.y = primVertDrawPos.y;
-    if (lengthOfAxisY > 200) un_text.position.y += 450*lengthOfAxisY/1000;
+    if (axesLengthes[1] > 200) un_text.position.y += 450*axesLengthes[1]/1000;
     else un_text.position.y += 100;
 
     un_text.position.x = primVertDrawPos.x;
     un_text.position.z = primVertDrawPos.z + 50;
     un_text.rotation.y = -1.57;
 
-    dmECC.groupOfAxes().add(x_text);
-    dmECC.groupOfAxes().add(y_text);
-    dmECC.groupOfAxes().add(z_text);
-    dmECC.groupOfAxes().add(un_text);
+    dmECC.axesTitles()[3] = un_text;
 
-    // draw track titles
+    // prepare track titles
 
     const trMu_geo = new THREE.TextGeometry('mu', tps);
 
@@ -1089,85 +1057,148 @@ dmECC.drawAxes = function() {
 
   });
 
-  dmECC.sceneInset().add(dmECC.groupOfAxes());
-
 };
 //------------------------------------------------------------------------------
 
-dmECC.calcAxesLengthesAndNbOfUnits = function(lengthOfAxisX, lengthOfAxisY, lengthOfAxisZ, nbOfUnits) {
+dmECC.calcAxesLengthesAndNbOfUnits = function() {
 
   const zoom = dmECC.zoom();
 
   const stretchYcoeff = dmECC.stretchYcoeff();
 
-  if (stretchYcoeff > 1) lengthOfAxisX = lengthOfAxisZ = lengthOfAxisY/stretchYcoeff;
-  else if (stretchYcoeff < 1) lengthOfAxisY = lengthOfAxisX*stretchYcoeff;
+  const axesLengthes = [1000, 1000, 1000];
+
+  if (stretchYcoeff > 1) axesLengthes[0] = axesLengthes[2] = axesLengthes[1]/stretchYcoeff;
+  else if (stretchYcoeff < 1) axesLengthes[1] = axesLengthes[0]*stretchYcoeff;
 
   if (zoom > 3.8) {
-    lengthOfAxisX *= 0.22*zoom;
-    lengthOfAxisY *= 0.22*zoom;
-    lengthOfAxisZ *= 0.22*zoom;
+    axesLengthes[0] *= 0.22*zoom;
+    axesLengthes[1] *= 0.22*zoom;
+    axesLengthes[2] *= 0.22*zoom;
   }
   else if (zoom > 3.0) {
-    lengthOfAxisX *= 0.28*zoom;
-    lengthOfAxisY *= 0.28*zoom;
-    lengthOfAxisZ *= 0.28*zoom;
+    axesLengthes[0] *= 0.28*zoom;
+    axesLengthes[1] *= 0.28*zoom;
+    axesLengthes[2] *= 0.28*zoom;
   }
   else if (zoom > 2.4) {
-    lengthOfAxisX *= 0.38*zoom;
-    lengthOfAxisY *= 0.38*zoom;
-    lengthOfAxisZ *= 0.38*zoom;
+    axesLengthes[0] *= 0.38*zoom;
+    axesLengthes[1] *= 0.38*zoom;
+    axesLengthes[2] *= 0.38*zoom;
   }
   else if (zoom > 1.9) {
-    lengthOfAxisX *= 0.5*zoom;
-    lengthOfAxisY *= 0.5*zoom;
-    lengthOfAxisZ *= 0.5*zoom;
+    axesLengthes[0] *= 0.5*zoom;
+    axesLengthes[1] *= 0.5*zoom;
+    axesLengthes[2] *= 0.5*zoom;
   }
   else if (zoom > 1.5) {
-    lengthOfAxisX *= 0.7*zoom;
-    lengthOfAxisY *= 0.7*zoom;
-    lengthOfAxisZ *= 0.7*zoom;
+    axesLengthes[0] *= 0.7*zoom;
+    axesLengthes[1] *= 0.7*zoom;
+    axesLengthes[2] *= 0.7*zoom;
   }
   else if (zoom > 1.1) {
-    lengthOfAxisX *= 0.8*zoom;
-    lengthOfAxisY *= 0.8*zoom;
-    lengthOfAxisZ *= 0.8*zoom;
+    axesLengthes[0] *= 0.8*zoom;
+    axesLengthes[1] *= 0.8*zoom;
+    axesLengthes[2] *= 0.8*zoom;
   }
   else if (zoom > 0.40) {
-    lengthOfAxisX *= 1.2/(zoom + 0.2);
-    lengthOfAxisY *= 1.2/(zoom + 0.2);
-    lengthOfAxisZ *= 1.2/(zoom + 0.2);
+    axesLengthes[0] *= 1.2/(zoom + 0.2);
+    axesLengthes[1] *= 1.2/(zoom + 0.2);
+    axesLengthes[2] *= 1.2/(zoom + 0.2);
   }
   else if (zoom > 0.25) {
-    lengthOfAxisX *= 1.1/(zoom + 0.1);
-    lengthOfAxisY *= 1.1/(zoom + 0.1);
-    lengthOfAxisZ *= 1.1/(zoom + 0.1);
+    axesLengthes[0] *= 1.1/(zoom + 0.1);
+    axesLengthes[1] *= 1.1/(zoom + 0.1);
+    axesLengthes[2] *= 1.1/(zoom + 0.1);
   }
   else if (zoom > 0.15) {
-    lengthOfAxisX *= 1.06/(zoom + 0.06);
-    lengthOfAxisY *= 1.06/(zoom + 0.06);
-    lengthOfAxisZ *= 1.06/(zoom + 0.06);
+    axesLengthes[0] *= 1.06/(zoom + 0.06);
+    axesLengthes[1] *= 1.06/(zoom + 0.06);
+    axesLengthes[2] *= 1.06/(zoom + 0.06);
   }
   else if (zoom > 0) {
-    lengthOfAxisX *= 1.02/(zoom + 0.02);
-    lengthOfAxisY *= 1.02/(zoom + 0.02);
-    lengthOfAxisZ *= 1.02/(zoom + 0.02);
+    axesLengthes[0] *= 1.02/(zoom + 0.02);
+    axesLengthes[1] *= 1.02/(zoom + 0.02);
+    axesLengthes[2] *= 1.02/(zoom + 0.02);
   }
 
-  nbOfUnits = lengthOfAxisY/(1000*stretchYcoeff);
+  let axesNbOfUnits = axesLengthes[1]/(1000*stretchYcoeff);
 
-  if ( nbOfUnits <= 0.9 ) nbOfUnits = Math.floor(nbOfUnits*10)/10;
+  if ( axesNbOfUnits <= 0.9 ) axesNbOfUnits = Math.floor(axesNbOfUnits*10)/10;
   else {
 
-    const temp_ceil = Math.ceil(nbOfUnits);
+    const temp_ceil = Math.ceil(axesNbOfUnits);
 
-    if (temp_ceil - nbOfUnits < 0.1) nbOfUnits = temp_ceil;
-    else nbOfUnits = Math.floor(nbOfUnits);
+    if (temp_ceil - axesNbOfUnits < 0.1) axesNbOfUnits = temp_ceil;
+    else axesNbOfUnits = Math.floor(axesNbOfUnits);
 
   }
 
-  lengthOfAxisX = lengthOfAxisZ = 1000*nbOfUnits;
-  lengthOfAxisY = lengthOfAxisX*stretchYcoeff;
+  axesLengthes[0] = axesLengthes[2] = 1000*axesNbOfUnits;
+  axesLengthes[1] = axesLengthes[0]*stretchYcoeff;
+
+  dmECC.axesLengthes(axesLengthes);
+
+  dmECC.axesNbOfUnits(axesNbOfUnits);
+
+};
+//------------------------------------------------------------------------------
+
+dmECC.drawAxes = function() {
+
+  const primVertDrawPos = dmECC.primVertDrawPos();
+
+  const zoom = dmECC.zoom();
+
+  const stretchYcoeff = dmECC.stretchYcoeff();
+
+  const axesLengthes = dmECC.axesLengthes();
+
+  const axisWidth = 8/zoom;
+
+  const rx = new three3DExtras.tubeLine([primVertDrawPos.x,
+                                         primVertDrawPos.y,
+                                         primVertDrawPos.z],
+                                        [primVertDrawPos.x + axesLengthes[0],
+                                         primVertDrawPos.y,
+                                         primVertDrawPos.z],
+                                         axisWidth, dmECC.colorAxisX());
+
+  const gy = new three3DExtras.tubeLine([primVertDrawPos.x,
+                                         primVertDrawPos.y,
+                                         primVertDrawPos.z],
+                                        [primVertDrawPos.x,
+                                         primVertDrawPos.y + axesLengthes[1],
+                                         primVertDrawPos.z],
+                                         axisWidth, dmECC.colorAxisY());
+
+  const bz = new three3DExtras.tubeLine([primVertDrawPos.x,
+                                         primVertDrawPos.y,
+                                         primVertDrawPos.z],
+                                        [primVertDrawPos.x,
+                                         primVertDrawPos.y,
+                                         primVertDrawPos.z + axesLengthes[2]],
+                                         axisWidth, dmECC.colorAxisZ());
+
+  dmECC.groupOfAxes().add(rx.getObject3D());
+  dmECC.groupOfAxes().add(gy.getObject3D());
+  dmECC.groupOfAxes().add(bz.getObject3D());
+
+  for (let iax = 0; iax < 4; iax++) {
+
+    const axisTitle = dmECC.axesTitles()[iax];
+
+    if (axisTitle) {
+
+      const newAxisTitle = axisTitle.clone(); //!!!
+
+      dmECC.groupOfAxes().add(newAxisTitle);
+
+    }
+
+  }
+
+  dmECC.sceneInset().add(dmECC.groupOfAxes());
 
 };
 //------------------------------------------------------------------------------
