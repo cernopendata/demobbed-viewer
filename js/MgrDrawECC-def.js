@@ -43,17 +43,22 @@ class MgrDrawECC { // Manager intended for drawing of (3D) tracks found in emuls
 
     this._vertexMaterial = {};
 
-    this._groupOfVertexPoints = {}; // three.js group of vertex points
+    this._groupOfVertices = {}; // three.js group of vertex points
 
     this._trackLinePars = [];       // Array of line parameters used for drawing of the ECC tracks
 
     this._trackTitles = [];         // Array of THREE.Mesh objects with titles of tracks
 
-    this._groupOfTrackLines = {};   // three.js group of track lines
+    this._trMuTitleMaterial = {};
+    this._trElTitleMaterial = {};
+
+    this._groupOfTracks = {};   // three.js group of track lines and their titles
 
     //---
 
-    this._groupOfAxes = {};      // three.js group of 3 arrows with titles: "X", "Y", and "Z"
+    this._axesTitles = [];        // Array of 4 THREE.Mesh objects: 3 titles of axes + 1 title of units!!!
+
+    this._groupOfAxes = {};       // three.js group of axes lines and their titles
 
     this._colorAxisX = 0xFF88FF; // light magenta
     this._colorAxisY = 0x53C685; // light seagreen
@@ -63,8 +68,9 @@ class MgrDrawECC { // Manager intended for drawing of (3D) tracks found in emuls
     this._axisYtitleMaterial = {};
     this._axisZtitleMaterial = {};
 
-    this._trMuTitleMaterial = {};
-    this._trElTitleMaterial = {};
+    this._axesLengthes = [];      // Array of 3 axes lengthes
+
+    this._axesNbOfUnits = 1;
 
     this._titleFontLoader = {};
 
@@ -355,16 +361,16 @@ class MgrDrawECC { // Manager intended for drawing of (3D) tracks found in emuls
 
   };
 
-  groupOfVertexPoints(group) {
+  groupOfVertices(group) {
 
-    if (group === undefined) return this._groupOfVertexPoints;
+    if (group === undefined) return this._groupOfVertices;
 
     if (typeof(group) !== "object") {
-      alert("MgrDrawECC-def::groupOfVertexPoints()::Error: group is not an object!!!: typeof(group) = " + typeof(group) + "!!!");
+      alert("MgrDrawECC-def::groupOfVertices()::Error: group is not an object!!!: typeof(group) = " + typeof(group) + "!!!");
       return;
     }
 
-    this._groupOfVertexPoints = group;
+    this._groupOfVertices = group;
 
   };
 
@@ -372,16 +378,44 @@ class MgrDrawECC { // Manager intended for drawing of (3D) tracks found in emuls
 
   trackTitles() { return this._trackTitles; };
 
-  groupOfTrackLines(group) {
+  groupOfTracks(group) {
 
-    if (group === undefined) return this._groupOfTrackLines;
+    if (group === undefined) return this._groupOfTracks;
 
     if (typeof(group) !== "object") {
-      alert("MgrDrawECC-def::groupOfTrackLines()::Error: group is not an object!!!: typeof(group) = " + typeof(group) + "!!!");
+      alert("MgrDrawECC-def::groupOfTracks()::Error: group is not an object!!!: typeof(group) = " + typeof(group) + "!!!");
       return;
     }
 
-    this._groupOfTrackLines = group;
+    this._groupOfTracks = group;
+
+  };
+
+  axesTitles() { return this._axesTitles; };
+
+  axesLengthes(aL) {
+
+    if (aL === undefined) return this._axesLengthes;
+
+    if (!Array.isArray(aL)) {
+      alert("MgrDrawECC-def::axesLengthes()::Error: aL is not an Array!!!");
+      return;
+    }
+
+    this._axesLengthes = aL;
+
+  };
+
+  axesNbOfUnits(nunits) {
+
+    if (nunits === undefined) return this._axesNbOfUnits;
+
+    if (!Utils.checkNumber(nunits)) {
+      alert("MgrDrawECC-def::axesNbOfUnits()::Error: nunits is not a number!!!: nunits = " + nunits + "!!!");
+      return;
+    }
+
+    this._axesNbOfUnits = nunits;
 
   };
 
@@ -398,26 +432,26 @@ class MgrDrawECC { // Manager intended for drawing of (3D) tracks found in emuls
 
   };
 
-  clearGroupOfVertexPoints() {
+  clearGroupOfVertices() {
 
-    if (!this._groupOfVertexPoints) return;
+    if (!this._groupOfVertices) return;
 
-    let children = this._groupOfVertexPoints.children;
+    let children = this._groupOfVertices.children;
 
     for (let ic = children.length - 1; ic >= 0; ic--) {
-      this._groupOfVertexPoints.remove(children[ic]);
+      this._groupOfVertices.remove(children[ic]);
     }
 
   };
 
-  clearGroupOfTrackLines() {
+  clearGroupOfTracks() {
 
-    if (!this._groupOfTrackLines) return;
+    if (!this._groupOfTracks) return;
 
-    let children = this._groupOfTrackLines.children;
+    let children = this._groupOfTracks.children;
 
     for (let ic = children.length - 1; ic >= 0; ic--) {
-      this._groupOfTrackLines.remove(children[ic]);
+      this._groupOfTracks.remove(children[ic]);
     }
 
   };

@@ -217,9 +217,6 @@ dmED.displayEventInfo = function() {
   const inputEventED  = document.getElementById("input-event-ED");
   const inputEventECC = document.getElementById("input-event-ECC");
 
-  //inputEventED.value  = evId;
-  //inputEventECC.value = evId;
-
   inputEventED.value = inputEventECC.value = evId;
 
   const selectSampleED  = document.getElementById("select-eventSample-ED");
