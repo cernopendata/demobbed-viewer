@@ -7,14 +7,14 @@ dmED.initGraphics = function() {
 
   dmED.canvasesMain()[0] = d3.select("#div-canvas-ED-XZ")
                              .append("svg")
-                               .attr("class",  "canvas-bordered")
+                               .attr("class",  "canvas-bordered-black")
                                .attr("id",     "canvasMain-ED-XZ")
                                .attr("width",  dmED.canvMainWidth())
                                .attr("height", dmED.canvMainHeight());
 
   dmED.canvasesMain()[1] = d3.select("#div-canvas-ED-YZ")
                              .append("svg")
-                               .attr("class",  "canvas-bordered")
+                               .attr("class",  "canvas-bordered-black")
                                .attr("id",     "canvasMain-ED-YZ")
                                .attr("width",  dmED.canvMainWidth())
                                .attr("height", dmED.canvMainHeight());
@@ -80,7 +80,6 @@ dmED.initTrackLineProperties = function() {
 };
 //------------------------------------------------------------------------------
 
-
 dmED.onMouseDown = function() {
 
   // JUST A TEST
@@ -113,16 +112,16 @@ dmED.createDrawGroupsAndTitles = function() {
                          .attr("transform",
                                "translate(" + (dmED.canvMainWidth() - 50) + ", " +
                                               (dmED.canvMainHeight() - 2) + ")")
-  
+
                          .text("Z (cm)");
-  
+
     dmED.canvasesMain(ip).append("text")
                          .style("text-anchor", "middle")
                          .attr("transform", "rotate(-90)")
                          .attr("x", -50)
                          .attr("y", dmED.axesOffsets().leftW/3)
                          .text(dmED.axesTitles(ip));
-  
+
     dmED.canvasesEmb(ip).append("g")
                         .attr("id", dmED.groupTTWallsIDs(ip));
 
@@ -215,9 +214,15 @@ dmED.displayEventInfo = function() {
 
   const evId = demobbed.event().id();
 
-  const inputEvent = document.getElementById("input-Event");
+  const inputEventED  = document.getElementById("input-event-ED");
+  const inputEventECC = document.getElementById("input-event-ECC");
 
-  inputEvent.value = evId;
+  inputEventED.value = inputEventECC.value = evId;
+
+  const selectSampleED  = document.getElementById("select-eventSample-ED");
+  const selectSampleECC = document.getElementById("select-eventSample-ECC");
+
+  selectSampleED.value = selectSampleECC.value = ( demobbed.evSampleId() ) ? "nuTau" : "nuMu";
 
   const dateFormatOptions = {
 
@@ -871,16 +876,16 @@ dmED.drawAxes = function(ip) {
 
   dmED.canvasesMain(ip).append("g")
                        .attr("id", dmED.groupZAxesIDs(ip))
- 	               .attr("class", "z axis")
-		       .attr("transform", "translate(0, " + (dmED.canvMainHeight() -
+                       .attr("class", "z axis")
+                       .attr("transform", "translate(0, " + (dmED.canvMainHeight() -
                                                              dmED.axesOffsets().bottomW) + ")")
                        .call(d3.axisBottom(dmED.scalesOfAxes()[2]));
 
   dmED.canvasesMain(ip).append("g")
                        .attr("id", dmED.groupXYAxesIDs(ip))
-		       .attr("class", "x axis")
-		       .attr("transform", "translate(" + dmED.axesOffsets().leftW + ", 0)")
-		       .call(d3.axisLeft(dmED.scalesOfAxes()[ip]));
+                       .attr("class", "x axis")
+                       .attr("transform", "translate(" + dmED.axesOffsets().leftW + ", 0)")
+                       .call(d3.axisLeft(dmED.scalesOfAxes()[ip]));
 
 };
 //-----------------------------------------------------------------------------
@@ -1202,7 +1207,6 @@ dmED.drawNeuVertex = function(ip) {
       return dmED.scalesOfCanvEmb()[ip](d.posGlob()[ip]);
     })
     .attr('r', 2)
-    //.attr('fill', "#FF3300");
     .attr('fill', Vertex.color());
 
 };
@@ -1210,41 +1214,75 @@ dmED.drawNeuVertex = function(ip) {
 
 dmED.drawPartTracks = function(ip) {
 
-  const PartTracksLines = d3.select("#" + dmED.groupPartTracksIDs(ip))
-                            .selectAll('line')
-                            .data(demobbed.event().tracksECC());
+  if (demobbed.evSampleId()) {
 
-  const vertPosGlob = demobbed.event().verticesECC()[0].posGlob();
+    const PartTracksLines = d3.select("#" + dmED.groupPartTracksIDs(ip))
+                              .selectAll('line')
+                              .data(demobbed.event().tracksECCforED()); // tracksECCforED - not real ECC tracks!!!
 
-  PartTracksLines
-    .enter()
-    .append('line')
-    .attr('x1', dmED.scalesOfCanvEmb()[2](vertPosGlob[2]))
-    .attr('y1', dmED.scalesOfCanvEmb()[ip](vertPosGlob[ip]))
-    .attr('x2', function(d) {                  
+    PartTracksLines
+      .enter()
+      .append('line')
+      .attr( 'x1', function(d) {
+        return dmED.scalesOfCanvEmb()[2](d.pos1()[2]);   // track positions are already in global system of reference!!!
+      } )
+      .attr( 'y1', function(d) {
+        return dmED.scalesOfCanvEmb()[ip](d.pos1()[ip]);
+      } )
+      .attr( 'x2', function(d) {
+        return dmED.scalesOfCanvEmb()[2](d.pos2()[2]);
+      } )
+      .attr( 'y2', function(d) {
+        return dmED.scalesOfCanvEmb()[ip](d.pos2()[ip]);
+      } )
+      .attr( 'stroke', function(d) {
 
-      const trPartId = d.partId();
+        if (d.partId() == 1) return dmED.trackLinePars()[1].color; // muon track is drawn in blue color!
 
-      if ( (trPartId == 1) || (trPartId == 2) ) // draw only tracks of muons and hadrons!
-        return dmED.scalesOfCanvEmb()[2](vertPosGlob[2] + dmED.trackLinePars()[trPartId].length);
+        return dmED.trackLinePars()[2].color; // all other (hadron) tracks arte drawn in red color!
 
-    })
-    .attr('y2', function(d) {
+      } );
+    //PartTrackLines
+  }
+  else {
 
-      const trPartId = d.partId();
+    const primVertPosGlob = demobbed.event().verticesECC()[0].posGlob();
 
-      if ( (trPartId == 1) || (trPartId == 2) ) // draw only tracks of muons and hadrons!
-        return dmED.scalesOfCanvEmb()[ip](vertPosGlob[ip] + d.Axy(ip)*dmED.trackLinePars()[trPartId].length);
+    const PartTracksLines = d3.select("#" + dmED.groupPartTracksIDs(ip))
+                              .selectAll('line')
+                              .data(demobbed.event().tracksECC());
 
-    })
-    .attr('stroke', function(d) {
+    PartTracksLines
+      .enter()
+      .append('line')
+      .attr( 'x1', dmED.scalesOfCanvEmb()[2](primVertPosGlob[2]) )
+      .attr( 'y1', dmED.scalesOfCanvEmb()[ip](primVertPosGlob[ip]) )
+      .attr( 'x2', function(d) {
 
-      const trPartId = d.partId();
+        const trPartId = d.partId();
 
-      if ( (trPartId == 1) || (trPartId == 2) ) // draw only tracks of muons and hadrons!
-        return dmED.trackLinePars()[trPartId].color;
+        if ( (trPartId == 1) || (trPartId == 2) ) // draw only tracks of muons and hadrons!
+          return dmED.scalesOfCanvEmb()[2](primVertPosGlob[2] + dmED.trackLinePars()[trPartId].length);
 
-    });
+      } )
+      .attr( 'y2', function(d) {
+
+        const trPartId = d.partId();
+
+        if ( (trPartId == 1) || (trPartId == 2) ) // draw only tracks of muons and hadrons!
+          return dmED.scalesOfCanvEmb()[ip](primVertPosGlob[ip] + d.Axy(ip)*dmED.trackLinePars()[trPartId].length);
+
+      } )
+      .attr( 'stroke', function(d) {
+
+        const trPartId = d.partId();
+
+        if ( (trPartId == 1) || (trPartId == 2) ) // draw only tracks of muons and hadrons!
+          return dmED.trackLinePars()[trPartId].color;
+
+      } );
+    //PartTrackLines
+  }
 
 };
 //-----------------------------------------------------------------------------

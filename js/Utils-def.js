@@ -59,7 +59,7 @@ class Utils { // A class with some simple function used by other class methods
     if (ip === undefined) ip = 2;
     else if (!Utils.checkIP(ip, 3)) return false;
 
-    const posMin = [-500, -500, -500];
+    const posMin = [-1000, -1000, -1000];
     const posMax = [125000, 100000, 80000];
 
     if ( (pos < posMin[ip]) || (pos > posMax[ip]) ) {
