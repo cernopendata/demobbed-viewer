@@ -331,11 +331,6 @@ dmECC.drawEvent = function(resetCameraPos) {
 };
 //------------------------------------------------------------------------------
 
-
-
-
-
-
 dmECC.render = function() {
 
   dmECC.renderer().render(dmECC.scene(), dmECC.camera());
@@ -833,6 +828,11 @@ dmECC.drawTrackLegend = function() {
       dmECC.addLegendEntry("hadron:",          110, TrackECC.colors(10));
       dmECC.addLegendEntry("hadron:",          128, TrackECC.colors(12));
 
+
+      dmECC.addLegendEntry("had ():",          160, TrackECC.colors(17));
+      dmECC.addLegendEntry("had ():",          180, TrackECC.colors(16));
+
+
       break;
 
     case 9234119599:
@@ -904,12 +904,15 @@ dmECC.drawTrackLegend = function() {
     case 11213015702:
 
       dmECC.addLegendEntry("tau lepton:",       38, TrackECC.colors(8));
-      dmECC.addLegendEntry("hadron:",           56, TrackECC.colors(9));
-      dmECC.addLegendEntry("proton:",           74, TrackECC.colors(12));
-      dmECC.addLegendEntry("hadron:",           92, TrackECC.colors(14));
-      dmECC.addLegendEntry("hadron:",          110, TrackECC.colors(15));
-      dmECC.addLegendEntry("hadron:",          128, TrackECC.colors(11));
-      dmECC.addLegendEntry("hadron:",          146, TrackECC.colors(10));
+      dmECC.addLegendEntry("hadron:",           56, TrackECC.colors(14));
+      dmECC.addLegendEntry("hadron:",           74, TrackECC.colors(15));
+      dmECC.addLegendEntry("hadron:",           92, TrackECC.colors(10));
+      dmECC.addLegendEntry("hadron:",          110, TrackECC.colors(9));
+      dmECC.addLegendEntry("hadron:",          128, TrackECC.colors(17));
+      dmECC.addLegendEntry("proton:",          146, TrackECC.colors(12));
+      dmECC.addLegendEntry("hadron:",          164, TrackECC.colors(13));
+      dmECC.addLegendEntry("hadron:",          182, TrackECC.colors(11));
+      dmECC.addLegendEntry("hadron:",          200, TrackECC.colors(16));
 
       break;
 
