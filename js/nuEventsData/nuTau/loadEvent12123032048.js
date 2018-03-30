@@ -86,9 +86,7 @@ demobbed.event().hitsRPC()[1] = [
   new HitRPC(21004, -259.7, -226.48, 3.5)
 ];
 
-demobbed.event().hitsDT()[0] = [
-
-];
+demobbed.event().hitsDT()[0] = [];
 
 demobbed.event().verticesECC([
   new Vertex([107781, 92485.8, 48813], [306.15, -172.416, -685.811]),
