@@ -23,10 +23,10 @@ function changeScrLoadEvent(evID) { // It is assumed here that the evID has been
 
   let scrLoadEvent = document.createElement("script");
 
-  //var host = window.location.origin;
-  //scrLoadEvent.src = host + "/static/node_modules/demobbed-viewer/js/nuEventsData/";
+  var host = window.location.origin;
+  scrLoadEvent.src = host + "/static/node_modules/demobbed-viewer/js/nuEventsData/";
 
-  scrLoadEvent.src = "js/nuEventsData/";
+  // scrLoadEvent.src = "js/nuEventsData/";
 
   switch (demobbed.evSampleId()) {
   case 1:
