@@ -80,28 +80,28 @@ dmED.initTrackLineProperties = function() {
 };
 //------------------------------------------------------------------------------
 
-dmED.onMouseDown = function() {
+//dmED.onMouseDown = function() {
 
   // JUST A TEST
 
-  let svgX = d3.mouse(this)[0];
-  let svgY = d3.mouse(this)[1];
+//  let svgX = d3.mouse(this)[0];
+//  let svgY = d3.mouse(this)[1];
 
-  let detX = dmED.scalesOfCanvEmb()[0].invert(svgY);
-  let detZ = dmED.scalesOfCanvEmb()[2].invert(svgX);
+//  let detX = dmED.scalesOfCanvEmb()[0].invert(svgY);
+//  let detZ = dmED.scalesOfCanvEmb()[2].invert(svgX);
 
-  let hit = demobbed.event().hitsTT()[0][0];
+//  let hit = demobbed.event().hitsTT()[0][0];
 
-  let selectorHitElID = "#h" + hit.id();
+//  let selectorHitElID = "#h" + hit.id();
 
-  let hitColor = "red";
+//  let hitColor = "red";
 
-  hit.color(hitColor);
+//  hit.color(hitColor);
 
-  d3.select(selectorHitElID)
-    .attr("fill", hitColor);
+//  d3.select(selectorHitElID)
+//    .attr("fill", hitColor);
 
-};
+//};
 //-----------------------------------------------------------------------------
 
 dmED.createDrawGroupsAndTitles = function() {

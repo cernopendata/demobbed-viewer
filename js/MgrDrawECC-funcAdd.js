@@ -87,15 +87,15 @@ dmECC.initRenderers = function() {
 };
 //------------------------------------------------------------------------------
 
-dmECC.initControls = function() {
+//dmECC.initControls = function() {
 
-  dmECC.controls( new THREE.TrackballControls(dmECC.camera(), dmECC.renderer().domElement) );
+//  dmECC.controls( new THREE.TrackballControls(dmECC.camera(), dmECC.renderer().domElement) );
 
-  dmECC.controls().rotateSpeed = 5.0;
-  dmECC.controls().zoomSpeed = 0.5;
+//  dmECC.controls().rotateSpeed = 5.0;
+//  dmECC.controls().zoomSpeed = 0.5;
 
-  //dmECC.controls().addEventListener('change', dmECC.render);
-};
+//  //dmECC.controls().addEventListener('change', dmECC.render);
+//};
 //------------------------------------------------------------------------------
 
 dmECC.initVertexProperties = function() {
@@ -295,8 +295,6 @@ dmECC.drawEvent = function(resetCameraPos) {
   const primVertDrawPos = dmECC.primVertDrawPos();
 
   //console.log("000: primVertDrawPos.x = " + primVertDrawPos.x);
-  //console.log("000: primVertDrawPos.y = " + primVertDrawPos.y);
-  //console.log("000: primVertDrawPos.z = " + primVertDrawPos.z);
 
   if (resetCameraPos) {
 
@@ -317,12 +315,7 @@ dmECC.drawEvent = function(resetCameraPos) {
   //let cameraDirection = dmECC.camera().getWorldDirection();
 
   //console.log("111: cameraDirection.x = " + cameraDirection.x);
-  //console.log("111: cameraDirection.y = " + cameraDirection.y);
-  //console.log("111: cameraDirection.z = " + cameraDirection.z);
-
   //console.log("222: dmECC.camera().position.x = " + dmECC.camera().position.x);
-  //console.log("222: dmECC.camera().position.y = " + dmECC.camera().position.y);
-  //console.log("222: dmECC.camera().position.z = " + dmECC.camera().position.z);
 
   //dmECC.controls().update();
 
@@ -563,7 +556,7 @@ dmECC.drawTracksFromVertex = function() {
 
     }
 
-    // This cycle must be uncommented in case the primary vertex draw position is not (0, 0, 0)!!!
+    // This cycle must be uncommented (and tested) in case the primary vertex draw position is not (0, 0, 0)!!!
     //for (let ip = 0; ip < 3; ip++) {
     //  const xyz = primVertDrawPos.getComponent(ip);
     //  trBeg[ip] += xyz;
@@ -791,8 +784,6 @@ dmECC.initTrackLegend = function() {
   dmECC.trackLegendHeight(canvasLegendECC.height);
 
   dmECC.trackLegendContext(canvasLegendECC.getContext("2d"));
-
-  //dmECC.trackLegendLineBeg(155);
 
   dmECC.trackLegendLineBeg(canvasLegendECC.width - 45);
   dmECC.trackLegendLineEnd(canvasLegendECC.width - 10);

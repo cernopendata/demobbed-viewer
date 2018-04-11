@@ -131,8 +131,6 @@ class WallTT extends DetGeomElement {
 
     super(id, xMax, yMax, zMin, dimX, dimY, dimZ);
 
-    //this._color = "gray";
-    //this._color = "dimgray";
     this._color = "darkgray";
 
     this._borderColor = "darkgray";
@@ -148,8 +146,6 @@ class WallBrick extends DetGeomElement {
 
     super(id, xMax, yMax, zMin, dimX, dimY, dimZ);
 
-    //this._color = "cadetblue";
-    //this._color = "darkcyan";
     this._color = "mediumaquamarine";
 
     this._borderColor = "mediumaquamarine";
@@ -165,10 +161,6 @@ class LayerRPC extends DetGeomElement {
 
     super(id, xMax, yMax, zMin, dimX, dimY, dimZ);
 
-    //this._color = "sienna";
-    //this._color = "goldenrod";
-    //this._color = "indianred";
-    //this._color = "darkorange";
     this._color = "chocolate";
 
     this._borderColor = "chocolate";
@@ -184,9 +176,6 @@ class LayerDT extends DetGeomElement {
 
     super(id, xMax, yMax, zMin, dimX, dimY, dimZ);
 
-    //this._color = "lightblue";
-    //this._color = "skyblue";
-    //this._color = "lightseagreen";
     this._color = "darkseagreen";
 
     this._borderColor = "darkseagreen";
@@ -202,8 +191,6 @@ class BrickVis extends DetGeomElement {
 
     super(id, xMax, yMax, zMin, dimX, dimY, dimZ);
 
-    //this._color = "cadetblue";
-    //this._color = "darkcyan";
     this._color = "mediumaquamarine";
 
     this._borderColor = "dimgray";
@@ -219,13 +206,6 @@ class BrickVertex extends DetGeomElement {
 
     super(id, xMax, yMax, zMin, dimX, dimY, dimZ);
 
-    //this._color = "fuchsia";
-    //this._color = "hotpink";
-    //this._color = "magenta";
-    //this._color = "orchid";
-    //this._color = "plum";
-    //this._color = "violet";
-    //this._color = "deeppink";
     this._color = "lightpink";
 
     this._borderColor = "dimgray";

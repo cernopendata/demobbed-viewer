@@ -11,7 +11,7 @@ class MgrDrawECC { // Manager intended for drawing of (3D) tracks found in emuls
     this._renderer      = null;
     this._rendererInset = null;
 
-    this._controls = null;
+    //this._controls = null;
 
     this._zoom = 1;
 
@@ -164,18 +164,14 @@ class MgrDrawECC { // Manager intended for drawing of (3D) tracks found in emuls
 
   };
 
-  controls(cont) {
-
-    if (cont === undefined) return this._controls;
-
-    if (typeof(cont) !== "object") {
-      alert("MgrDrawECC-def::controls()::Error: cont is not an object!!!: typeof(cont) = " + typeof(cont) + "!!!");
-      return;
-    }
-
-    this._controls = cont;
-
-  };
+  //controls(cont) {
+    //if (cont === undefined) return this._controls;
+    //if (typeof(cont) !== "object") {
+      //alert("MgrDrawECC-def::controls()::Error: cont is not an object!!!: typeof(cont) = " + typeof(cont) + "!!!");
+      //return;
+    //}
+    //this._controls = cont;
+  //};
 
   zoom(zz) {
 

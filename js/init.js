@@ -3,8 +3,6 @@
 
 const demobbed = new Demobbed();
 
-//$("#span-version").html( "v" + demobbed.version() );
-
 demobbed.mgrGeomED( new MgrGeomED() );
 
 const gmED = demobbed.mgrGeomED();

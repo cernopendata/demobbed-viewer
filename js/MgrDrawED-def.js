@@ -22,7 +22,7 @@ class MgrDrawED { // Manager intended for drawing of Electronic detector (2D) ev
 
       leftW:   50, //px
       rightW:   0, //px
-      topW:    20,
+      topW:    20, //px
       bottomW: 35  //px
 
     };
