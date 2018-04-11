@@ -4,8 +4,8 @@ class DetCfg { // Parameters of the OPERA detector configuration
 
     return { // global OPERA ED bounds for the whole SVG viewport
 
-      xyzMin: [-600, -600, -1000], // cm    yMin=xMin!!!
-      xyzMax: [ 560,  560,  1100]  // cm    yMax=xMax!!!
+      xyzMin: [-600, -600, -1000], // cm   (yMin=xMin!!!)
+      xyzMax: [ 560,  560,  1100]  // cm   (yMax=xMax!!!)
 
     };
 

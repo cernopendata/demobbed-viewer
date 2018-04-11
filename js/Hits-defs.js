@@ -102,22 +102,12 @@ class HitTT extends Hit { // Hit of the Target Tracker (TT) detector
     super(id, x, z);
 
     if (!HitTT.checkAmpl(ampl)) return;
-    //if (!HitTT.checkAmpl(amplR)) return;
 
-    this._ampl = ampl; // amplitude of the TT signal from the "left" side (in photo-electrons, p.e.) 
-    //this._amplR = amplR; // amplitude of the TT signal from the "right" side (in photo-electrons, p.e.) 
-
-    //this._colorL = "red";
+    this._ampl = ampl; // amplitude of the TT signal (in photo-electrons, p.e.)
 
   };
 
   ampl() { return this._ampl; };
-  //amplR() { return this._amplR; };
-
-  //colorL(col) {
-    //if (col === undefined) return this._colorL;
-    //this._colorL = col;
-  //};
 
 };
 //--------------------------------------------------------------------------

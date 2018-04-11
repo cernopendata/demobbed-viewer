@@ -23,30 +23,30 @@ gmED.genBrickVisPars = function() {
     let brID = 0;
 
     for (let ip = 0; ip < 2; ip++) {
-  
+
       brID = 0;
-  
+
       for (let iw = 0; iw < nbOfBrickWalls[sm]; iw++) {
 
         const wn = sm*nbOfBrickWalls[0] + iw;
-    
+
         let   brXmax = gmED.wallsBrick()[wn].xyMax(0);
         let   brYmax = gmED.wallsBrick()[wn].xyMax(1);
         const brZmin = gmED.wallsBrick()[wn].zMin(0);
-    
+
         for (let ic = 0; ic < nbOfBricks[ip]; ic++) {
-    
+
           brVis[sm][ip][brID] = new BrickVis(brID, brXmax, brYmax, brZmin, brDimX, brDimY, brDimZ),
-    
+
           brID++;
-    
+
           if (ip) brYmax -= brDimY;
           else    brXmax -= brDimX;
-    
+
         }
-    
+
       }
-  
+
     }
 
   }
@@ -137,7 +137,7 @@ gmED.findBrickVertexPars = function() {
   // Make the vertex brick dims a bit higher to overcome possible disalignment!
 
   const mm3 = 0.3;   // 3mm
-  const mm6 = 2*mm3; 
+  const mm6 = 2*mm3;
 
   gmED.brickVertex([new BrickVertex(0, brXYmax[0] + mm3, brXYmax[1] + mm3, brZmin - mm3,
                    DetCfg.brickDims(0) + mm6, DetCfg.brickDims(1) + mm6, DetCfg.brickDims(2) + mm6)]);
