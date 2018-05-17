@@ -983,7 +983,7 @@ dmECC.prepareTitlesOfTracksAndAxes = function() {
   let fontSize = axesLengthes[1]/8;
   if (stretchYcoeff < 1) fontSize /= stretchYcoeff;
 
-  dmECC.titleFontLoader().load('./fonts/helvetiker_regular.typeface.json', function(font) {
+  dmECC.titleFontLoader().load('/static/node_modules/demobbed-viewer/fonts/helvetiker_regular.typeface.json', function(font) {
 
     // prepare axes titles
 
