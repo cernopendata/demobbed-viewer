@@ -7,7 +7,7 @@ class Event { // OPERA event object will contain experimental data to be display
       return false;
     }
 
-    if ( (jd < 218000000) || (jd > 12400000000) ) {
+    if ( (jd < 23300000) || (jd > 12400000000) ) {
       alert("Event-def::checkId()::Error: Event id is wrong: " + jd + "!!!");
       return false;
     }
@@ -23,7 +23,7 @@ class Event { // OPERA event object will contain experimental data to be display
       return false;
     }
 
-    if ( (ts < 1204329600000) || (ts > 1356912000000) ) { // from 01 Mar 2008 till 31 Dec 2012
+    if ( (ts < 1188626400000) || (ts > 1356912000000) ) { // from 01 Sep 2007 till 31 Dec 2012
       alert("Event-def::checkTimeStamp()::Error: ts is wrong: " + ts + "!!!");
       return false;
     }
@@ -57,15 +57,11 @@ class Event { // OPERA event object will contain experimental data to be display
 
     this._id = 0;             // OPERA event id (11-digit integer number)
 
-    this._date = {};     // Date object made of the OPERA event header time (millisecons since 01.01.1970 ???)
+    this._date = {};          // Date object made of the OPERA event header time (millisecons since 01.01.1970)
 
     this._hitsTT  = [[], []]; // Array of 2 arrays (for XZ & YZ views) of the Target Tracker (TT) hits
     this._hitsRPC = [[], []]; // Array of 2 arrays (for XZ & YZ views) of the RPC hits
     this._hitsDT  = [[], []]; // Array of 2 arrays (the array for YZ view is empty!) of the drift tube (DT) hits
-
-    this._engHad = 0;         // Hadronic energy (in GeV)
-    this._engVis = 0;         // Visible energy  (in GeV)
-    this._engNeu = 0;         // Neutrino energy (in GeV)
 
     this._verticesECC = [];   // Array of vertices. [0] - the primary neutrino interaction vertex!
 
@@ -92,60 +88,6 @@ class Event { // OPERA event object will contain experimental data to be display
     if (!Event.checkTimeStamp(ts)) return;
 
     this._date = new Date(ts);
-
-  };
-
-  engHad(enghad) {
-
-    if (enghad === undefined) return this._engHad;
-
-    if (!Utils.checkNumber(enghad)) {
-      alert("Event-def::engHad()::Error: enghad is not a number: " + enghad + "!!!");
-      return;
-    }
-
-    if ( (enghad < 0) || (enghad > 100000) ) {
-      alert("Event-def::engHad()::Error: enghad = " + enghad + "!!!");
-      return;
-    }
-
-    this._engHad = enghad;
-
-  };
-
-  engVis(engvis) {
-
-    if (engvis === undefined) return this._engVis;
-
-    if (!Utils.checkNumber(engvis)) {
-      alert("Event-def::engVis()::Error: engvis is not a number: " + engvis + "!!!");
-      return;
-    }
-
-    if ( (engvis < 0) || (engvis > 100000) ) {
-      alert("Event-def::engVis()::Error: engvis = " + engvis + "!!!");
-      return;
-    }
-
-    this._engVis = engvis;
-
-  };
-
-  engNeu(engneu) {
-
-    if (engneu === undefined) return this._engNeu;
-
-    if (!Utils.checkNumber(engneu)) {
-      alert("Event-def::engNeu()::Error: engneu is not a number: " + engneu + "!!!");
-      return;
-    }
-
-    if ( (engneu < 0) || (engneu > 100000) ) {
-      alert("Event-def::engNeu()::Error: engneu = " + engneu + "!!!");
-      return;
-    }
-
-    this._engNeu = engneu;
 
   };
 

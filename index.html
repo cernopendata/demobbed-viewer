@@ -9,12 +9,6 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- <style>
-       body {
-         background-color: #CFE1EB;
-       }
-     </style> -->
-
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/demobbed.css">
@@ -24,7 +18,7 @@
     <script src="js/lib/d3.min.js"></script>
     <script src="js/lib/three.min.js"></script>
     <script src="js/lib/three3DExtras.min.js"></script>
-    <!-- <script src="js/lib/TrackballControls.js"></script> -->
+    <script src="js/lib/TrackballControls.js"></script>
 
     <script src="js/DetCfg-def.js"></script>
     <script src="js/Utils-def.js"></script>
@@ -32,7 +26,7 @@
     <script src="js/Vertex-def.js"></script>
     <script src="js/TrackECC-def.js"></script>
     <script src="js/Event-def.js"></script>
-    <script src="js/loadEvent.js"></script>
+    <script src="js/loadUserSpecifiedEvent.js"></script>
     <script src="js/changeEventSample.js"></script>
     <script src="js/DetElems-defs.js"></script>
     <script src="js/MgrGeomED-def.js"></script>
@@ -48,372 +42,295 @@
 
   </head>
 
-  <body id="body-demobbed-viewer">
+  <body id="body-demobbed-viewer" data-event-id="9190097972">
 
-    <div class="container-fluid" id="div-container-fluid">
+    <div class="viewer" id="div-viewer">
 
-      <div class="row" id="div-row-displays">
+      <div class="sidebar" id="div-sidebar">
 
-        <!-- <div class="col-lg-6" id="div-col-display-ED"> -->
-        <div id="div-col-display-ED">
+        <div id="div-logo-img">
+          <a target="_blank" href="http://operaweb.lngs.infn.it/">
+            <img src="graphics/opera.png" alt="OPERA" title="OPERA experiment">
+          </a>
+        </div>
 
-          <div class="row" id="div-row-display-ED-XZ">
-            <div class="col-lg-12">
-              <table>
-                <tr>
+        <div id="div-nu-beam-img"> <img src="graphics/nu-beam.png"> </div>
 
-                  <td id="td-control-panel-ED-XZ">
-                    <table>
-
-                      <tr>
-                        <td> <div id="div-opera-logo"> <img src="graphics/opera.png" alt="OPERA" width="85"> </div> </td>
-                      </tr>
-
-                      <tr>
-                        <td> <div id="div-img-nu-beam-ED-XZ"> <img src="graphics/nu-beam.png" alt="Nu beam" width="85"> </div> </td>
-                      </tr>
-
-                      <tr id="tr-move-view-controls-ED-XZ">
-                        <td>
-                          <table>
-
-                            <tr>
-                              <td>
-                                <div class="btn-group" role="group">
-                                  <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawED().moveView(0, 1);" title="Move XZ view up">
-                                    <img src="graphics/view-up.png" class="img-responsive"/>
-                                  </button>
-                                  <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawED().moveView(0, -1);" title="Move XZ view down">
-                                    <img src="graphics/view-down.png" class="img-responsive"/>
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-
-                            <tr>
-                              <td>
-                                <div class="btn-group" role="group">
-                                  <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawED().moveView(2, -1);" title="Move XZ view left">
-                                    <img src="graphics/view-left.png" class="img-responsive"/>
-                                  </button>
-                                  <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawED().moveView(2,  1);" title="Move XZ view right">
-                                    <img src="graphics/view-right.png" class="img-responsive"/>
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-
-                          </table>
-                        </td>
-                      </tr> <!-- "tr-move-view-controls-ED-XZ" -->
-
-                    </table>
-                  </td> <!-- "td-control-panel-ED-XZ" -->
-
-                  <td id="td-display-panel-ED-XZ">
-                    <table>
-
-                      <tr>
-                        <td>
-                          <div class="titlebar" id="div-titlebar-ED">OPERA electronic detectors (ED) display</div>
-                        </td>
-                      </tr>
-
-                      <tr id="tr-toolbar-ED">
-                        <td>
-                          <div>
-
-                            <!-- <label for="select-eventSample-ED">Sample:</label> -->
-                            <select id="select-eventSample-ED" onchange="changeEventSample(this, event, value);">
-                              <option value="nuMu">nuMu</option>
-                              <option value="nuTau">nuTau</option>
-                              <!-- <option value="nuE">nuE</option> -->
-                            </select>
-
-                            <label for="input-event-ED">Event:</label>
-                            <input id="input-event-ED" onkeypress="loadEvent(this, event, value);" size="11">
-
-                            <!-- ----------------------------------------- -->
-
-                            <div class="btn-group" role="group">
-                              <button type="button" class="btn btn-default btn-xs" onclick="demobbed.loadPrevOrNextEvent(-1);" title="Previous event">
-                                <img src="graphics/event-prev.png" class="img-responsive"/>
-                              </button>
-                              <button type="button" class="btn btn-default btn-xs" onclick="demobbed.loadPrevOrNextEvent(0);" title="Reload the event">
-                                <img src="graphics/event-reload.png" class="img-responsive"/>
-                              </button>
-                              <button type="button" class="btn btn-default btn-xs" onclick="demobbed.loadPrevOrNextEvent(1);" title="Next event">
-                                <img src="graphics/event-next.png" class="img-responsive"/>
-                              </button>
-                            </div>
-
-                            <div class="btn-group" role="group">
-                              <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawED().zoomIn();" title="Zoom in">
-                                <img src="graphics/zoom-in.png" class="img-responsive"/>
-                              </button>
-                              <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawED().zoomOut();" title="Zoom out">
-                                <img src="graphics/zoom-out.png" class="img-responsive"/>
-                              </button>
-                            </div>
-
-                            <div class="btn-group" role="group">
-                              <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawED().zoomToBrick();" title="Show the vertex brick">
-                                <img src="graphics/zoom-brick.png" class="img-responsive"/>
-                              </button>
-                              <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawED().zoomToEvent();" title="Show the event region">
-                                <img src="graphics/zoom-event.png" class="img-responsive"/>
-                              </button>
-                              <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawED().zoomToDetector();" title="Show the whole detector">
-                                <img src="graphics/zoom-det.png" class="img-responsive"/>
-                              </button>
-                            </div>
-
-                            <div class="btn-group" role="group">
-                              <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawECC().drawECC(1);" title="Open the ECC display">
-                                <img src="graphics/open-ECC.png" class="img-responsive"/>
-                              </button>
-                            </div>
-
-                            <div class="btn-group" role="group">
-                              <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#div-help" title="Help">
-                                <img src="graphics/help.png" class="img-responsive"/>
-                              </button>
-                              <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#div-about" title="About">
-                                <img src="graphics/about.png" class="img-responsive"/>
-                              </button>
-                            </div>
-
-                          </div>
-                        </td>
-                      </tr> <!-- "tr-toolbar-ED" -->
-
-                      <tr id="tr-canvas-ED-XZ">
-                        <td>
-
-                          <div id="div-canvas-ED-XZ">
-                            <span id="span-canvas-ED-XZ-title" class="canvas-title"></span>
-                          </div>
-
-                        </td>
-                      </tr> <!-- "tr-canvas-ED-XZ" -->
-
-                    </table>
-                  </td> <!-- "td-display-panel-ED-XZ" -->
-
-                </tr>
-              </table>
-            </div>
-          </div> <!-- "div-row-display-ED-XZ" -->
-
-          <div class="row" id="div-row-display-ED-YZ">
-            <div class="col-lg-12">
-              <table>
-                <tr>
-
-                  <td id="td-control-panel-ED-YZ">
-                    <table>
-
-                      <tr id="tr-move-view-controls-ED-YZ">
-                        <td>
-                          <table>
-
-                            <tr>
-                              <td>
-                                <div class="btn-group" role="group">
-                                  <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawED().moveView(1, 1);" title="Move YZ view up">
-                                    <img src="graphics/view-up.png" class="img-responsive"/>
-                                  </button>
-                                  <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawED().moveView(1, -1);" title="Move YZ view down">
-                                    <img src="graphics/view-down.png" class="img-responsive"/>
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-
-                          </table>
-                        </td>
-                      </tr> <!-- "tr-move-view-controls-ED-YZ" -->
-
-                      <tr>
-                        <td>
-                          <div id="div-img-nu-beam-ED-YZ"> <img src="graphics/nu-beam.png" alt="Nu beam" width="85"> </div>
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td>
-                          <div id="div-blank-image-controls-ED-YZ"> <img src="graphics/blank-image.png" alt="" width="85" height="60"> </div>
-                        </td>
-                      </tr>
-
-                    </table>
-                  </td> <!-- "td-control-panel-ED-YZ" -->
-
-                  <td>
-                    <div id="div-canvas-ED-YZ">
-                      <span id="span-canvas-ED-YZ-title" class="canvas-title"></span>
-                    </div>
-                  </td>
-
-                </tr>
-              </table>
-            </div>
-          </div> <!-- "div-row-display-ED-YZ" -->
-
-        </div> <!-- "div-col-display-ED" -->
-
-        <!-- <div class="col-lg-6" id="div-col-display-ECC"> -->
-        <div id="div-col-display-ECC">
+        <div class="col" id="div-controls-ED">
           <table>
+
             <tr>
-
-              <td id="td-control-panel-ECC">
-                <table>
-
-                  <tr>
-                    <td> <img src="graphics/blank-image.png" alt="" width="85" height="50"> </td>
-                  </tr>
-
-                  <tr id="tr-move-view-controls-ECC">
-                    <td>
-                      <table>
-
-                        <tr>
-                          <td>
-                            <div class="btn-group" role="group">
-                              <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawECC().moveView(1, 1);" title="Move view up">
-                                <img src="graphics/view-up.png" class="img-responsive"/>
-                              </button>
-                              <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawECC().moveView(1, -1);" title="Move view down">
-                                <img src="graphics/view-down.png" class="img-responsive"/>
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <td>
-                            <div class="btn-group" role="group">
-                              <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawECC().moveView(2, -1);" title="Move view left">
-                                <img src="graphics/view-left.png" class="img-responsive"/>
-                              </button>
-                              <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawECC().moveView(2,  1);" title="Move view right">
-                                <img src="graphics/view-right.png" class="img-responsive"/>
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-
-                      </table>
-                    </td>
-                  </tr> <!-- "tr-move-view-controls-ECC" -->
-
-                </table>
-              </td> <!-- "td-control-panel-ECC" -->
-
-              <td id="td-display-panel-ECC">
-                <table>
-
-                  <tr>
-                    <td>
-                      <div class="titlebar" id="div-titlebar-ECC">OPERA lead-emulsion detectors (ECC) display</div>
-                    </td>
-                  </tr>
-
-                  <tr id="tr-toolbar-ECC">
-                    <td>
-                      <div>
-
-                        <!-- <label for="select-eventSample-ECC">Sample:</label> -->
-                        <select id="select-eventSample-ECC" onchange="changeEventSample(this, event, value);">
-                          <option value="nuMu">nuMu</option>
-                          <option value="nuTau">nuTau</option>
-                          <!-- <option value="nuE">nuE</option> -->
-                        </select>
-
-                        <label for="input-event-ECC">Event:</label>
-                        <input id="input-event-ECC" onkeypress="loadEvent(this, event, value);" size="11">
-
-                        <div class="btn-group" role="group">
-                          <button type="button" class="btn btn-default btn-xs" onclick="demobbed.loadPrevOrNextEvent(-1);" title="Previous event">
-                            <img src="graphics/event-prev.png" class="img-responsive"/>
-                          </button>
-                          <button type="button" class="btn btn-default btn-xs" onclick="demobbed.loadPrevOrNextEvent(0);" title="Reload the event">
-                            <img src="graphics/event-reload.png" class="img-responsive"/>
-                          </button>
-                          <button type="button" class="btn btn-default btn-xs" onclick="demobbed.loadPrevOrNextEvent(1);" title="Next event">
-                            <img src="graphics/event-next.png" class="img-responsive"/>
-                          </button>
-                        </div>
-
-                        <div class="btn-group" role="group">
-                          <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawECC().zoomInOut(1);" title="Zoom in">
-                            <img src="graphics/zoom-in.png" class="img-responsive"/>
-                          </button>
-                          <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawECC().zoomInOut(-1);" title="Zoom out">
-                            <img src="graphics/zoom-out.png" class="img-responsive"/>
-                          </button>
-                        </div>
-
-                        <div class="btn-group" role="group">
-                          <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawECC().stretchY(1);" title="Stretch vertically">
-                            <img src="graphics/stretch-y.png" class="img-responsive"/>
-                          </button>
-                          <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawECC().stretchY(-1);" title="Compress vertically">
-                            <img src="graphics/compress-y.png" class="img-responsive"/>
-                          </button>
-                        </div>
-
-                        <div class="btn-group" role="group">
-                          <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawECC().decelerateAnimation();" title="Decelerate/stop animation">
-                            <img src="graphics/anim-decel.png" class="img-responsive"/>
-                          </button>
-                          <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawECC().accelerateAnimation();" title="Start/accelerate animation">
-                            <img src="graphics/anim-accel.png" class="img-responsive"/>
-                          </button>
-                        </div>
-
-                        <div class="btn-group" role="group">
-                          <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawECC().drawECC(0);" title="Close the ECC display">
-                            <img src="graphics/close-ECC.png" class="img-responsive"/>
-                          </button>
-                        </div>
-
-                      </div>
-                    </td>
-                  </tr> <!-- "tr-toolbar-ECC" -->
-
-                  <tr id="tr-canvas-ECC">
-                    <td>
-                      <div id="div-canvas-ECC">
-
-                        <span id="span-canvas-ECC-title" class="canvas-title"></span>
-
-                        <canvas id="canvas-axes-ECC"></canvas>
-
-                        <canvas id="canvas-legend-ECC" class="canvas-bordered-white" width="230" height="230"></canvas>
-
-                        <canvas id="canvas-ECC" class="canvas-bordered-white"></canvas>
-
-                      </div> <!-- "div-canvas-ECC" -->
-                    </td>
-                  </tr> <!-- "tr-canvas-ECC" -->
-
-                </table>
-              </td> <!-- "td-display-panel-ECC" -->
-
+              <td>
+                <div class="btn-group" role="group">
+                  <button type="button" id="btn-ed-move-view-xz-up" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawED().moveView(0, 1);" title="Move ED XZ view up">
+                    <img src="graphics/view-up.png" class="img-responsive"/>
+                  </button>
+                  <button type="button" id="btn-ed-move-view-xz-down" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawED().moveView(0, -1);" title="Move ED XZ view down">
+                    <img src="graphics/view-down.png" class="img-responsive"/>
+                  </button>
+                </div>
+              </td>
             </tr>
-          </table> 
-        </div> <!-- "div-col-display-ECC" -->
 
-      </div> <!-- "div-row-displays" -->
+            <tr>
+              <td>
+                <div class="btn-group" role="group">
+                  <button type="button" id="btn-ed-move-views-left" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawED().moveView(2, -1);" title="Move ED views left">
+                    <img src="graphics/view-left.png" class="img-responsive"/>
+                  </button>
+                  <button type="button" id="btn-ed-move-views-right" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawED().moveView(2,  1);" title="Move ED views right">
+                    <img src="graphics/view-right.png" class="img-responsive"/>
+                  </button>
+                </div>
+              </td>
+            </tr>
 
-    </div> <!-- "div-container-fluid" -->
+            <tr>
+              <td>
+                <div class="btn-group" role="group">
+                  <button type="button" id="btn-ed-move-view-yz-up" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawED().moveView(1, 1);" title="Move ED YZ view up">
+                    <img src="graphics/view-up.png" class="img-responsive"/>
+                  </button>
+                  <button type="button" id="btn-ed-move-view-yz-down" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawED().moveView(1, -1);" title="Move ED YZ view down">
+                    <img src="graphics/view-down.png" class="img-responsive"/>
+                  </button>
+                </div>
+              </td>
+            </tr>
 
-    <!-- ----------------------------------------- -->
+          </table>
+        </div> <!-- div-controls-ED" -->
+
+      </div> <!-- "div-sidebar" -->
+
+      <div class="container-fluid" id="div-display">
+
+        <div class="row" id="div-row-display-ED">
+          <div class="col-md-12" id="div-col-display-ED">
+
+            <div class="titlebar" id="div-titlebar-ED">OPERA electronic detectors (ED) display</div>
+
+            <div id="div-toolbar-ED">
+
+              <select id="select-eventSample-ED" onchange="changeEventSample(this, event, value);">
+                <optgroup label="&nbsp;Sample:">
+                  <option value="nuMu">nuMu</option>
+                  <option value="nuTau">nuTau</option>
+                  <option value="nuE">nuE</option>
+                  <option value="charm">charm</option>
+                </optgroup>
+              </select>
+
+              <label for="input-event-ED">Event:</label>
+              <input id="input-event-ED" onkeypress="loadUserSpecifiedEvent(this, event, value);" size="11">
+
+              <!-- ----------------------------------------- -->
+
+              <div class="btn-group" role="group">
+                <button type="button" id="btn-ed-prev-event" class="btn btn-default btn-xs"
+                        onclick="demobbed.loadPrevOrNextEvent(-1);" title="Previous event">
+                  <img src="graphics/event-prev.png"
+                       class="img-responsive"/>
+                </button>
+                <button type="button" id="btn-ed-reload-event" class="btn btn-default btn-xs"
+                        onclick="demobbed.loadPrevOrNextEvent(0);" title="Reload the event">
+                  <img src="graphics/event-reload.png"
+                       class="img-responsive"/>
+                </button>
+                <button type="button" id="btn-ed-next-event" class="btn btn-default btn-xs"
+                        onclick="demobbed.loadPrevOrNextEvent(1);" title="Next event">
+                  <img src="graphics/event-next.png"
+                       class="img-responsive"/>
+                </button>
+              </div>
+
+              <div class="btn-group" role="group">
+                <button type="button" id="btn-ed-zoom-in" class="btn btn-default btn-xs"
+                        onclick="demobbed.mgrDrawED().zoomIn();" title="Zoom in">
+                  <img src="graphics/zoom-in.png"
+                       class="img-responsive"/>
+                </button>
+                <button type="button" id="btn-ed-zoom-out" class="btn btn-default btn-xs"
+                        onclick="demobbed.mgrDrawED().zoomOut();" title="Zoom out">
+                  <img src="graphics/zoom-out.png"
+                       class="img-responsive"/>
+                </button>
+              </div>
+
+              <div class="btn-group" role="group">
+                <button type="button" id="btn-ed-zoom-brick" class="btn btn-default btn-xs"
+                        onclick="demobbed.mgrDrawED().zoomToBrick();" title="Show the vertex brick">
+                  <img src="graphics/zoom-brick.png"
+                       class="img-responsive"/>
+                </button>
+                <button type="button" id="btn-ed-zoom-event" class="btn btn-default btn-xs"
+                        onclick="demobbed.mgrDrawED().zoomToEvent();" title="Show the event region">
+                  <img src="graphics/zoom-event.png"
+                       class="img-responsive"/>
+                </button>
+                <button type="button" id="btn-ed-zoom-det" class="btn btn-default btn-xs active"
+                        onclick="demobbed.mgrDrawED().zoomToDetector();" title="Show the whole detector">
+                  <img src="graphics/zoom-det.png"
+                       class="img-responsive"/>
+                </button>
+              </div>
+
+              <!--
+              <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default btn-xs"
+                        onclick="demobbed.mgrDrawECC().drawECC(1);" title="Open the ECC display">
+                  <img src="graphics/open-ECC.png"
+                       class="img-responsive"/>
+                </button>
+              </div>
+              -->
+
+              <div class="btn-group" role="group">
+                <button type="button" id="btn-help" class="btn btn-default btn-xs" data-toggle="modal"
+                        data-target="#div-help" title="Help">
+                  <img src="graphics/help.png" class="img-responsive"/>
+                </button>
+                <button type="button" id="btn-about" class="btn btn-default btn-xs" data-toggle="modal"
+                        data-target="#div-about" title="About">
+                  <img src="graphics/about.png"
+                       class="img-responsive"/>
+                </button>
+              </div>
+
+            </div> <!-- "div-toolbar-ED" -->
+
+            <div class="row ed-display">
+              <div id="div-canvas-ED-XZ">
+                <span id="span-canvas-ED-XZ-title" class="canvas-title"></span>
+              </div>
+              <div id="div-canvas-ED-YZ">
+                <span id="span-canvas-ED-YZ-title" class="canvas-title"></span>
+              </div>
+            </div>
+
+          </div> <!-- "div-col-display-ED" -->
+        </div> <!-- div-row-display-ED" -->
+
+        <div class="row" id="div-row-display-ECC">
+          <div class="col-md-12" id="div-col-display-ECC">
+
+            <div class="titlebar" id="div-titlebar-ECC">OPERA lead-emulsion detectors (ECC) display</div>
+
+            <div id="div-toolbar-ECC">
+              <select id="select-eventSample-ECC" onchange="changeEventSample(this, event, value);">
+                <optgroup label="&nbsp;Sample:">
+                  <option value="nuMu">nuMu</option>
+                  <option value="nuTau">nuTau</option>
+                  <option value="nuE">nuE</option>
+                  <option value="charm">charm</option>
+                </optgroup>
+              </select>
+
+              <label for="input-event-ECC">Event:</label>
+              <input id="input-event-ECC" onkeypress="loadUserSpecifiedEvent(this, event, value);" size="11">
+
+              <div class="btn-group" role="group">
+                <button type="button" id="btn-ecc-prev-event" class="btn btn-default btn-xs" onclick="demobbed.loadPrevOrNextEvent(-1);"
+                        title="Previous event">
+                  <img src="graphics/event-prev.png"
+                       class="img-responsive"/>
+                </button>
+                <button type="button" id="btn-ecc-reload-event" class="btn btn-default btn-xs" onclick="demobbed.loadPrevOrNextEvent(0);"
+                        title="Reload the event">
+                  <img src="graphics/event-reload.png"
+                       class="img-responsive"/>
+                </button>
+                <button type="button" id="btn-ecc-next-event" class="btn btn-default btn-xs" onclick="demobbed.loadPrevOrNextEvent(1);"
+                        title="Next event">
+                  <img src="graphics/event-next.png"
+                       class="img-responsive"/>
+                </button>
+              </div>
+
+              <div class="btn-group" role="group">
+                <button type="button" id="btn-ecc-def-view-xz" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawECC().setDefaultView(0);" title="Set default XZ view">
+                  <img src="graphics/view-xz.png" class="img-responsive"/>
+                </button>
+                <button type="button" id="btn-ecc-def-view-yz" class="btn btn-default btn-xs active" onclick="demobbed.mgrDrawECC().setDefaultView(1);" title="Set default YZ view">
+                  <img src="graphics/view-yz.png" class="img-responsive"/>
+                </button>
+                <button type="button" id="btn-ecc-def-view-xy" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawECC().setDefaultView(2);" title="Set default XY view">
+                  <img src="graphics/view-xy.png" class="img-responsive"/>
+                </button>
+              </div>
+
+              <div class="btn-group" role="group">
+                <button type="button" id="btn-ecc-zoom-in" class="btn btn-default btn-xs"
+                        onclick="demobbed.mgrDrawECC().zoomInOut(1);" title="Zoom in">
+                  <img src="graphics/zoom-in.png" class="img-responsive"/>
+                </button>
+                <button type="button" id="btn-ecc-zoom-out" class="btn btn-default btn-xs"
+                        onclick="demobbed.mgrDrawECC().zoomInOut(-1);" title="Zoom out">
+                  <img src="graphics/zoom-out.png" class="img-responsive"/>
+                </button>
+              </div>
+
+              <div class="btn-group" role="group">
+                <button type="button" id="btn-ecc-stretch-y" class="btn btn-default btn-xs"
+                        onclick="demobbed.mgrDrawECC().stretchY(1);" title="Stretch the view along the Y axis">
+                  <img src="graphics/stretch-y.png"
+                       class="img-responsive"/>
+                </button>
+                <button type="button" id="btn-ecc-compress-y" class="btn btn-default btn-xs"
+                        onclick="demobbed.mgrDrawECC().stretchY(-1);" title="Compress the view along the Y axis">
+                  <img src="graphics/compress-y.png"
+                       class="img-responsive"/>
+                </button>
+              </div>
+
+              <div class="btn-group" role="group">
+                <button type="button" id="btn-ecc-decel-anim" class="btn btn-default btn-xs"
+                        onclick="demobbed.mgrDrawECC().decelerateRotation();"
+                        title="Decelerate/stop rotation around the Y axis">
+                  <img src="graphics/anim-decel.png"
+                       class="img-responsive"/>
+                </button>
+                <button type="button" id="btn-ecc-accel-anim" class="btn btn-default btn-xs"
+                        onclick="demobbed.mgrDrawECC().accelerateRotation();"
+                        title="Start/accelerate rotation around the Y axis">
+                  <img src="graphics/anim-accel.png"
+                       class="img-responsive"/>
+                </button>
+              </div>
+
+              <!--
+              <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default btn-xs" onclick="demobbed.mgrDrawECC().drawECC(0);"
+                        title="Close the ECC display">
+                  <img src="graphics/close-ECC.png"
+                       class="img-responsive"/>
+                </button>
+              </div>
+              -->
+
+            </div>  <!-- "div-toolbar-ECC" -->
+
+            <div class="row ecc-display">
+              <div id="div-canvas-ECC" style="position: relative;">
+                <span id="span-canvas-ECC-title" class="canvas-title"></span>
+                <canvas id="canvas-axes-ECC" style="position:absolute; left: 0;"></canvas>
+                <canvas id="canvas-ECC" class="canvas-bordered-white"></canvas>
+              </div> <!-- "div-canvas-ECC" -->
+              <div>
+                <canvas id="canvas-legend-ECC" class="canvas-bordered-white" width="230" height="230"
+                        style="position: relative; left:auto; bottom: 0;"></canvas>
+              </div>
+            </div>
+
+          </div> <!-- "div-col-display-ECC" -->
+        </div> <!-- "div-row-display-ECC" -->
+
+      </div> <!-- "div-display" -->
+
+    </div> <!-- "div-viewer" -->
 
     <div id="div-ScrLoadEvent">
-      <script id="script-LoadEvent" src="js/nuEventsData/nuMu/loadEvent10120009376.js"> </script>
+      <script id="script-LoadEvent" src="js/loadFirstEvent.js"> </script>
     </div>
 
   </body>
@@ -435,11 +352,27 @@
           </p>
 
           <p>
-            At present OPERA open data sample includes two sub-samples. The first (nuMu) data sub-sample includes 817 events used in the <a target="_blank" href="https://link.springer.com/article/10.1140%2Fepjc%2Fs10052-017-5509-y">study</a> of charged hadron multiplicities in charged-current neutrino-lead interactions in the OPERA detector. The second (nuTau) data sub-sample includes 10 tau neutrino candidate events observed by OPERA in <a target="_blank" href="http://proj-cngs.web.cern.ch/proj-cngs/">CNGS</a> neutrino beam. Event sub-sample to display can be specified in the left part of the toolbar.
+            At present OPERA open data sample includes four sub-samples (a sub-sample to display can be specified in the left part of the toolbar):
           </p>
 
           <p>
-            Opera hybrid experimental setup (described in detail <a target="_blank" href="http://iopscience.iop.org/article/10.1088/1748-0221/4/04/P04018/meta/">here</a>) included Electronic detectors (ED) for real-time detection of neutrino interactions and nuclear emulsions for precision analysis of neutrino event topologies. The ED provided positions of hits in two perpendicular planes: XZ (top view) and YZ (side view). By default, only ED information is displayed in the Demobbed-viewer. After analysis of the ED data a unit of OPERA target (lead-emulsion or ECC-brick) most probably contained the neutrino interaction vertex was extracted from the detector and its emulsion data was analysed as well. 3D view of reconstructed emulsion data can be opened in the ECC-display (see description below).
+            &nbsp;&nbsp;&nbsp;&nbsp; - the "nuTau" data sub-sample includes 10 tau neutrino candidate events <a target="_blank" href="https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.120.211801">observed</a> by OPERA in the <a target="_blank" href="http://proj-cngs.web.cern.ch/proj-cngs/">CNGS</a> neutrino beam. 
+          </p>
+
+          <p>
+            &nbsp;&nbsp;&nbsp;&nbsp; - the "nuMu" data sub-sample includes 817 events used in the <a target="_blank" href="https://link.springer.com/article/10.1140%2Fepjc%2Fs10052-017-5509-y">study</a> of charged hadron multiplicities in charged-current neutrino-lead interactions in the OPERA detector.
+          </p>
+
+          <p>
+            &nbsp;&nbsp;&nbsp;&nbsp; - the "nuE" data sub-sample includes 19 electron neutrino candidate events <a target="_blank" href="https://link.springer.com/article/10.1007%2FJHEP06%282018%29151">registered</a> in the OPERA detector.
+          </p>
+
+          <p>
+            &nbsp;&nbsp;&nbsp;&nbsp; - the "charm" data sub-sample includes 50 charm decay candidate events <a target="_blank" href="https://link.springer.com/article/10.1140%2Fepjc%2Fs10052-014-2986-0">registered</a> in the OPERA detector.
+          </p>
+          
+          <p>
+            Opera hybrid experimental setup (described in detail <a target="_blank" href="http://iopscience.iop.org/article/10.1088/1748-0221/4/04/P04018/meta/">here</a>) included Electronic detectors (ED) for real-time detection of neutrino interactions and nuclear emulsions for precision analysis of neutrino event topologies. The ED provided positions of hits in two perpendicular planes: XZ (top view) and YZ (side view). By default, only ED information is displayed in the Demobbed-viewer. After analysis of the ED data the unit of OPERA target (lead-emulsion or ECC brick) that most probably contained the neutrino interaction vertex was extracted from the detector and its emulsion data were analysed as well. 3D view of reconstructed emulsion data can be opened in the ECC display (see description below).
           </p>
 
           <p>
@@ -454,7 +387,7 @@
             <button type="button" class="btn btn-default btn-xs" onclick="" title="">
               <img src="graphics/event-next.png" class="img-responsive"/>
             </button>
-             - go to the previous/next event (if any) in the selected sub-sample. Also the event Id (10- or 11-digit number) can be specified directly in the nearest edit box.
+             - go to the previous/next event (if any) in the selected sub-sample. Also the event Id can be specified directly in the nearest edit box.
           </p>
 
           <p>
@@ -472,14 +405,14 @@
             <button type="button" class="btn btn-default btn-xs" onclick="" title="">
               <img src="graphics/zoom-out.png" class="img-responsive"/>
             </button>
-             - zoom in/out. Please note, that the default (whole detector) views of the ED display can't be zoomed out.
+             - zoom in/out. Please note that the default (whole detector) views of the ED display can't be zoomed out.
           </p>
 
           <p>
             <button type="button" class="btn btn-default btn-xs" onclick="" title="">
               <img src="graphics/zoom-brick.png" class="img-responsive"/>
             </button>
-             - move the XZ and YZ camera views to the vertex brick. ECC-brick that contains the primary neutrino interaction vertex will be shown (an appropriate zooming will be adjusted automatically). The vertex position as well as projections of muon and some long hadron tracks found in the emulsion will be displayed as well.
+             - move the XZ and YZ camera views to the vertex brick. ECC brick that contains the primary neutrino interaction vertex will be shown (an appropriate zooming will be adjusted automatically). The vertex position as well as projections of muon and some long hadron tracks found in the emulsion will be displayed as well.
           </p>
 
           <p>
@@ -512,9 +445,14 @@
             <button type="button" class="btn btn-default btn-xs" onclick="" title="">
               <img src="graphics/view-right.png" class="img-responsive"/>
             </button>
-             - move the camera views, correspondingly, up, down, left, and right.
+             - move the ED display camera views, correspondingly, up, down, left, and right.
           </p>
 
+          <p>
+            The ECC display view can be rotated or moved with help of the left or right mouse buttons, correspondingly.
+          </p>
+
+          <!--
           <p>
             <button type="button" class="btn btn-default btn-xs" onclick="" title="">
               <img src="graphics/open-ECC.png" class="img-responsive"/>
@@ -523,7 +461,23 @@
             <button type="button" class="btn btn-default btn-xs" onclick="" title="">
               <img src="graphics/close-ECC.png" class="img-responsive"/>
             </button>
-             - open/close the ECC-event display.
+             - open/close the ECC event display.
+          </p>
+          -->
+
+          <p>
+            <button type="button" class="btn btn-default btn-xs" onclick="" title="">
+              <img src="graphics/view-xz.png" class="img-responsive"/>
+            </button>
+            ,
+            <button type="button" class="btn btn-default btn-xs" onclick="" title="">
+              <img src="graphics/view-yz.png" class="img-responsive"/>
+            </button>
+            , or
+            <button type="button" class="btn btn-default btn-xs" onclick="" title="">
+              <img src="graphics/view-xy.png" class="img-responsive"/>
+            </button>
+             - show the default XZ, YZ, or XY view of the event in the ECC display.
           </p>
 
           <p>
@@ -534,21 +488,21 @@
             <button type="button" class="btn btn-default btn-xs" onclick="" title="">
               <img src="graphics/compress-y.png" class="img-responsive"/>
             </button>
-             - stretch/compress the ECC-view in the vertical (Y) direction.
+             - stretch/compress the ECC view in the vertical (Y) direction.
           </p>
 
           <p>
             <button type="button" class="btn btn-default btn-xs" onclick="" title="">
               <img src="graphics/anim-accel.png" class="img-responsive"/>
             </button>
-             - start/accelerate animated rotation of the ECC-event around the Y (vertical) axis.
+             - start/accelerate animated rotation of the ECC event around the Y (vertical) axis. This button can be clicked several (but not so many!) times.
           </p>
 
           <p>
             <button type="button" class="btn btn-default btn-xs" onclick="" title="">
               <img src="graphics/anim-decel.png" class="img-responsive"/>
             </button>
-             - decelerate/stop animated rotation of the ECC-event.
+             - decelerate animated rotation of the ECC event. In order to stop the rotation this button has to be clicked the same number of times as the "accelerating" button has been clicked before.
           </p>
 
         </div>
@@ -574,20 +528,20 @@
 
         <div class="modal-body">
           <p>
-            <h4>Demobbed-viewer <span id="span-version">v2.0</span></h4>
+            <h4>Demobbed-viewer <span id="span-version">v3.0</span></h4>
           </p>
           <p>
             A browser-based event display for visualisation of open data of the <a target="_blank" href="http://operaweb.lngs.infn.it/">OPERA experiment</a>.
           </p>
           <p>
             This application uses <a target="_blank" href="https://d3js.org/">d3.js</a> and <a target="_blank" href="http://threejs.org/">three.js</a> libraries.
-            The code is available <a target="_blank" href="https://github.com/cernopendata/demobbed-viewer">here</a>.
+            The code is available on the GitHub <a target="_blank" href="https://github.com/cernopendata/demobbed-viewer">repository</a>.
           </p>
           <p>
             <a href="mailto:opendata-support@cern.ch">Questions/comments/problems</a>
           </p>
           <p>
-            Contributors: S. Dmitrievsky (JINR, Dubna, Russia), G. Tsanaktsidis (CERN, Geneva, Switzerland).
+            Contributors: S. Dmitrievsky (<a target="_blank" href="http://www.jinr.ru/main-en/">JINR</a>, Dubna, Russia), G. Tsanaktsidis (<a target="_blank" href="https://home.cern/">CERN</a>, Geneva, Switzerland), M. Vidal (<a target="_blank" href="https://home.cern/">CERN</a>, Geneva, Switzerland).
           </p>
         </div>
 

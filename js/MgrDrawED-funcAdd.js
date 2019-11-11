@@ -111,7 +111,7 @@ dmED.createDrawGroupsAndTitles = function() {
     dmED.canvasesMain(ip).append("text")
                          .attr("transform",
                                "translate(" + (dmED.canvMainWidth() - 50) + ", " +
-                                              (dmED.canvMainHeight() - 2) + ")")
+                                              (dmED.canvMainHeight() - 5) + ")")
 
                          .text("Z (cm)");
 
@@ -193,18 +193,19 @@ dmED.onEventChange = function() {
 
   dmED.displayEventInfo();
 
-  dmED.updateCanvases();
-
   switch ( dmED.eventViewMode() ) {
 
-  case 1: // event region mode
+  case 1: // event region view mode
     dmED.zoomToEvent();
     break;
 
-  case 2: // vertex brick mode
+  case 2: // vertex brick view mode
     dmED.zoomToBrick();
     break;
 
+  default: // full detector view mode
+
+    dmED.updateCanvases();
   }
 
 };
@@ -222,7 +223,27 @@ dmED.displayEventInfo = function() {
   const selectSampleED  = document.getElementById("select-eventSample-ED");
   const selectSampleECC = document.getElementById("select-eventSample-ECC");
 
-  selectSampleED.value = selectSampleECC.value = ( demobbed.evSampleId() ) ? "nuTau" : "nuMu";
+  switch ( demobbed.evSampleId() )
+  {
+  case 0:
+    selectSampleED.value = selectSampleECC.value = "nuMu";
+    break;
+
+  case 1:
+    selectSampleED.value = selectSampleECC.value = "nuTau";
+    break;
+
+  case 2:
+    selectSampleED.value = selectSampleECC.value = "nuE";
+    break;
+
+  case 3:
+    selectSampleED.value = selectSampleECC.value = "charm";
+    break;
+
+  //default:
+
+  }
 
   const dateFormatOptions = {
 
@@ -371,6 +392,11 @@ dmED.zoomToDetector = function() {
   dmED.eventViewMode(0);
 
   demobbed.loadPrevOrNextEvent(0);
+
+  $('#btn-ed-zoom-brick').removeClass('active');
+  $('#btn-ed-zoom-event').removeClass('active');
+  $('#btn-ed-zoom-det').addClass('active');
+
 };
 //-----------------------------------------------------------------------------
 
@@ -392,6 +418,10 @@ dmED.zoomToBrick = function() {
   xyzmax[2] = xyzmin[2] + dmED.aspectRatio()*(xyzmax[0] - xyzmin[0]);
 
   dmED.setNewCurrViewBounds(xyzmin, xyzmax);
+
+  $('#btn-ed-zoom-brick').addClass('active');
+  $('#btn-ed-zoom-event').removeClass('active');
+  $('#btn-ed-zoom-det').removeClass('active');
 
 };
 //-----------------------------------------------------------------------------
@@ -523,6 +553,10 @@ dmED.zoomToEvent = function() {
   }
 
   dmED.setNewCurrViewBounds(xyzmin, xyzmax);
+
+  $('#btn-ed-zoom-brick').removeClass('active');
+  $('#btn-ed-zoom-event').addClass('active');
+  $('#btn-ed-zoom-det').removeClass('active');
 
 };
 //-----------------------------------------------------------------------------
@@ -732,20 +766,22 @@ dmED.updateCanvases = function() {
   if (dmED.canvasesMain(0) === null) {
 
     dmED.initGraphics();
-    dmECC.initGraphics();
+    dmECC.initGraphics(); //!!!
 
   }
 
   if (dmED.viewIsChanged()) {
 
-    if (dmED.zoom() == 1) dmED.setInitViewParams();
+    const zoom = dmED.zoom();
+
+    if (zoom == 1) dmED.setInitViewParams();
     else {
 
       if (dmED.zoomIsChanged()) {
 
         dmED.updateCoefPixToCM();
 
-        if (dmED.zoom() > dmED.zoomFarViewMax()) dmED.setCloseViewHitSizes();
+        if (zoom > dmED.zoomFarViewMax()) dmED.setCloseViewHitSizes();
         else dmED.setFarViewHitSizes();
 
         dmED.zoomIsChanged(0);
@@ -771,6 +807,25 @@ dmED.updateCanvases = function() {
     }
 
     dmED.viewIsChanged(0);
+
+    if (zoom === 1) {
+
+      $('#btn-ed-zoom-in').removeClass('active');
+      $('#btn-ed-zoom-out').removeClass('active');
+
+    }
+    else if (zoom > 1) {
+
+      $('#btn-ed-zoom-in').addClass('active');
+      $('#btn-ed-zoom-out').removeClass('active');
+
+    }
+    else {
+
+      $('#btn-ed-zoom-in').removeClass('active');
+      $('#btn-ed-zoom-out').addClass('active');
+
+    }
 
     return; //!!!
   }
@@ -994,7 +1049,7 @@ dmED.drawEvent = function(ip) {
 
   if (dmED.zoom() > dmED.zoomFarViewMax()) {
 
-    dmED.drawNeuVertex(ip);
+    dmED.drawNeuVertices(ip);
 
     dmED.drawPartTracks(ip);
 
@@ -1191,7 +1246,7 @@ dmED.drawDTHits = function() {
 };
 //-----------------------------------------------------------------------------
 
-dmED.drawNeuVertex = function(ip) {
+dmED.drawNeuVertices = function(ip) {
 
   const NeuVertexCircle = d3.select("#" + dmED.groupNeuVertexIDs(ip))
                             .selectAll('circle')
@@ -1207,50 +1262,24 @@ dmED.drawNeuVertex = function(ip) {
       return dmED.scalesOfCanvEmb()[ip](d.posGlob()[ip]);
     })
     .attr('r', 2)
-    .attr('fill', Vertex.color());
+    .attr('fill', Vertex.colorForED());
 
 };
 //-----------------------------------------------------------------------------
 
 dmED.drawPartTracks = function(ip) {
 
-  if (demobbed.evSampleId()) {
+  let PartTracksLines;
 
-    const PartTracksLines = d3.select("#" + dmED.groupPartTracksIDs(ip))
-                              .selectAll('line')
-                              .data(demobbed.event().tracksECCforED()); // tracksECCforED - not real ECC tracks!!!
+  switch ( demobbed.evSampleId() ) {
 
-    PartTracksLines
-      .enter()
-      .append('line')
-      .attr( 'x1', function(d) {
-        return dmED.scalesOfCanvEmb()[2](d.pos1()[2]);   // track positions are already in global system of reference!!!
-      } )
-      .attr( 'y1', function(d) {
-        return dmED.scalesOfCanvEmb()[ip](d.pos1()[ip]);
-      } )
-      .attr( 'x2', function(d) {
-        return dmED.scalesOfCanvEmb()[2](d.pos2()[2]);
-      } )
-      .attr( 'y2', function(d) {
-        return dmED.scalesOfCanvEmb()[ip](d.pos2()[ip]);
-      } )
-      .attr( 'stroke', function(d) {
-
-        if (d.partId() == 1) return dmED.trackLinePars()[1].color; // muon track is drawn in blue color!
-
-        return dmED.trackLinePars()[2].color; // all other (hadron) tracks arte drawn in red color!
-
-      } );
-    //PartTrackLines
-  }
-  else {
+  case 0: // nuMu
 
     const primVertPosGlob = demobbed.event().verticesECC()[0].posGlob();
 
-    const PartTracksLines = d3.select("#" + dmED.groupPartTracksIDs(ip))
-                              .selectAll('line')
-                              .data(demobbed.event().tracksECC());
+    PartTracksLines = d3.select("#" + dmED.groupPartTracksIDs(ip))
+                        .selectAll('line')
+                        .data(demobbed.event().tracksECC());
 
     PartTracksLines
       .enter()
@@ -1282,6 +1311,42 @@ dmED.drawPartTracks = function(ip) {
 
       } );
     //PartTrackLines
+
+    break; 
+
+  case 1: // nuTau
+  case 3: // charm
+
+    PartTracksLines = d3.select("#" + dmED.groupPartTracksIDs(ip))
+                        .selectAll('line')
+                        .data(demobbed.event().tracksECCforED()); // tracksECCforED - not real ECC tracks!!!
+
+    PartTracksLines
+      .enter()
+      .append('line')
+      .attr( 'x1', function(d) {
+        return dmED.scalesOfCanvEmb()[2](d.pos1()[2]);   // track positions are already in global system of reference!!!
+      } )
+      .attr( 'y1', function(d) {
+        return dmED.scalesOfCanvEmb()[ip](d.pos1()[ip]);
+      } )
+      .attr( 'x2', function(d) {
+        return dmED.scalesOfCanvEmb()[2](d.pos2()[2]);
+      } )
+      .attr( 'y2', function(d) {
+        return dmED.scalesOfCanvEmb()[ip](d.pos2()[ip]);
+      } )
+      .attr( 'stroke', function(d) {
+
+        if (d.partId() == 1) return dmED.trackLinePars()[1].color; // muon track is drawn in blue color!
+
+        return dmED.trackLinePars()[2].color; // all other (hadron) tracks arte drawn in red color!
+
+      } );
+    //PartTrackLines
+
+    break;
+
   }
 
 };

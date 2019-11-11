@@ -58,6 +58,7 @@ class Vertex {
 
   };
 
-  static color() { return "gold"; };
+  static colorForED() { return "limegreen"; };
+  static colorForECC() { return "gold"; };
 
 };

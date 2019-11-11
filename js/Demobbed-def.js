@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2017-2018, Sergey Dmitrievsky
+    Copyright (c) 2017-2019, Sergey Dmitrievsky, Joint Institute for Nuclear Research, Dubna, Russia
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,13 +19,17 @@ class Demobbed { // Demonstrative browser-based event display
 
   constructor() {
 
-    this._version = "2.0";
+    this._version = "3.0";
 
-    this._evSampleId = 0;     // 0 - nu_mu sample (818 events), 1 - nu_tau sample (10 events), 2 - nu_e sample (35 events?)
+    this._evSampleId = 0;     // 0 - nu_mu sample (817 events),
+                              // 1 - nu_tau sample (10 events),
+                              // 2 - nu_e sample (19 EU events),
+                              // 3 - neutrino-induced charm sample (50 events)
 
-    this._evListNuMu  = [];   // Array of OPERA nu_mu  event IDs available for open data access
-    this._evListNuTau = [];   // Array of OPERA nu_tau event IDs available for open data access
-    this._evListNuE   = [];   // Array of OPERA nu_e   event IDs available for open data access
+    this._evListNuMu  = [];   // Array of OPERA nu_mu    event IDs available for open data access
+    this._evListNuTau = [];   // Array of OPERA nu_tau   event IDs available for open data access
+    this._evListNuE   = [];   // Array of OPERA nu_e     event IDs available for open data access
+    this._evListCharm = [];   // Array of OPERA nu_charm event IDs available for open data access
 
     this._evIndex    = -1;    // Index of the loaded event in the array (from 0 to evList.length - 1)
     this._evIndexMax = -1;    // Max index of the loaded event in the array (=== evList.length - 1)
@@ -36,8 +40,6 @@ class Demobbed { // Demonstrative browser-based event display
     this._mgrDrawED  = {};    // Manager hired for drawing of Electronic detector (2D) events
 
     this._mgrDrawECC = {};    // Manager hired for drawing of (3D) tracks found in emulsion
-
-    this._showECC = 0;
 
   };
 
@@ -53,7 +55,7 @@ class Demobbed { // Demonstrative browser-based event display
         return;
       }
 
-      if ( (evsample < 0) || (evsample > 2) ) {
+      if ( (evsample < 0) || (evsample > 3) ) {
         alert("Demobbed-def::evList()::Error: evsample is wrong: evsample = " + evsample + "!!!");
         return;
       }
@@ -64,6 +66,7 @@ class Demobbed { // Demonstrative browser-based event display
       switch (evsample) {
         case 1:  return this._evListNuTau;
         case 2:  return this._evListNuE;
+        case 3:  return this._evListCharm;
         default: return this._evListNuMu;
       }
     }
@@ -85,6 +88,9 @@ class Demobbed { // Demonstrative browser-based event display
     case 2:
       this._evListNuE = evlist;
       break;
+    case 3:
+      this._evListCharm = evlist;
+      break;
     default: this._evListNuMu = evlist;
     }
 
@@ -102,7 +108,7 @@ class Demobbed { // Demonstrative browser-based event display
       return;
     }
 
-    if ( (evsampleid < 0) || (evsampleid > 2) ) {
+    if ( (evsampleid < 0) || (evsampleid > 3) ) {
       alert("Demobbed-def::evSampleId()::Error: evsampleid is wrong: evsampleid = " + evsampleid + "!!!");
       return;
     }
@@ -228,19 +234,6 @@ class Demobbed { // Demonstrative browser-based event display
     }
 
     this._mgrDrawECC = mgrdraw;
-
-  };
-
-  showECC(show) {
-
-    if (show === undefined) return this._showECC;
-
-    if (!Utils.checkNumber(show)) {
-      alert("Demobbed-def::showECC()::Error: show is not a number!!!: show = " + show + "!!!");
-      return;
-    }
-
-    this._showECC = show;
 
   };
 

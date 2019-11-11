@@ -7,7 +7,7 @@ class TrackECC {
       return false;
     }
 
-    if ( (jd < 0) || (jd > 500) ) {
+    if ( (jd < 0) || (jd > 1500) ) {
       alert("TrackECC-def::checkID()::Error: jd is strange: jd = " + jd + "!!!");
       return false;
     }
@@ -23,7 +23,7 @@ class TrackECC {
       return false;
     }
 
-    if ( (jd < 1) || (jd > 17) ) {
+    if ( (jd < 1) || (jd > 20) ) {
       alert("TrackECC-def::checkPartID()::Error: jd is strange: jd = " + jd + "!!!");
       return false;
     }
@@ -91,9 +91,9 @@ class TrackECC {
       }
     }
 
-    this._id = id;
+    this._id = id;           // track Id. E.M. shower tracks (e+/e-) in nu_e sample have id >= 1000.
 
-    this._partId = partId; // particle Id
+    this._partId = partId;   // particle Id
 
     this._pos1 = pos1;       // [posX, posY, posZ] Position of the first track point
                              // in the OPERA brick system of reference (in micrometers)
@@ -166,7 +166,7 @@ class TrackECC {
 
     switch (partId) {
 
-      // for the multiplicity sample:
+      // for the nu_mu (multiplicity) sample:
 
       case  1: return "dodgerblue";  // for tracks of muons
       case  2: return "#FF1111";     // for tracks of hadrons
@@ -176,25 +176,29 @@ class TrackECC {
       case  6: return "springgreen"; // for ionizing tracks
       case  7: return "springgreen"; // for back ionizing tracks
 
-      // for the tau sample:
+      // for the nu_tau and the charm samples:
 
-      case  8: return "#FF1111";    // for tracks of tau leptons
+      case  8: return "#FF1111";    // for tracks of tau leptons or charm particles
 
-      case  9: return "aqua";       // for tracks of hadrons in tau-candidate events
-      case 10: return "limegreen";  // for tracks of hadrons in tau-candidate events
-      case 11: return "dodgerblue"; // for tracks of hadrons in tau-candidate events
-      case 12: return "magenta";    // for tracks of hadrons in tau-candidate events
-      case 13: return "lawngreen";  // for tracks of hadrons in tau-candidate events
-      case 14: return "white";      // for tracks of hadrons in tau-candidate events
-      case 15: return "gray";       // for tracks of hadrons in tau-candidate events
+      // for the nu_tau, nu_e, and charm samples:
 
-      case 16: return "orange";     // for tracks of hadrons or e+/e- in tau-candidate events
-      case 17: return "yellow";     // for tracks of hadrons or e+/e- in tau-candidate events
+      case  9: return "aqua";         // for tracks of hadrons
+      case 10: return "limegreen";    // for tracks of hadrons
+      case 11: return "dodgerblue";   // for tracks of hadrons
+      case 12: return "magenta";      // for tracks of hadrons
+      case 13: return "lawngreen";    // for tracks of hadrons
+      case 14: return "white";        // for tracks of hadrons
+      case 15: return "gray";         // for tracks of hadrons
+
+      case 16: return "orange";       // for tracks of hadrons or e+/e-
+      case 17: return "yellow";       // for tracks of hadrons or e+/e-
+      case 18: return "deeppink";     // for tracks e+/e-
+      case 19: return "antiquewhite"; // for tracks e+/e-
+      case 20: return "#FF1111";      // for tracks of hadrons
 
       //---
 
       default: return "black";      // for other tracks (not used!)
-
     }
 
   };

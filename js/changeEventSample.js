@@ -10,7 +10,10 @@ function changeEventSample(obj, event, value) { // A separate function is used b
   case "nuE":
     evSampleId = 2;
     break;
-  default:
+  case "charm":
+    evSampleId = 3;
+    break;
+  default: // "nuMu"
     evSampleId = 0;
   }
 

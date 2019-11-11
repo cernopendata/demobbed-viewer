@@ -6,16 +6,16 @@ dmECC.initGraphics = function() {
 
   dmECC.initCameras();
 
-  dmECC.scene(new THREE.Scene());
-  dmECC.sceneInset(new THREE.Scene());
+  dmECC.scene( new THREE.Scene() );
+  dmECC.sceneInset( new THREE.Scene() );
 
   dmECC.initRenderers();
 
-  //dmECC.initControls();
+  dmECC.initControls();
 
-  dmECC.groupOfVertices(new THREE.Group());
+  dmECC.groupOfVertices( new THREE.Group() );
 
-  dmECC.groupOfTracks(new THREE.Group());
+  dmECC.groupOfTracks( new THREE.Group() );
 
   dmECC.groupOfAxes( new THREE.Group() );
 
@@ -34,6 +34,20 @@ dmECC.initCameras = function() {
 
   const primVertDrawPos = dmECC.primVertDrawPos();
 
+  dmECC.cameraInitPositions([
+    new THREE.Vector3(primVertDrawPos.x - 200,
+                      primVertDrawPos.y + 2000,
+                      primVertDrawPos.z + 200),
+
+    new THREE.Vector3(primVertDrawPos.x - 2000,
+                      primVertDrawPos.y + 200,
+                      primVertDrawPos.z + 200),
+
+    new THREE.Vector3(primVertDrawPos.x - 200,
+                      primVertDrawPos.y + 200,
+                      primVertDrawPos.z + 7000)
+  ]);
+
   //dmECC.camera( new THREE.PerspectiveCamera(70, canvWidth/canvHeight, 0.1, 20000) );
 
   dmECC.camera( new THREE.OrthographicCamera(primVertDrawPos.z - 1800,
@@ -49,6 +63,24 @@ dmECC.initCameras = function() {
                                                   primVertDrawPos.y - 300,
                                                   primVertDrawPos.x - 20000,
                                                   primVertDrawPos.x + 100000) );
+
+};
+//------------------------------------------------------------------------------
+
+dmECC.resetCameras = function() {
+
+  const ip = dmECC.view();
+
+  dmECC.camera().position.copy(dmECC.cameraInitPositions()[ip]);
+  dmECC.cameraInset().position.copy(dmECC.cameraInitPositions()[ip]);
+
+  dmECC.camera().up.copy( dmECC.cameraInitUpDirs(ip) );
+  dmECC.cameraInset().up.copy( dmECC.cameraInitUpDirs(ip) )
+
+  const primVertDrawPos = dmECC.primVertDrawPos();
+
+  dmECC.camera().lookAt(primVertDrawPos);
+  dmECC.cameraInset().lookAt(primVertDrawPos);
 
 };
 //------------------------------------------------------------------------------
@@ -87,15 +119,22 @@ dmECC.initRenderers = function() {
 };
 //------------------------------------------------------------------------------
 
-//dmECC.initControls = function() {
+dmECC.initControls = function() {
 
-//  dmECC.controls( new THREE.TrackballControls(dmECC.camera(), dmECC.renderer().domElement) );
+  dmECC.tbControls( new THREE.TrackballControls(dmECC.camera(), dmECC.renderer().domElement) );
 
-//  dmECC.controls().rotateSpeed = 5.0;
-//  dmECC.controls().zoomSpeed = 0.5;
+  dmECC.tbControls().noZoom = true; //!!!
 
-//  //dmECC.controls().addEventListener('change', dmECC.render);
-//};
+  dmECC.tbControls().zoomSpeed = 1.5;
+  dmECC.tbControls().rotateSpeed = 1.0;
+  dmECC.tbControls().panSpeed = 0.2;
+
+  dmECC.tbControls().staticMoving = true;
+  dmECC.tbControls().dynamicDampingFactor = 0.3;
+
+  //dmECC.tbControls().addEventListener('change', dmECC.render);
+
+};
 //------------------------------------------------------------------------------
 
 dmECC.initVertexProperties = function() {
@@ -103,21 +142,22 @@ dmECC.initVertexProperties = function() {
   dmECC.vertexGeometryCloseView( new THREE.SphereGeometry(20, 32, 32) );
   dmECC.vertexGeometryFarView( new THREE.SphereGeometry(60, 32, 32) );
 
-  dmECC.vertexMaterial( new THREE.MeshBasicMaterial({ color: Vertex.color() }) );
+  dmECC.vertexMaterial( new THREE.MeshBasicMaterial({ color: Vertex.colorForECC() }) );
 
 };
 //------------------------------------------------------------------------------
 
 dmECC.initTitlesOfTracksAndAxes = function() {
 
-  dmECC.axisXtitleMaterial( new THREE.MeshBasicMaterial({ color: dmECC.colorAxisX() }) );
-  dmECC.axisYtitleMaterial( new THREE.MeshBasicMaterial({ color: dmECC.colorAxisY() }) );
-  dmECC.axisZtitleMaterial( new THREE.MeshBasicMaterial({ color: dmECC.colorAxisZ() }) );
+  dmECC.axisXtitleMaterial( new THREE.MeshBasicMaterial({ color: dmECC.colorAxisX()  }) );
+  dmECC.axisYtitleMaterial( new THREE.MeshBasicMaterial({ color: dmECC.colorAxisY()  }) );
+  dmECC.axisZtitleMaterial( new THREE.MeshBasicMaterial({ color: dmECC.colorAxisZ()  }) );
+  dmECC.axisUnitsMaterial(  new THREE.MeshBasicMaterial({ color: dmECC.colorAxisUn() }) );
 
   dmECC.trMuTitleMaterial( new THREE.MeshBasicMaterial({ color: TrackECC.colors(1) }) );
   dmECC.trElTitleMaterial( new THREE.MeshBasicMaterial({ color: TrackECC.colors(3) }) );
 
-  for (let itr = 0; itr < 18; itr++)
+  for (let itr = 0; itr < 21; itr++)
     dmECC.trackTitles()[itr] = null; //!!!
 
   for (let iax = 0; iax < 4; iax++)
@@ -194,7 +234,7 @@ dmECC.initTrackLineProperties = function() {
 
   };
 
-  dmECC.trackLinePars()[9] = { // for an hadron track in tau-candidate events
+  dmECC.trackLinePars()[9] = { // for tracks of hadrons
 
     color:  TrackECC.colors(9),
     length: 10*DetCfg.plateToPlateDistECC(),
@@ -202,7 +242,7 @@ dmECC.initTrackLineProperties = function() {
 
   };
 
-  dmECC.trackLinePars()[10] = { // for an hadron track in tau-candidate events
+  dmECC.trackLinePars()[10] = { // for tracks of hadrons
 
     color:  TrackECC.colors(10),
     length: 10*DetCfg.plateToPlateDistECC(),
@@ -210,7 +250,7 @@ dmECC.initTrackLineProperties = function() {
 
   };
 
-  dmECC.trackLinePars()[11] = { // for an hadron track in tau-candidate events
+  dmECC.trackLinePars()[11] = { // for tracks of hadrons
 
     color:  TrackECC.colors(11),
     length: 10*DetCfg.plateToPlateDistECC(),
@@ -218,7 +258,7 @@ dmECC.initTrackLineProperties = function() {
 
   };
 
-  dmECC.trackLinePars()[12] = { // for an hadron track in tau-candidate events
+  dmECC.trackLinePars()[12] = { // for tracks of hadrons
 
     color:  TrackECC.colors(12),
     length: 10*DetCfg.plateToPlateDistECC(),
@@ -226,7 +266,7 @@ dmECC.initTrackLineProperties = function() {
 
   };
 
-  dmECC.trackLinePars()[13] = { // for an hadron track in tau-candidate events
+  dmECC.trackLinePars()[13] = { // for tracks of hadrons
 
     color:  TrackECC.colors(13),
     length: 10*DetCfg.plateToPlateDistECC(),
@@ -234,7 +274,7 @@ dmECC.initTrackLineProperties = function() {
 
   };
 
-  dmECC.trackLinePars()[14] = { // for an hadron track in tau-candidate events
+  dmECC.trackLinePars()[14] = { // for tracks of hadrons
 
     color:  TrackECC.colors(14),
     length: 10*DetCfg.plateToPlateDistECC(),
@@ -242,7 +282,7 @@ dmECC.initTrackLineProperties = function() {
 
   };
 
-  dmECC.trackLinePars()[15] = { // for an hadron track in tau-candidate events
+  dmECC.trackLinePars()[15] = { // for tracks of hadrons
 
     color:  TrackECC.colors(15),
     length: 10*DetCfg.plateToPlateDistECC(),
@@ -250,7 +290,7 @@ dmECC.initTrackLineProperties = function() {
 
   };
 
-  dmECC.trackLinePars()[16] = { // for e+/e- tracks in tau-candidate events
+  dmECC.trackLinePars()[16] = { // for e+/e- tracks
 
     color:  TrackECC.colors(16),
     length: 10*DetCfg.plateToPlateDistECC(),
@@ -258,9 +298,33 @@ dmECC.initTrackLineProperties = function() {
 
   };
 
-  dmECC.trackLinePars()[17] = { // for e+/e- tracks in tau-candidate events
+  dmECC.trackLinePars()[17] = { // for e+/e- tracks
 
     color:  TrackECC.colors(17),
+    length: 10*DetCfg.plateToPlateDistECC(),
+    width:  12
+
+  };
+
+  dmECC.trackLinePars()[18] = { // for e+/e- tracks
+
+    color:  TrackECC.colors(18),
+    length: 10*DetCfg.plateToPlateDistECC(),
+    width:  12
+
+  };
+
+  dmECC.trackLinePars()[19] = { // for e+/e- tracks
+
+    color:  TrackECC.colors(19),
+    length: 10*DetCfg.plateToPlateDistECC(),
+    width:  12
+
+  };
+
+  dmECC.trackLinePars()[20] = { // for tracks of hadrons
+
+    color:  TrackECC.colors(20),
     length: 10*DetCfg.plateToPlateDistECC(),
     width:  12
 
@@ -269,20 +333,16 @@ dmECC.initTrackLineProperties = function() {
 };
 //------------------------------------------------------------------------------
 
-dmECC.prepareAndDrawEvent = function(resetCameraPos) {
-
-  if (resetCameraPos === undefined) resetCameraPos = 1; //!!!
+dmECC.prepareAndDrawEvent = function(resetCameras) {
 
   dmECC.prepareTitlesOfTracksAndAxes();
 
-  setTimeout( function() {
-                           dmECC.drawEvent(resetCameraPos);
-                         }, 1000 / 10 );
+  setTimeout( function() { dmECC.drawEvent(resetCameras); }, 100 );
 
 };
 //------------------------------------------------------------------------------
 
-dmECC.drawEvent = function(resetCameraPos) {
+dmECC.drawEvent = function(resetCameras) {
 
   dmECC.drawVertices();
 
@@ -292,49 +352,111 @@ dmECC.drawEvent = function(resetCameraPos) {
 
   dmECC.drawTrackLegend();
 
-  const primVertDrawPos = dmECC.primVertDrawPos();
+  if (resetCameras) {
 
-  //console.log("000: primVertDrawPos.x = " + primVertDrawPos.x);
+    dmECC.tbControls().reset();
 
-  if (resetCameraPos) {
+    dmECC.resetCameras();
 
-    dmECC.camera().position.set(primVertDrawPos.x - 2000,
-                                primVertDrawPos.y + 200,
-                                primVertDrawPos.z + 200);
+    dmECC.camera().zoom = dmECC.zoom();
+    dmECC.cameraInset().zoom = dmECC.zoom();
 
-    dmECC.camera().lookAt(primVertDrawPos);
+    dmECC.camera().updateProjectionMatrix();
+    dmECC.cameraInset().updateProjectionMatrix();
 
   }
 
-  dmECC.cameraInset().position.set(primVertDrawPos.x - 2000,
-                                   primVertDrawPos.y + 200,
-                                   primVertDrawPos.z + 200);
-
-  dmECC.cameraInset().lookAt(primVertDrawPos);
+  //console.log("camera().position.x = " + dmECC.camera().position.x);
 
   //let cameraDirection = dmECC.camera().getWorldDirection();
+  //console.log("cameraDirection.x = " + cameraDirection.x);
 
-  //console.log("111: cameraDirection.x = " + cameraDirection.x);
-  //console.log("222: dmECC.camera().position.x = " + dmECC.camera().position.x);
-
-  //dmECC.controls().update();
+  dmECC.setupZoomingButtons();
 
   dmECC.render();
 
 };
 //------------------------------------------------------------------------------
 
-dmECC.render = function() {
+dmECC.setupZoomingButtons = function() {
 
-  dmECC.renderer().render(dmECC.scene(), dmECC.camera());
-  dmECC.rendererInset().render(dmECC.sceneInset(), dmECC.cameraInset());
+  const zoom = dmECC.zoom();
+
+  $('#btn-ecc-zoom-in').toggleClass( 'active', (zoom > 1) );
+  $('#btn-ecc-zoom-out').toggleClass( 'active', (zoom < 1) );
 
 };
 //------------------------------------------------------------------------------
 
-dmECC.accelerateAnimation = function() {
+dmECC.setupDefaultViewButtons = function() {
 
-  dmECC.animationFrameID(requestAnimationFrame(dmECC.accelerateAnimation));
+  const ip = dmECC.view();
+
+  $('#btn-ecc-def-view-xz').toggleClass( 'active', (ip === 0) );
+  $('#btn-ecc-def-view-yz').toggleClass( 'active', (ip === 1) );
+  $('#btn-ecc-def-view-xy').toggleClass( 'active', (ip === 2) );
+
+};
+//------------------------------------------------------------------------------
+
+dmECC.setupStretchAndCompressButtons = function() {
+
+  const stretchYcoeff = dmECC.stretchYcoeff();
+
+  $('#btn-ecc-stretch-y').toggleClass( 'active', (stretchYcoeff > 1) );
+  $('#btn-ecc-compress-y').toggleClass( 'active', (stretchYcoeff < 1) );
+
+};
+//------------------------------------------------------------------------------
+
+dmECC.render = function() {
+
+  dmECC.renderer().render( dmECC.scene(), dmECC.camera() );
+  dmECC.rendererInset().render( dmECC.sceneInset(), dmECC.cameraInset() );
+
+};
+//------------------------------------------------------------------------------
+
+dmECC.runInteractiveMode = function() {
+
+  //setTimeout( function() {
+  dmECC.animationFrameID( requestAnimationFrame(dmECC.runInteractiveMode) );
+  //}, 1000/30. ); // deceleration doesn't work with fps=30!!!
+
+  dmECC.tbControls().update();
+
+  dmECC.cameraInset().position.subVectors(dmECC.camera().position, dmECC.tbControls().target);
+  dmECC.cameraInset().up.copy(dmECC.camera().up);
+  dmECC.cameraInset().quaternion.copy(dmECC.camera().quaternion);
+
+  dmECC.zoom(dmECC.camera().zoom);
+  dmECC.cameraInset().zoom = dmECC.zoom();
+
+  dmECC.cameraInset().lookAt( dmECC.primVertDrawPos() );
+
+  dmECC.cameraInset().updateProjectionMatrix();
+
+  //dmECC.updateCanvases(0); With this function call uncommented the application works slowly (and with delays)
+
+  dmECC.setupZoomingButtons();
+
+  dmECC.render();
+
+};
+//------------------------------------------------------------------------------
+
+dmECC.accelerateRotation = function() {
+
+  dmECC.accelerationLevel( dmECC.accelerationLevel() + 1 );
+
+  dmECC.increaseRotationY();
+
+};
+//------------------------------------------------------------------------------
+
+dmECC.increaseRotationY = function() {
+
+  dmECC.animationFrameID( requestAnimationFrame(dmECC.increaseRotationY) );
 
   dmECC.groupOfVertices().rotation.y += 0.004;
   dmECC.groupOfTracks().rotation.y   += 0.004;
@@ -345,9 +467,15 @@ dmECC.accelerateAnimation = function() {
 };
 //------------------------------------------------------------------------------
 
-dmECC.decelerateAnimation = function() {
+dmECC.decelerateRotation = function() {
 
-  cancelAnimationFrame(dmECC.animationFrameID());
+  if (dmECC.accelerationLevel() > 0) {
+
+    dmECC.accelerationLevel( dmECC.accelerationLevel() - 1 );
+
+    cancelAnimationFrame( dmECC.animationFrameID() );
+
+  }
 
 };
 //------------------------------------------------------------------------------
@@ -359,18 +487,26 @@ dmECC.zoomInOut = function(makeZoomIn) {
   if (makeZoomIn > 0) zoomTest = Math.round(1000*dmECC.camera().zoom*dmECC.zoomFactor())/1000;
   else zoomTest = Math.round(1000*dmECC.camera().zoom/dmECC.zoomFactor())/1000;
 
-  if ( (zoomTest < dmECC.zoomMin()) || (zoomTest > dmECC.zoomMax()) ) return; //!!!
+  if ( (makeZoomIn > 0) && ( zoomTest > dmECC.zoomMax() ) ) return; //!!!
+  if ( (makeZoomIn < 0) && ( zoomTest < dmECC.zoomMin() ) ) return; //!!!
 
   if ( Math.abs(zoomTest - 1) < 0.1 ) zoomTest = 1;
 
-  dmECC.zoom(zoomTest);
-  dmECC.camera().zoom = zoomTest
-  dmECC.cameraInset().zoom = zoomTest;
+  dmECC.setZooms(zoomTest);
 
   dmECC.camera().updateProjectionMatrix();
   dmECC.cameraInset().updateProjectionMatrix();
 
   dmECC.updateCanvases(0);
+
+};
+//------------------------------------------------------------------------------
+
+dmECC.setZooms = function(zoom) {
+
+  dmECC.zoom(zoom);
+  dmECC.camera().zoom = zoom;
+  dmECC.cameraInset().zoom = zoom;
 
 };
 //------------------------------------------------------------------------------
@@ -385,6 +521,8 @@ dmECC.stretchY = function(diffrStretchYlevel) {
   dmECC.stretchYlevel(testStretchYlevel);
 
   dmECC.stretchYcoeff( dmECC.calcStretchYcoeff(testStretchYlevel) );
+
+  dmECC.setupStretchAndCompressButtons();
 
   dmECC.updateCanvases(0);
 
@@ -403,6 +541,7 @@ dmECC.calcStretchYcoeff = function(testStretchYlevel) {
 };
 //------------------------------------------------------------------------------
 
+/*
 dmECC.moveView = function(ip, dirLRUD) {
 
   // ip = 1 or 2 for moving along Y, and Z
@@ -439,6 +578,36 @@ dmECC.moveView = function(ip, dirLRUD) {
   }
 
   dmECC.updateCanvases(0);
+
+};
+//-----------------------------------------------------------------------------
+*/
+
+dmECC.setDefaultView = function(ip) {
+
+  // ip = 0, 1, or 2 for changing the display view to XZ, YZ (default), or XY, correspondingly
+
+  if (!Utils.checkIP(ip, 3)) {
+    alert("MgrDrawECC-def::setDefaultView()::Error: ip is strange!!!: ip = " + ip + "!!!");
+    return;
+  }
+
+  dmECC.view(ip);
+
+  dmECC.setZooms(1);
+
+  dmECC.camera().updateProjectionMatrix();
+  dmECC.cameraInset().updateProjectionMatrix();
+
+  dmECC.stretchYlevel(1);
+  dmECC.stretchYcoeff(1);
+
+  dmECC.resetRotationY();
+
+  dmECC.setupDefaultViewButtons();
+  dmECC.setupStretchAndCompressButtons();
+
+  dmECC.updateCanvases(1);
 
 };
 //-----------------------------------------------------------------------------
@@ -491,10 +660,25 @@ dmECC.drawVertices = function() {
 
 dmECC.drawTracks = function() {
 
-  //if ( demobbed.evSampleId() ) dmECC.drawTracksWithPosAndSlopes();
+  switch ( demobbed.evSampleId() )
+  {
+  case 0:
+    dmECC.drawTracksFromVertex();
+    break;
 
-  if ( demobbed.evSampleId() ) dmECC.drawTracksWithPos1AndPos2();
-  else dmECC.drawTracksFromVertex();
+  case 1:
+  case 3:
+    dmECC.drawTracksWithPos1AndPos2();
+    break;
+
+  case 2:
+    dmECC.drawTracksWithPos1AndPos2(999);   // for hadron tracks with track Id < 1000
+    dmECC.drawTracksWithPosAndSlopes(1000); // for e+/e- tracks with track Id >= 1000
+    break;
+
+  default:
+    dmECC.drawTracksWithPosAndSlopes();
+  }
 
   dmECC.scene().add(dmECC.groupOfTracks());
 
@@ -513,9 +697,11 @@ dmECC.drawTracksFromVertex = function() {
 
   for (let it = 0; it < nbOfTracks; it++) {
 
-    const trPartId = evTracks[it].partId();
+    const iTrack = evTracks[it];
 
-    const trAxy = evTracks[it].Axy();
+    const trPartId = iTrack.partId();
+
+    const trAxy = iTrack.Axy();
 
     const trackPartTitle = dmECC.trackTitles()[trPartId];
 
@@ -556,7 +742,7 @@ dmECC.drawTracksFromVertex = function() {
 
     }
 
-    // This cycle must be uncommented (and tested) in case the primary vertex draw position is not (0, 0, 0)!!!
+    // This cycle must be uncommented (and tested) in case the primary vertex draw position is not at (0, 0, 0)!!!
     //for (let ip = 0; ip < 3; ip++) {
     //  const xyz = primVertDrawPos.getComponent(ip);
     //  trBeg[ip] += xyz;
@@ -589,7 +775,9 @@ dmECC.drawTracksFromVertex = function() {
 };
 //------------------------------------------------------------------------------
 
-dmECC.drawTracksWithPosAndSlopes = function() {
+dmECC.drawTracksWithPosAndSlopes = function(minTrackIdForDrawing) {
+
+  if (minTrackIdForDrawing === undefined) minTrackIdForDrawing = 0;
 
   const primVertRealPos = demobbed.event().verticesECC()[0].pos();
 
@@ -606,6 +794,8 @@ dmECC.drawTracksWithPosAndSlopes = function() {
   for (let it = 0; it < nbOfTracks; it++) {
 
     const iTrack = evTracks[it];
+
+    if (iTrack.id() < minTrackIdForDrawing) continue; //!!!
 
     const trBeg = [0, 0, 0];
 
@@ -644,7 +834,9 @@ dmECC.drawTracksWithPosAndSlopes = function() {
 };
 //------------------------------------------------------------------------------
 
-dmECC.drawTracksWithPos1AndPos2 = function() {
+dmECC.drawTracksWithPos1AndPos2 = function(maxTrackIdForDrawing) {
+
+  if (maxTrackIdForDrawing === undefined) maxTrackIdForDrawing = 1000000;
 
   const primVertRealPos = demobbed.event().verticesECC()[0].pos();
 
@@ -659,6 +851,8 @@ dmECC.drawTracksWithPos1AndPos2 = function() {
   for (let it = 0; it < nbOfTracks; it++) {
 
     const iTrack = evTracks[it];
+
+    if (iTrack.id() > maxTrackIdForDrawing) break; //!!!
 
     const trPos1 = [0, 0, 0];
     const trPos2 = [0, 0, 0];
@@ -693,65 +887,28 @@ dmECC.drawTracksWithPos1AndPos2 = function() {
 
 dmECC.onEventChange = function() {
 
-  const divECC = document.getElementById("div-col-display-ECC");
+  dmECC.updateCanvases(1);
 
-  if (!demobbed.showECC()) {
+  //dmECC.displayEventInfo();
 
-    if (dmECC.camera() !== null) {
+  if ( dmECC.interactiveMode() ) cancelAnimationFrame( dmECC.animationFrameID() );
 
-      cancelAnimationFrame(dmECC.animationFrameID());
+  dmECC.interactiveMode(1);
 
-      dmECC.clearCanvases();
-
-      dmECC.eraseEventInfo();
-
-    }
-
-    divECC.style.display = "none";
-
-    return; //!!!
-
-  }
-
-  divECC.style.display = "block";
-
-  dmECC.updateCanvases();
-
-  dmECC.displayEventInfo();
+  dmECC.runInteractiveMode();
 
 };
 //------------------------------------------------------------------------------
 
-dmECC.displayEventInfo = function() {
-};
-//------------------------------------------------------------------------------
+dmECC.updateCanvases = function(resetCameras) {
 
-dmECC.eraseEventInfo = function() {
-};
-//------------------------------------------------------------------------------
-
-dmECC.updateCanvases = function(resetCameraPos) {
-
-  //if (dmECC.camera() === null) dmECC.initGraphics(); // the initialisation is called in MgrDrawED-addMethods.js!
+  //if (dmECC.camera() === null) dmECC.initGraphics(); // the initialisation is called in MgrDrawED-funcAdd.js!
 
   dmECC.clearCanvases();
 
-  if (resetCameraPos === undefined) {
+  if (resetCameras) dmECC.resetRotationY();
 
-    resetCameraPos = 1; //!!!
-
-    const rotY = dmECC.groupOfTracks().rotation.y;
-
-    if (rotY >= 0) {
-
-      dmECC.groupOfVertices().rotation.y = 0;
-      dmECC.groupOfTracks().rotation.y   = 0;
-      dmECC.groupOfAxes().rotation.y     = 0;
-    }
-
-  }
-
-  dmECC.prepareAndDrawEvent(resetCameraPos);
+  dmECC.prepareAndDrawEvent(resetCameras);
 
 };
 //------------------------------------------------------------------------------
@@ -767,11 +924,15 @@ dmECC.clearCanvases = function() {
 };
 //------------------------------------------------------------------------------
 
-dmECC.drawECC = function(showECC) {
+dmECC.resetRotationY = function() {
 
-  demobbed.showECC(showECC);
+  if ( (dmECC.groupOfTracks().rotation) && (dmECC.groupOfTracks().rotation.y >= 0) ) {
 
-  dmECC.onEventChange();
+    dmECC.groupOfVertices().rotation.y = 0;
+    dmECC.groupOfTracks().rotation.y   = 0;
+    dmECC.groupOfAxes().rotation.y     = 0;
+
+  }
 
 };
 //------------------------------------------------------------------------------
@@ -808,7 +969,19 @@ dmECC.drawTrackLegend = function() {
                                         dmECC.trackLegendWidth(),
                                         dmECC.trackLegendHeight() );
 
-  if ( demobbed.evSampleId() ) {
+  if ( demobbed.evSampleId() == 0 ) {
+
+    dmECC.addLegendEntry("muon:",             38, TrackECC.colors(1));
+    dmECC.addLegendEntry("hadron:",           56, TrackECC.colors(2));
+    dmECC.addLegendEntry("e+/e-:",            74, TrackECC.colors(3));
+    dmECC.addLegendEntry("highly ionizing:",  92, TrackECC.colors(4));
+    dmECC.addLegendEntry("ionizing:",        110, TrackECC.colors(6));
+
+    return; //!!!
+
+  }
+
+  if ( demobbed.evSampleId() == 1 ) {
 
     switch (demobbed.event().id()) {
 
@@ -916,7 +1089,7 @@ dmECC.drawTrackLegend = function() {
 
       dmECC.addLegendEntry("tau lepton:",         38, TrackECC.colors(8));
       dmECC.addLegendEntry("hadron (daughter):",  56, TrackECC.colors(9));
-      dmECC.addLegendEntry("hadron:",             74, TrackECC.colors(10));
+      dmECC.addLegendEntry("proton:",             74, TrackECC.colors(10));
       dmECC.addLegendEntry("hadron:",             92, TrackECC.colors(12));
       dmECC.addLegendEntry("hadron:",            110, TrackECC.colors(13));
       dmECC.addLegendEntry("hadron:",            128, TrackECC.colors(16));
@@ -939,48 +1112,207 @@ dmECC.drawTrackLegend = function() {
 
     }
 
+    return; //!!!
   }
-  else {
 
-    dmECC.addLegendEntry("muon:",             38, TrackECC.colors(1));
-    dmECC.addLegendEntry("hadron:",           56, TrackECC.colors(2));
-    dmECC.addLegendEntry("e+/e-:",            74, TrackECC.colors(3));
-    dmECC.addLegendEntry("highly ionizing:",  92, TrackECC.colors(4));
-    dmECC.addLegendEntry("ionizing:",        110, TrackECC.colors(6));
+  if ( demobbed.evSampleId() == 2 ) {
+
+    dmECC.addLegendEntry("e- with e.m. shower:", 38, TrackECC.colors(17));
+
+    if (demobbed.event().id() != 226395185) {
+
+      dmECC.addLegendEntry("hadron(s):",  56, TrackECC.colors(20));
+      dmECC.addLegendEntry("",            74, TrackECC.colors(14));
+      dmECC.addLegendEntry("",            92, TrackECC.colors( 9));
+      dmECC.addLegendEntry("",           110, TrackECC.colors(13));
+      dmECC.addLegendEntry("",           128, TrackECC.colors(12));
+      dmECC.addLegendEntry("",           146, TrackECC.colors(11));
+      dmECC.addLegendEntry("",           164, TrackECC.colors(10));
+      dmECC.addLegendEntry("",           182, TrackECC.colors(15));
+
+    }
+
+    switch (demobbed.event().id()) {
+
+    case 9301040593:
+
+      dmECC.addLegendEntry("e+/e- (gamma1):", 200, TrackECC.colors(16));
+      dmECC.addLegendEntry("e+/e- (gamma2):", 218, TrackECC.colors(19));
+
+      break;
+
+    case 10257032729:
+    case 10299040193:
+    case 10312027541:
+    case 11220031747:
+    case 12082052269:
+
+      dmECC.addLegendEntry("e+/e- (gamma1):", 200, TrackECC.colors(16));
+
+      break;
+
+    }
+
+    return; //!!!
+
+  }
+
+  if ( demobbed.evSampleId() == 3 ) {
+
+    dmECC.addLegendEntry("muon:", 38, TrackECC.colors(11));
+
+    switch (demobbed.event().id()) {
+
+    case 222007691:
+    case 224984190:
+    case 228197639:
+    case 228563573:
+    case 231012915:
+    case 233235784:
+    case 233478285:
+    case 234341013:
+    case 234654975:
+    case 237403844:
+    case 237491736:
+    case 9150262114:
+    case 9163097136:
+    case 9180028411:
+    case 9184112367:
+    case 9185049172:
+    case 9189079481:
+    case 9273029609:
+    case 9291027303:
+    case 9302097642:
+    case 9306092701:
+    case 1014600323:
+    case 10207022839:
+    case 10248000869:
+    case 10269013559:
+
+      dmECC.addLegendEntry("D0:",             56, TrackECC.colors(8), 1);
+
+      break;
+
+    default:
+
+      dmECC.addLegendEntry("charmed hadron:", 56, TrackECC.colors(8));
+
+    }
+
+    dmECC.addLegendEntry("daughter(s):",      74, TrackECC.colors(14));
+
+
+    switch (demobbed.event().id()) {
+
+    case 180718369:
+    case 222007691:
+    case 222274169:
+    case 228197639:
+    case 228563573:
+    case 233225467:
+    case 234341013:
+    case 234654975:
+    case 236177101:
+    case 9152034063:
+    case 9153055713:
+    case 9180028411:
+    case 9214106181:
+    case 9231046733:
+    case 9248074251:
+    case 9253108902:
+    case 9262083703:
+    case 9273029609:
+    case 9291027303:
+    case 9306092701:
+    case 9315114545:
+    case 9317000655:
+    case 10122012330:
+    case 10146003231:
+    case 10158041014:
+    case 10207022839:
+    case 10248000869:
+    case 10254046659:
+    case 10269013559:
+    case 10270021561:
+
+      dmECC.addLegendEntry("other hadron(s):",  92, TrackECC.colors(12));
+      dmECC.addLegendEntry("",                 110, TrackECC.colors(13));
+      dmECC.addLegendEntry("",                 128, TrackECC.colors(16));
+      dmECC.addLegendEntry("",                 146, TrackECC.colors(15));
+      dmECC.addLegendEntry("",                 164, TrackECC.colors(10));
+
+      break;
+    }
+
+    if (demobbed.event().id() == 9306092701) {
+
+      dmECC.addLegendEntry("",                 182, TrackECC.colors(17));
+      dmECC.addLegendEntry("",                 200, TrackECC.colors(9));
+
+    }
+
+    return; //!!!
 
   }
 
 };
 //-----------------------------------------------------------------------------
 
-dmECC.addLegendEntry = function(trTypeName, topDist, trColor) {
+dmECC.addLegendEntry = function(trTypeName, topDist, trColor, drawDashedLine) {
 
   dmECC.trackLegendContext().fillStyle = trColor;
   dmECC.trackLegendContext().fillText(trTypeName, 8, topDist + 3);
 
-  dmECC.trackLegendContext().beginPath();
-  dmECC.trackLegendContext().moveTo(dmECC.trackLegendLineBeg(), topDist);
-  dmECC.trackLegendContext().lineTo(dmECC.trackLegendLineEnd(), topDist);
   dmECC.trackLegendContext().lineWidth = 3;
   dmECC.trackLegendContext().strokeStyle = trColor;
-  dmECC.trackLegendContext().stroke();
+
+  if (drawDashedLine === undefined) {
+
+    dmECC.trackLegendContext().beginPath();
+    dmECC.trackLegendContext().moveTo(dmECC.trackLegendLineBeg(), topDist);
+    dmECC.trackLegendContext().lineTo(dmECC.trackLegendLineEnd(), topDist);
+    dmECC.trackLegendContext().stroke();
+
+  }
+  else {
+
+    let LineBeg = dmECC.trackLegendLineBeg();
+
+    const DashedLineLength = (dmECC.trackLegendLineEnd() - LineBeg)/3.;
+
+    let LineEnd = LineBeg + DashedLineLength;
+
+    for (let j = 0; j < 2; j++) {
+
+      dmECC.trackLegendContext().beginPath();
+      dmECC.trackLegendContext().moveTo(LineBeg, topDist);
+      dmECC.trackLegendContext().lineTo(LineEnd, topDist);
+      dmECC.trackLegendContext().stroke();
+
+      LineBeg = LineEnd + DashedLineLength;
+      LineEnd = LineBeg + DashedLineLength;
+    }
+
+  }
 
 };
 //-----------------------------------------------------------------------------
 
 dmECC.prepareTitlesOfTracksAndAxes = function() {
 
-  dmECC.calcAxesLengthesAndNbOfUnits();
+  dmECC.calcAxesLengthsAndNbOfUnits();
 
   const primVertDrawPos = dmECC.primVertDrawPos();
+
+  const ip = dmECC.view();
 
   const stretchYcoeff = dmECC.stretchYcoeff();
 
   const axesNbOfUnits = dmECC.axesNbOfUnits();
 
-  const axesLengthes = dmECC.axesLengthes();
+  const axesLengths = dmECC.axesLengths();
 
-  let fontSize = axesLengthes[1]/8;
+  let fontSize = axesLengths[1]/8;
   if (stretchYcoeff < 1) fontSize /= stretchYcoeff;
 
   dmECC.titleFontLoader().load('/static/node_modules/demobbed-viewer/fonts/helvetiker_regular.typeface.json', function(font) {
@@ -989,58 +1321,124 @@ dmECC.prepareTitlesOfTracksAndAxes = function() {
 
     const tps = { size:fontSize, height:10, font:font };
 
-    const x_geo = new THREE.TextGeometry('X', tps);
-    const y_geo = new THREE.TextGeometry('Y', tps);
-    const z_geo = new THREE.TextGeometry('Z', tps);
-
+    const x_geo  = new THREE.TextGeometry('X', tps);
+    const y_geo  = new THREE.TextGeometry('Y', tps);
+    const z_geo  = new THREE.TextGeometry('Z', tps);
     const un_geo = new THREE.TextGeometry(axesNbOfUnits + 'mm', tps);
 
-    const x_text = new THREE.Mesh( x_geo, dmECC.axisXtitleMaterial() );
+    const x_text  = new THREE.Mesh( x_geo, dmECC.axisXtitleMaterial() );
+    const y_text  = new THREE.Mesh( y_geo, dmECC.axisYtitleMaterial() );
+    const z_text  = new THREE.Mesh( z_geo, dmECC.axisZtitleMaterial() );
+    const un_text = new THREE.Mesh( un_geo, dmECC.axisUnitsMaterial() );
 
-    x_text.position.x = primVertDrawPos.x;
-    if (axesLengthes[0] > 100) x_text.position.x += 980*axesLengthes[0]/1000;
-    else x_text.position.x += 100;
+    x_text.position.x  = primVertDrawPos.x;
+    x_text.position.y  = primVertDrawPos.y;
+    x_text.position.z  = primVertDrawPos.z;
 
-    x_text.position.y = primVertDrawPos.y + 50;
-    x_text.position.z = primVertDrawPos.z + 50;
-    x_text.rotation.y = -1.57;
+    y_text.position.x  = primVertDrawPos.x;
+    y_text.position.y  = primVertDrawPos.y;
+    y_text.position.z  = primVertDrawPos.z;
 
-    dmECC.axesTitles()[0] = x_text;
-
-    const y_text = new THREE.Mesh( y_geo, dmECC.axisYtitleMaterial() );
-
-    y_text.position.y = primVertDrawPos.y;
-    if (axesLengthes[1] > 200) y_text.position.y += 900*axesLengthes[1]/1000;
-    else y_text.position.y += 200;
-
-    y_text.position.x = primVertDrawPos.x;
-    y_text.position.z = primVertDrawPos.z + 50;
-    y_text.rotation.y = -1.57;
-
-    dmECC.axesTitles()[1] = y_text;
-
-    const z_text = new THREE.Mesh( z_geo, dmECC.axisZtitleMaterial() );
-
-    z_text.position.z = primVertDrawPos.z;
-    if (axesLengthes[2] > 100) z_text.position.z += 920*axesLengthes[2]/1000;
-    else z_text.position.z += 100;
-
-    z_text.position.x = primVertDrawPos.x;
-    z_text.position.y = primVertDrawPos.y + 50;
-    z_text.rotation.y = -1.57;
-
-    dmECC.axesTitles()[2] = z_text;
-
-    const un_text = new THREE.Mesh( un_geo, dmECC.axisYtitleMaterial() );
-
-    un_text.position.y = primVertDrawPos.y;
-    if (axesLengthes[1] > 200) un_text.position.y += 450*axesLengthes[1]/1000;
-    else un_text.position.y += 100;
+    z_text.position.x  = primVertDrawPos.x;
+    z_text.position.y  = primVertDrawPos.y;
+    z_text.position.z  = primVertDrawPos.z;
 
     un_text.position.x = primVertDrawPos.x;
-    un_text.position.z = primVertDrawPos.z + 50;
-    un_text.rotation.y = -1.57;
+    un_text.position.y = primVertDrawPos.y;
+    un_text.position.z = primVertDrawPos.z;
 
+    switch (ip) {
+
+    case 0:
+
+      if (axesLengths[0] > 100) x_text.position.x += 90*axesLengths[0]/100;
+      else x_text.position.x += 100;
+
+      x_text.position.z += 50;
+      x_text.rotation.x = -1.57;
+      x_text.rotation.z = -1.57;
+
+      if (axesLengths[1] > 200) y_text.position.y += 98*axesLengths[1]/100;
+      else y_text.position.y += 200;
+
+      y_text.position.x += 50;
+      y_text.position.z -= 100;
+      y_text.rotation.x = -1.57;
+      y_text.rotation.z = -1.57;
+
+      if (axesLengths[2] > 100) z_text.position.z += 92*axesLengths[2]/100;
+      else z_text.position.z += 100;
+
+      z_text.position.x += 50;
+      z_text.rotation.x = -1.57;
+      z_text.rotation.z = -1.57;
+
+      if (axesLengths[0] > 200) un_text.position.x += 45*axesLengths[0]/100;
+      else un_text.position.x += 100;
+
+      un_text.position.z += 50;
+      un_text.rotation.x = -1.57;
+      un_text.rotation.z = -1.57;
+
+      break;
+
+    case 1:
+
+      if (axesLengths[0] > 100) x_text.position.x += 98*axesLengths[0]/100;
+      else x_text.position.x += 100;
+
+      x_text.position.y += 50;
+      x_text.position.z += 50;
+      x_text.rotation.y = -1.57;
+
+      if (axesLengths[1] > 200) y_text.position.y += 90*axesLengths[1]/100;
+      else y_text.position.y += 200;
+
+      y_text.position.z += 50;
+      y_text.rotation.y = -1.57;
+
+      if (axesLengths[2] > 100) z_text.position.z += 92*axesLengths[2]/100;
+      else z_text.position.z += 100;
+
+      z_text.position.y += 50;
+      z_text.rotation.y = -1.57;
+
+      if (axesLengths[1] > 200) un_text.position.y += 45*axesLengths[1]/100;
+      else un_text.position.y += 100;
+
+      un_text.position.z += 50;
+      un_text.rotation.y = -1.57;
+
+      break;
+
+    case 2:
+
+      if (axesLengths[0] > 100) x_text.position.x += 92*axesLengths[0]/100;
+      else x_text.position.x += 100;
+
+      x_text.position.y += 50;
+
+      if (axesLengths[1] > 200) y_text.position.y += 90*axesLengths[1]/100;
+      else y_text.position.y += 200;
+
+      y_text.position.x += 50;
+
+      if (axesLengths[2] > 100) z_text.position.z += 98*axesLengths[2]/100;
+      else z_text.position.z += 100;
+
+      z_text.position.x -= 150;
+      z_text.position.y += 50;
+
+      if (axesLengths[1] > 200) un_text.position.y += 45*axesLengths[1]/100;
+      else un_text.position.y += 100;
+
+      un_text.position.x += 50;
+
+    }
+
+    dmECC.axesTitles()[0] = x_text;
+    dmECC.axesTitles()[1] = y_text;
+    dmECC.axesTitles()[2] = z_text;
     dmECC.axesTitles()[3] = un_text;
 
     // prepare track titles
@@ -1060,69 +1458,71 @@ dmECC.prepareTitlesOfTracksAndAxes = function() {
 };
 //------------------------------------------------------------------------------
 
-dmECC.calcAxesLengthesAndNbOfUnits = function() {
+dmECC.calcAxesLengthsAndNbOfUnits = function() {
 
   const zoom = dmECC.zoom();
 
+  const ip = dmECC.view();
+
   const stretchYcoeff = dmECC.stretchYcoeff();
 
-  const axesLengthes = [1000, 1000, 1000];
+  let axesLengths = [1000, 1000, 1000];
 
-  if (stretchYcoeff > 1) axesLengthes[0] = axesLengthes[2] = axesLengthes[1]/stretchYcoeff;
-  else if (stretchYcoeff < 1) axesLengthes[1] = axesLengthes[0]*stretchYcoeff;
+  if (stretchYcoeff > 1) axesLengths[0] = axesLengths[2] = axesLengths[1]/stretchYcoeff;
+  else if (stretchYcoeff < 1) axesLengths[1] = axesLengths[0]*stretchYcoeff;
 
   if (zoom > 3.8) {
-    axesLengthes[0] *= 0.22*zoom;
-    axesLengthes[1] *= 0.22*zoom;
-    axesLengthes[2] *= 0.22*zoom;
+    axesLengths[0] *= 0.22*zoom;
+    axesLengths[1] *= 0.22*zoom;
+    axesLengths[2] *= 0.22*zoom;
   }
   else if (zoom > 3.0) {
-    axesLengthes[0] *= 0.28*zoom;
-    axesLengthes[1] *= 0.28*zoom;
-    axesLengthes[2] *= 0.28*zoom;
+    axesLengths[0] *= 0.28*zoom;
+    axesLengths[1] *= 0.28*zoom;
+    axesLengths[2] *= 0.28*zoom;
   }
   else if (zoom > 2.4) {
-    axesLengthes[0] *= 0.38*zoom;
-    axesLengthes[1] *= 0.38*zoom;
-    axesLengthes[2] *= 0.38*zoom;
+    axesLengths[0] *= 0.38*zoom;
+    axesLengths[1] *= 0.38*zoom;
+    axesLengths[2] *= 0.38*zoom;
   }
   else if (zoom > 1.9) {
-    axesLengthes[0] *= 0.5*zoom;
-    axesLengthes[1] *= 0.5*zoom;
-    axesLengthes[2] *= 0.5*zoom;
+    axesLengths[0] *= 0.5*zoom;
+    axesLengths[1] *= 0.5*zoom;
+    axesLengths[2] *= 0.5*zoom;
   }
   else if (zoom > 1.5) {
-    axesLengthes[0] *= 0.7*zoom;
-    axesLengthes[1] *= 0.7*zoom;
-    axesLengthes[2] *= 0.7*zoom;
+    axesLengths[0] *= 0.7*zoom;
+    axesLengths[1] *= 0.7*zoom;
+    axesLengths[2] *= 0.7*zoom;
   }
   else if (zoom > 1.1) {
-    axesLengthes[0] *= 0.8*zoom;
-    axesLengthes[1] *= 0.8*zoom;
-    axesLengthes[2] *= 0.8*zoom;
+    axesLengths[0] *= 0.8*zoom;
+    axesLengths[1] *= 0.8*zoom;
+    axesLengths[2] *= 0.8*zoom;
   }
   else if (zoom > 0.40) {
-    axesLengthes[0] *= 1.2/(zoom + 0.2);
-    axesLengthes[1] *= 1.2/(zoom + 0.2);
-    axesLengthes[2] *= 1.2/(zoom + 0.2);
+    axesLengths[0] *= 1.2/(zoom + 0.2);
+    axesLengths[1] *= 1.2/(zoom + 0.2);
+    axesLengths[2] *= 1.2/(zoom + 0.2);
   }
   else if (zoom > 0.25) {
-    axesLengthes[0] *= 1.1/(zoom + 0.1);
-    axesLengthes[1] *= 1.1/(zoom + 0.1);
-    axesLengthes[2] *= 1.1/(zoom + 0.1);
+    axesLengths[0] *= 1.1/(zoom + 0.1);
+    axesLengths[1] *= 1.1/(zoom + 0.1);
+    axesLengths[2] *= 1.1/(zoom + 0.1);
   }
   else if (zoom > 0.15) {
-    axesLengthes[0] *= 1.06/(zoom + 0.06);
-    axesLengthes[1] *= 1.06/(zoom + 0.06);
-    axesLengthes[2] *= 1.06/(zoom + 0.06);
+    axesLengths[0] *= 1.06/(zoom + 0.06);
+    axesLengths[1] *= 1.06/(zoom + 0.06);
+    axesLengths[2] *= 1.06/(zoom + 0.06);
   }
   else if (zoom > 0) {
-    axesLengthes[0] *= 1.02/(zoom + 0.02);
-    axesLengthes[1] *= 1.02/(zoom + 0.02);
-    axesLengthes[2] *= 1.02/(zoom + 0.02);
+    axesLengths[0] *= 1.02/(zoom + 0.02);
+    axesLengths[1] *= 1.02/(zoom + 0.02);
+    axesLengths[2] *= 1.02/(zoom + 0.02);
   }
 
-  let axesNbOfUnits = axesLengthes[1]/(1000*stretchYcoeff);
+  let axesNbOfUnits = axesLengths[0]/1000;
 
   if ( axesNbOfUnits <= 0.9 ) axesNbOfUnits = Math.floor(axesNbOfUnits*10)/10;
   else {
@@ -1134,10 +1534,10 @@ dmECC.calcAxesLengthesAndNbOfUnits = function() {
 
   }
 
-  axesLengthes[0] = axesLengthes[2] = 1000*axesNbOfUnits;
-  axesLengthes[1] = axesLengthes[0]*stretchYcoeff;
+  axesLengths[0] = axesLengths[2] = 1000*axesNbOfUnits;
+  axesLengths[1] = axesLengths[0]*stretchYcoeff;
 
-  dmECC.axesLengthes(axesLengthes);
+  dmECC.axesLengths(axesLengths);
 
   dmECC.axesNbOfUnits(axesNbOfUnits);
 
@@ -1152,14 +1552,14 @@ dmECC.drawAxes = function() {
 
   const stretchYcoeff = dmECC.stretchYcoeff();
 
-  const axesLengthes = dmECC.axesLengthes();
+  const axesLengths = dmECC.axesLengths();
 
   const axisWidth = 8/zoom;
 
   const rx = new three3DExtras.tubeLine([primVertDrawPos.x,
                                          primVertDrawPos.y,
                                          primVertDrawPos.z],
-                                        [primVertDrawPos.x + axesLengthes[0],
+                                        [primVertDrawPos.x + axesLengths[0],
                                          primVertDrawPos.y,
                                          primVertDrawPos.z],
                                          axisWidth, dmECC.colorAxisX());
@@ -1168,7 +1568,7 @@ dmECC.drawAxes = function() {
                                          primVertDrawPos.y,
                                          primVertDrawPos.z],
                                         [primVertDrawPos.x,
-                                         primVertDrawPos.y + axesLengthes[1],
+                                         primVertDrawPos.y + axesLengths[1],
                                          primVertDrawPos.z],
                                          axisWidth, dmECC.colorAxisY());
 
@@ -1177,7 +1577,7 @@ dmECC.drawAxes = function() {
                                          primVertDrawPos.z],
                                         [primVertDrawPos.x,
                                          primVertDrawPos.y,
-                                         primVertDrawPos.z + axesLengthes[2]],
+                                         primVertDrawPos.z + axesLengths[2]],
                                          axisWidth, dmECC.colorAxisZ());
 
   dmECC.groupOfAxes().add(rx.getObject3D());

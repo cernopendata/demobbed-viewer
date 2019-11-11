@@ -1,3 +1,46 @@
+.viewer {
+  display: table;
+  width: 100%;
+}
+
+.display,
+.sidebar {
+  display: table-cell;
+}
+
+.sidebar {
+  width: 87px;
+}
+
+#div-logo-img,
+#div-nu-beam-img {
+  position: absolute;
+  width: 85px;
+}
+
+#div-logo-img {
+  top: 4px;
+  left: 4px;
+}
+
+#div-nu-beam-img {
+  top: 105px;
+  left: 12px;
+}
+
+#div-controls-ED {
+  position: absolute;
+  left: 9px;
+}
+
+#div-controls-ED {
+  top: 260px;
+}
+
+#div-controls-ECC {
+  top: 720px;
+}
+
 .titlebar {
   text-align: center;
   color: white;
@@ -6,6 +49,10 @@
 
 #td-display-panel-ECC {
   vertical-align: top;
+}
+
+.btn.active, .btn.active:focus {
+  background-color: yellow;
 }
 
 .canvas-bordered-black {
@@ -45,11 +92,21 @@
 }
 
 #span-canvas-ECC-title {
-  //left: 10px;
-  top:  -2px;
+  top: -2px;
 }
 
 .modal-dialog {
-  width:  1200px;
+  width:   95%;
   height:  900px;
+}
+
+.row.ed-display,
+.row.ecc-display {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.row.ed-display div,
+.row.ecc-display div {
+  padding: 0 1em;
 }
