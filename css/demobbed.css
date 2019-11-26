@@ -1,44 +1,19 @@
 .viewer {
-  display: table;
+  display: flex;
   width: 100%;
+  margin: 0.25em;
 }
 
-.display,
 .sidebar {
   display: table-cell;
 }
 
 .sidebar {
-  width: 87px;
+  width: 105px;
 }
 
-#div-logo-img,
-#div-nu-beam-img {
-  position: absolute;
-  width: 85px;
-}
-
-#div-logo-img {
-  top: 4px;
-  left: 4px;
-}
-
-#div-nu-beam-img {
-  top: 105px;
-  left: 12px;
-}
-
-#div-controls-ED {
-  position: absolute;
-  left: 9px;
-}
-
-#div-controls-ED {
-  top: 260px;
-}
-
-#div-controls-ECC {
-  top: 720px;
+.sidebar div {
+  text-align: center;
 }
 
 .titlebar {
@@ -53,8 +28,13 @@
 }
 
 #div-col-display-ED .btn,
-.toolbar .btn {
+.toolbar .btn,
+#div-controls-ED .btn {
   padding: 0.25em;
+}
+
+#div-controls-ED table {
+  width: 100%;
 }
 
 .btn.active, .btn.active:focus {
@@ -98,7 +78,8 @@
 }
 
 #span-canvas-ECC-title {
-  top: -2px;
+  top: 1px;
+  left: 17px;
 }
 
 .modal-dialog {
