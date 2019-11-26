@@ -7,7 +7,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dmitr25/demobbed-viewer.git"
+    "url": "git+https://github.com/cernopendata/demobbed-viewer.git"
   },
   "keywords": [
     "OPERA",
@@ -16,7 +16,7 @@
   "author": "Sergey Dmitrievsky",
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/dmitr25/demobbed-viewer/issues"
+    "url": "https://github.com/cernopendata/demobbed-viewer/issues"
   },
-  "homepage": "https://github.com/dmitr25/demobbed-viewer#readme"
+  "homepage": "https://github.com/cernopendata/demobbed-viewer#readme"
 }
