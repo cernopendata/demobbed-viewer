@@ -45,10 +45,16 @@
   text-align: center;
   color: white;
   background-color: black;
+  font-size: 0.85em;
 }
 
 #td-display-panel-ECC {
   vertical-align: top;
+}
+
+#div-col-display-ED .btn,
+.toolbar .btn {
+  padding: 0.25em;
 }
 
 .btn.active, .btn.active:focus {
@@ -96,8 +102,13 @@
 }
 
 .modal-dialog {
-  width:   95%;
-  height:  900px;
+  max-width: 95%;
+  height: 900px;
+  font-size: 0.9em;
+}
+
+.modal-dialog p {
+  margin-bottom: 0.5em;
 }
 
 .row.ed-display,
@@ -109,4 +120,9 @@
 .row.ed-display div,
 .row.ecc-display div {
   padding: 0 1em;
+}
+
+.toolbar {
+  font-size: .9em;
+  font-weight: bold;
 }
