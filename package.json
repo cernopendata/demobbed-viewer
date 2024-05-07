@@ -1,6 +1,6 @@
 {
-  "name": "demobbed-viewer",
-  "version": "1.2.0",
+  "name": "@cernopendata/demobbed-viewer",
+  "version": "1.3.0",
   "description": "This is a demonstrative browser-based event display for open data of the OPERA neutrino oscillation experiment.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,7 +13,7 @@
     "OPERA",
     "previewer"
   ],
-  "author": "Sergey Dmitrievsky",
+  "author": "cernopendata team",
   "license": "AGPL-3.0",
   "bugs": {
     "url": "https://github.com/cernopendata/demobbed-viewer/issues"
